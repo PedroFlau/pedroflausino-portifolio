@@ -22,10 +22,12 @@ const comandos: Record<string, string> = {
 export function Terminal() {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
 
+  // Rola só a área interna do terminal (não a página inteira)
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const body = bodyRef.current;
+    if (body) body.scrollTop = body.scrollHeight;
   }, [history]);
 
   const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -58,7 +60,7 @@ export function Terminal() {
         <span className="terminal-title">pedro@portfolio: ~</span>
       </div>
 
-      <div className="terminal-body">
+      <div className="terminal-body" ref={bodyRef}>
         <div className="text-gray" style={{ marginBottom: '16px' }}>
           Bem-vindo ao terminal do Pedro. Digite <span className="text-green">help</span> para começar.
         </div>
@@ -91,7 +93,6 @@ export function Terminal() {
           <span className="cursor" />
         </div>
 
-        <div ref={bottomRef} />
       </div>
     </div>
   );
