@@ -20,7 +20,7 @@ export function About() {
             <div key={f.titulo} className="formacao-item">
               <strong>{f.titulo}</strong>
               <span className="text-gray">{f.local}</span>
-              <span className="text-green">{f.periodo}</span>
+              <span className="text-accent">{f.periodo}</span>
             </div>
           ))}
         </div>

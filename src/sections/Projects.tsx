@@ -11,7 +11,7 @@ export function Projects() {
         {projetos.map((p) => (
           <article key={p.nome} className="projeto-card">
             <h3 className="projeto-nome">
-              <span className="text-green">▸</span> {p.nome}
+              <span className="text-accent">▸</span> {p.nome}
             </h3>
             <p className="projeto-descricao">{p.descricao}</p>
 

@@ -1,15 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap');
 
+/* ===== Tema escuro (padrão) ===== */
 :root {
+  --mono: 'Fira Code', 'Courier New', monospace;
+
   --bg: #0d1117;
   --bg-alt: #161b22;
   --borda: #30363d;
   --texto: #c9d1d9;
   --texto-fraco: #8b949e;
-  --verde: #3fb950;
-  --azul: #58a6ff;
-  --amarelo: #e3b341;
-  --mono: 'Fira Code', 'Courier New', monospace;
+  --accent: #e3b341; /* detalhes em amarelo no escuro */
+  --accent-contraste: #0d1117;
+  --nav-bg: rgba(13, 17, 23, 0.85);
+  --bg-overlay: rgba(13, 17, 23, 0.94);
+  --grid: #21262d;
+  --tag-bg: rgba(227, 179, 65, 0.08);
+}
+
+/* ===== Tema claro ===== */
+[data-theme='light'] {
+  --bg: #ffffff;
+  --bg-alt: #f6f8fa;
+  --borda: #d0d7de;
+  --texto: #1f2328;
+  --texto-fraco: #59636e;
+  --accent: #0969da; /* detalhes em azul no claro */
+  --accent-contraste: #ffffff;
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --bg-overlay: rgba(255, 255, 255, 0.94);
+  --grid: #eaeef2;
+  --tag-bg: rgba(9, 105, 218, 0.08);
 }
 
 * {
@@ -30,8 +50,8 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   background-image:
-    linear-gradient(rgba(13, 17, 23, 0.94), rgba(13, 17, 23, 0.94)),
-    repeating-linear-gradient(0deg, transparent, transparent 39px, #21262d 40px);
+    linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, var(--grid) 40px);
 }
 
 a {
@@ -40,9 +60,7 @@ a {
 }
 
 /* Cores utilitárias */
-.text-yellow { color: var(--amarelo); }
-.text-green { color: var(--verde); }
-.text-blue { color: var(--azul); }
+.text-accent { color: var(--accent); }
 .text-gray { color: var(--texto-fraco); }
 
 /* ===== Layout geral ===== */
@@ -65,7 +83,7 @@ a {
 
 .card-titulo {
   font-size: 0.95rem;
-  color: var(--verde);
+  color: var(--accent);
   margin-bottom: 14px;
   text-transform: lowercase;
 }
@@ -81,40 +99,34 @@ a {
   align-items: center;
   justify-content: space-between;
   padding: 14px 24px;
-  background: rgba(13, 17, 23, 0.85);
+  background: var(--nav-bg);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--borda);
 }
 
 .navbar-logo {
   font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-.navbar-links {
-  display: flex;
-  gap: 22px;
-  font-size: 0.9rem;
-}
-
-.navbar-links a {
-  color: var(--texto-fraco);
-  transition: color 0.15s;
-}
-
-.navbar-links a:hover {
-  color: var(--verde);
-}
-
-.navbar-toggle {
-  display: none;
-  background: none;
+/* Botão de alternância claro/escuro */
+.tema-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
   border: 1px solid var(--borda);
-  color: var(--texto);
-  font-family: var(--mono);
-  font-size: 1.1rem;
-  border-radius: 6px;
-  padding: 2px 10px;
+  border-radius: 50%;
+  color: var(--accent);
   cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s, background 0.15s;
+}
+
+.tema-toggle:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 
 /* ===== Hero ===== */
@@ -163,21 +175,21 @@ a {
 }
 
 .botao:hover {
-  border-color: var(--verde);
-  color: var(--verde);
+  border-color: var(--accent);
+  color: var(--accent);
   transform: translateY(-2px);
 }
 
 .botao-primario {
-  background: var(--verde);
-  border-color: var(--verde);
-  color: #0d1117;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contraste);
   font-weight: 700;
 }
 
 .botao-primario:hover {
   background: transparent;
-  color: var(--verde);
+  color: var(--accent);
 }
 
 /* ===== Foto de perfil (Hero) ===== */
@@ -282,7 +294,7 @@ a {
   display: inline-block;
   width: 8px;
   height: 16px;
-  background-color: var(--verde);
+  background-color: var(--accent);
   animation: blink 1s step-end infinite;
   margin-left: 2px;
 }
@@ -344,7 +356,7 @@ a {
   border: 1px solid var(--borda);
   border-radius: 20px;
   color: var(--texto);
-  background: rgba(88, 166, 255, 0.06);
+  background: var(--tag-bg);
 }
 
 /* ===== Projetos ===== */
@@ -366,7 +378,7 @@ a {
 }
 
 .projeto-card:hover {
-  border-color: var(--verde);
+  border-color: var(--accent);
   transform: translateY(-3px);
 }
 
@@ -381,7 +393,7 @@ a {
 }
 
 .projeto-link {
-  color: var(--azul);
+  color: var(--accent);
   font-size: 0.85rem;
 }
 
@@ -415,7 +427,7 @@ a {
 }
 
 .contato-card:hover {
-  border-color: var(--azul);
+  border-color: var(--accent);
 }
 
 /* ===== Footer ===== */
@@ -443,32 +455,5 @@ a {
 
   .sobre-grid {
     grid-template-columns: 1fr;
-  }
-
-  .navbar-toggle {
-    display: block;
-  }
-
-  .navbar-links {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    gap: 0;
-    background: var(--bg-alt);
-    border-bottom: 1px solid var(--borda);
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease;
-  }
-
-  .navbar-links.aberto {
-    max-height: 240px;
-  }
-
-  .navbar-links a {
-    padding: 14px 24px;
-    border-top: 1px solid var(--borda);
   }
 }

@@ -30,7 +30,7 @@ export function Contact() {
             rel="noopener noreferrer"
           >
             <span className="text-gray">{c.rotulo}</span>
-            <span className="text-blue">{c.valor} ↗</span>
+            <span className="text-accent">{c.valor} ↗</span>
           </a>
         ))}
       </div>

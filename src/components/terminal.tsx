@@ -33,7 +33,7 @@ export function Terminal() {
    <div className="terminal-body">:
 
      <div className="terminal-linha">
-       <span className="text-green">visitante@portfolio</span>
+       <span className="text-accent">visitante@portfolio</span>
        <span className="text-gray">:~$</span>
        <input
          type="text"

@@ -6,13 +6,13 @@ export function Hero() {
     <section id="top" className="hero">
       <div className="hero-texto">
         <p className="hero-comando">
-          <span className="text-green">pedro@portfolio</span>
+          <span className="text-accent">pedro@portfolio</span>
           <span className="text-gray">:~$ </span>
-          <span className="text-blue">whoami</span>
+          <span>whoami</span>
         </p>
 
         <h1 className="hero-nome">
-          {perfil.primeiroNome} <span className="text-green">Flausino Mendonça</span>
+          {perfil.primeiroNome} <span className="text-accent">Flausino Mendonça</span>
         </h1>
 
         <p className="hero-titulo">
