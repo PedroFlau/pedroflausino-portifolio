@@ -180,6 +180,30 @@ a {
   color: var(--verde);
 }
 
+/* ===== Foto de perfil (Hero) ===== */
+.hero-foto {
+  display: flex;
+  justify-content: center;
+}
+
+.foto-card {
+  width: 100%;
+  max-width: 360px;
+  margin: 0;
+  padding: 8px;
+  background: var(--bg-alt);
+  border: 1px solid var(--borda);
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.foto-perfil {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+}
+
 /* ===== Terminal ===== */
 .terminal-window {
   background: #010409;
@@ -212,9 +236,21 @@ a {
 
 .terminal-body {
   padding: 16px;
-  height: 300px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   font-size: 0.85rem;
+}
+
+/* Foto do Pedro exibida dentro da janela do terminal */
+.terminal-foto {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 8px;
+  border: 1px solid var(--borda);
 }
 
 .terminal-output {

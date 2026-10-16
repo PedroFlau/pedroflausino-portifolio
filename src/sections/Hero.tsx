@@ -1,5 +1,5 @@
 import { perfil } from '../data/portfolio';
-import { Terminal } from '../components/terminal';
+import { FotoPerfil } from '../components/FotoPerfil';
 
 export function Hero() {
   return (
@@ -45,8 +45,8 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="hero-terminal">
-        <Terminal />
+      <div className="hero-foto">
+        <FotoPerfil />
       </div>
     </section>
   );

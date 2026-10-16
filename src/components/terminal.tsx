@@ -1,58 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
-import { terminalComandos } from '../data/portfolio';
-
-type HistoryItem = {
-  command: string;
-  output: string;
-};
-
-const comandos: Record<string, string> = {
-  ajuda: terminalComandos.help,
-  help: terminalComandos.help,
-  sobre: terminalComandos.about,
-  about: terminalComandos.about,
-  habilidades: terminalComandos.skills,
-  skills: terminalComandos.skills,
-  projetos: terminalComandos.projects,
-  projects: terminalComandos.projects,
-  contato: terminalComandos.contact,
-  contact: terminalComandos.contact,
-};
+import { perfil } from '../data/portfolio';
 
 export function Terminal() {
-  const [input, setInput] = useState('');
-  const [history, setHistory] = useState<HistoryItem[]>([]);
-  const bodyRef = useRef<HTMLDivElement>(null);
-
-  // Rola só a área interna do terminal (não a página inteira)
-  useEffect(() => {
-    const body = bodyRef.current;
-    if (body) body.scrollTop = body.scrollHeight;
-  }, [history]);
-
-  const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return;
-
-    const cmd = input.trim().toLowerCase();
-
-    if (cmd === 'clear' || cmd === 'limpar') {
-      setHistory([]);
-      setInput('');
-      return;
-    }
-
-    const output =
-      cmd === ''
-        ? ''
-        : comandos[cmd] ??
-          `comando não encontrado: ${cmd}. Digite "help" para ver os comandos.`;
-
-    setHistory((prev) => [...prev, { command: input, output }]);
-    setInput('');
-  };
-
   return (
     <div className="terminal-window">
+      {/* Barra superior com os botões */}
       <div className="terminal-header">
         <span className="terminal-dot" style={{ background: '#ff5f56' }} />
         <span className="terminal-dot" style={{ background: '#ffbd2e' }} />
@@ -60,40 +11,43 @@ export function Terminal() {
         <span className="terminal-title">pedro@portfolio: ~</span>
       </div>
 
-      <div className="terminal-body" ref={bodyRef}>
-        <div className="text-gray" style={{ marginBottom: '16px' }}>
-          Bem-vindo ao terminal do Pedro. Digite <span className="text-green">help</span> para começar.
+      <div className="terminal-body">
+        <div className="text-gray">
+          Bem-vindo ao terminal do Pedro.
         </div>
 
-        {history.map((item, index) => (
-          <div key={index} style={{ marginBottom: '14px' }}>
-            <div>
-              <span className="text-green">visitante@portfolio</span>
-              <span className="text-gray">:~$ </span>
-              <span className="text-yellow">{item.command}</span>
-            </div>
-            {item.output && (
-              <pre className="terminal-output">{item.output}</pre>
-            )}
-          </div>
-        ))}
-
-        <div className="terminal-linha">
-          <span className="text-green">visitante@portfolio</span>
-          <span className="text-gray">:~$</span>
-          <input
-            type="text"
-            className="terminal-input"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleCommand}
-            spellCheck={false}
-            autoComplete="off"
-          />
-          <span className="cursor" />
-        </div>
-
+        {/* Foto do Pedro (substitui a caixa de digitar comandos) */}
+        <img
+          className="terminal-foto"
+          src="/images/minhafoto.jpeg"
+          alt={`Foto de ${perfil.nome}`}
+        />
       </div>
     </div>
   );
 }
+
+/* ----------------------------------------------------------------
+   NOTA: a caixa de comandos interativa foi removida por enquanto.
+   Para reativá-la depois, restaure este trecho no final do
+   <div className="terminal-body">:
+
+     <div className="terminal-linha">
+       <span className="text-green">visitante@portfolio</span>
+       <span className="text-gray">:~$</span>
+       <input
+         type="text"
+         className="terminal-input"
+         value={input}
+         onChange={(e) => setInput(e.target.value)}
+         onKeyDown={handleCommand}
+         spellCheck={false}
+         autoComplete="off"
+       />
+       <span className="cursor" />
+     </div>
+
+   junto com os estados (useState), o handler handleCommand e os
+   imports de react/data/portfolio. A versão completa está no
+   histórico do Git.
+------------------------------------------------------------------ */
