@@ -2,7 +2,7 @@ import { habilidades } from '../data/portfolio';
 
 export function Skills() {
   return (
-    <section id="habilidades" className="secao">
+    <section className="secao">
       <h2 className="secao-titulo">
         <span className="text-gray">##</span> habilidades
       </h2>

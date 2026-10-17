@@ -2,7 +2,7 @@ import { perfil, formacao } from '../data/portfolio';
 
 export function About() {
   return (
-    <section id="sobre" className="secao">
+    <section className="secao">
       <h2 className="secao-titulo">
         <span className="text-gray">##</span> sobre
       </h2>

@@ -8,7 +8,7 @@ export const perfil = {
   nome: "Pedro Flausino Mendonça",
   primeiroNome: "Pedro",
   titulo: "Estudante de Ciência da Computação",
-  subtitulo: "2º semestre · Ciência da Computação",
+  subtitulo: "2º semestre",
   idade: 19,
   cidade: "Belo Horizonte, MG",
   bio: [
@@ -57,35 +57,94 @@ export const formacao = [
   },
 ];
 
-export const terminalComandos = {
-  help: `
-Comandos disponiveis:
-  about | sobre       - Quem sou eu
-  skills | habilidades - Minhas habilidades
-  projects | projetos  - Meus projetos
-  contact | contato    - Como falar comigo
-  clear | limpar       - Limpar a tela
-  help | ajuda         - Mostrar esta ajuda
-`,
-  about: `
-${perfil.nome}
-${perfil.titulo} · ${perfil.subtitulo}
-📍 ${perfil.cidade}
-📧 ${perfil.links.email}
-🐙 ${perfil.links.github}
-`,
-  skills: `
-Habilidades:
-${habilidades.map((g) => `  ${g.grupo}: ${g.itens.join(", ")}`).join("\n")}
-`,
-  projects: `
-Projetos:
-${projetos.map((p, i) => `  ${i + 1}. ${p.nome} - ${p.descricao}`).join("\n")}
-`,
-  contact: `
-Contato:
-  E-mail:   ${perfil.links.email}
-  GitHub:   ${perfil.links.github}
-  LinkedIn: ${perfil.links.linkedin}
-`,
+// ------------------------------------------------------------
+//  DADOS EXTRAS (usados pelos comandos do terminal)
+//  Preencha os campos marcados com TODO.
+// ------------------------------------------------------------
+
+// Monitoria (TODO: preencha a matéria e os horários)
+export const monitoria: {
+  disciplina: string;
+  professor?: string;
+  horarios: { dia: string; hora: string; local?: string }[];
+} = {
+  disciplina: "", // TODO: ex. "Algoritmos e Estruturas de Dados"
+  professor: "", // TODO (opcional)
+  horarios: [
+    // TODO: ex. { dia: "Terça", hora: "14:00 - 16:00", local: "Sala 204" },
+  ],
 };
+
+// Currículo: já aponta para /cv.pdf (troque o arquivo em public/cv.pdf)
+export const curriculo = { arquivo: "/cv.pdf" };
+
+// Lattes (TODO: cole o link do seu currículo Lattes)
+export const lattes: { url: string; resumo: string } = {
+  url: "",
+  resumo: "",
+};
+
+// Jogos + progresso de conquistas (TODO)
+export type JogoConquistas = {
+  nome: string;
+  conquistas: { feitas: number; total: number };
+};
+export const jogos: { steam: JogoConquistas[]; xbox: JogoConquistas[] } = {
+  steam: [],
+  xbox: [],
+};
+
+// Viagens (TODO: lugares que você já visitou)
+export const viagens: { lugar: string; ano?: string }[] = [];
+
+// Recomendações (TODO)
+export const recomendacoes: {
+  autor: string;
+  cargo?: string;
+  texto: string;
+}[] = [];
+
+// Prêmios e reconhecimentos (TODO)
+export const premios: { titulo: string; ano?: string; descricao?: string }[] = [];
+
+// WakaTime (TODO: link do perfil + um resumo curto)
+export const wakatime: { url: string; resumo: string } = {
+  url: "",
+  resumo: "",
+};
+
+// ------------------------------------------------------------
+//  LISTA DE COMANDOS DO TERMINAL
+//  nome   = comando principal
+//  aliases = variações aceitas (pt/en)
+// ------------------------------------------------------------
+export const comandos: { nome: string; aliases: string[]; desc: string }[] = [
+  { nome: "sobre", aliases: ["about"], desc: "Quem sou eu" },
+  {
+    nome: "habilidades",
+    aliases: ["skills", "skils"],
+    desc: "Minhas linguagens e ferramentas",
+  },
+  { nome: "contato", aliases: ["contact"], desc: "Como falar comigo" },
+  { nome: "projetos", aliases: ["projects"], desc: "Meus projetos" },
+  {
+    nome: "monitoria",
+    aliases: ["tutoring"],
+    desc: "Matéria e horários da monitoria",
+  },
+  { nome: "curriculo", aliases: ["resume"], desc: "Meu currículo (PDF)" },
+  { nome: "lattes", aliases: ["academic"], desc: "Meu currículo Lattes" },
+  {
+    nome: "recomendacoes",
+    aliases: ["recommendations"],
+    desc: "Minhas recomendações",
+  },
+  { nome: "premios", aliases: ["awards"], desc: "Prêmios e reconhecimentos" },
+  { nome: "viagens", aliases: ["travel"], desc: "Lugares que já visitei" },
+  { nome: "steam", aliases: [], desc: "Jogos e conquistas na Steam" },
+  { nome: "xbox", aliases: [], desc: "Jogos e conquistas no Xbox" },
+  { nome: "wakatime", aliases: [], desc: "Meu tempo de código (WakaTime)" },
+  { nome: "tema", aliases: ["theme"], desc: "Opções de tema (claro/escuro)" },
+  { nome: "limpar", aliases: ["clean", "clear"], desc: "Limpa o terminal" },
+  { nome: "ajuda", aliases: ["help"], desc: "Mostra esta lista de comandos" },
+];

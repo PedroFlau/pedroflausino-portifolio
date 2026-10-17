@@ -15,6 +15,7 @@
   --bg-overlay: rgba(13, 17, 23, 0.94);
   --grid: #21262d;
   --tag-bg: rgba(227, 179, 65, 0.08);
+  --term-bg: #010409;
 }
 
 /* ===== Tema claro ===== */
@@ -30,6 +31,7 @@
   --bg-overlay: rgba(255, 255, 255, 0.94);
   --grid: #eaeef2;
   --tag-bg: rgba(9, 105, 218, 0.08);
+  --term-bg: #f6f8fa;
 }
 
 * {
@@ -86,27 +88,6 @@ a {
   color: var(--accent);
   margin-bottom: 14px;
   text-transform: lowercase;
-}
-
-/* ===== Navbar ===== */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 24px;
-  background: var(--nav-bg);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--borda);
-}
-
-.navbar-logo {
-  font-weight: 700;
-  letter-spacing: 0.5px;
 }
 
 /* Botão de alternância claro/escuro */
@@ -216,22 +197,31 @@ a {
   border-radius: 14px;
 }
 
-/* ===== Terminal ===== */
-.terminal-window {
-  background: #010409;
-  border: 1px solid var(--borda);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+/* ===== Terminal em tela cheia (estilo aramuni.dev) ===== */
+.terminal-full {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--term-bg);
+  cursor: text;
 }
 
-.terminal-header {
-  display: flex;
+/* Barra superior: bolinhas · título · tema */
+.terminal-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
+  gap: 12px;
+  padding: 10px clamp(14px, 3vw, 24px);
   background: var(--bg-alt);
   border-bottom: 1px solid var(--borda);
+  flex-shrink: 0;
+}
+
+.terminal-bar-dots {
+  display: flex;
+  gap: 8px;
 }
 
 .terminal-dot {
@@ -240,43 +230,54 @@ a {
   border-radius: 50%;
 }
 
-.terminal-title {
-  margin-left: 8px;
-  font-size: 0.8rem;
-  color: var(--texto-fraco);
+.terminal-bar-titulo {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
-.terminal-body {
-  padding: 16px;
+.terminal-bar-acoes {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Área rolável com o conteúdo (abertura + saídas dos comandos) */
+.terminal-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: clamp(20px, 4vw, 40px) clamp(16px, 5vw, 64px);
+}
+
+.terminal-scroll .hero {
+  padding-bottom: 20px;
+}
+
+.terminal-hint {
+  color: var(--texto-fraco);
+  font-size: 0.85rem;
+  margin-bottom: 28px;
+}
+
+/* Barra de digitação fixa na parte de baixo */
+.terminal-prompt-bar {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 12px clamp(16px, 5vw, 64px);
+  background: var(--bg-alt);
+  border-top: 1px solid var(--borda);
   font-size: 0.85rem;
 }
 
-/* Foto do Pedro exibida dentro da janela do terminal */
-.terminal-foto {
-  display: block;
-  width: 100%;
-  max-height: 320px;
-  object-fit: cover;
-  object-position: center top;
-  border-radius: 8px;
-  border: 1px solid var(--borda);
+.terminal-item {
+  margin-bottom: 18px;
 }
 
-.terminal-output {
-  white-space: pre-wrap;
-  word-break: break-word;
-  color: var(--texto-fraco);
-  font-family: var(--mono);
-  margin-top: 6px;
-}
-
-.terminal-linha {
+.terminal-prompt {
   display: flex;
   align-items: center;
-  margin-top: 4px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
 }
 
 .terminal-input {
@@ -286,8 +287,10 @@ a {
   font-family: var(--mono);
   font-size: 0.85rem;
   outline: none;
-  flex: 1;
+  flex: 0 0 auto;
+  min-width: 1ch;
   margin-left: 8px;
+  padding: 0;
 }
 
 .cursor {
@@ -301,6 +304,85 @@ a {
 
 @keyframes blink {
   50% { opacity: 0; }
+}
+
+/* ===== Saída dos comandos ===== */
+.terminal-saida {
+  margin-top: 12px;
+  padding-left: 14px;
+  border-left: 2px solid var(--borda);
+}
+
+/* Ao reaproveitar uma seção inteira (sobre, habilidades...) dentro do terminal */
+.terminal-saida .secao {
+  padding: 0;
+  border-top: none;
+}
+
+.cmd-card {
+  background: var(--bg-alt);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.cmd-lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cmd-lista > li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Lista de comandos (estilo "man page") */
+.cmd-lista-ajuda {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 20px;
+}
+
+.cmd-lista-ajuda > li {
+  display: contents;
+}
+
+.cmd-jogo {
+  color: var(--texto);
+}
+
+.cmd-barra {
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.cmd-link {
+  color: var(--accent);
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.cmd-erro {
+  color: #f85149;
+}
+
+.cmd-citacao {
+  font-style: italic;
+}
+
+.cmd-aviso {
+  color: var(--texto-fraco);
+}
+
+.cmd-aviso code {
+  color: var(--accent);
+  background: var(--tag-bg);
+  padding: 1px 6px;
+  border-radius: 4px;
 }
 
 /* ===== Sobre ===== */

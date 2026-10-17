@@ -1,9 +1,10 @@
 import { perfil } from '../data/portfolio';
 import { FotoPerfil } from '../components/FotoPerfil';
 
-export function Hero() {
+/** Abertura exibida dentro do terminal (nome, resumo, botões e foto). */
+export function Hero({ onComando }: { onComando?: (comando: string) => void }) {
   return (
-    <section id="top" className="hero">
+    <section className="hero">
       <div className="hero-texto">
         <p className="hero-comando">
           <span className="text-accent">pedro@portfolio</span>
@@ -12,7 +13,8 @@ export function Hero() {
         </p>
 
         <h1 className="hero-nome">
-          {perfil.primeiroNome} <span className="text-accent">Flausino Mendonça</span>
+          {perfil.primeiroNome}{' '}
+          <span className="text-accent">Flausino Mendonça</span>
         </h1>
 
         <p className="hero-titulo">
@@ -20,14 +22,18 @@ export function Hero() {
         </p>
 
         <p className="hero-descricao">
-          {perfil.idade} anos · {perfil.cidade}. Construindo minha base em programação
-          e transformando estudo em projetos reais.
+          {perfil.idade} anos · {perfil.cidade}. Construindo minha base em
+          programação e transformando estudo em projetos reais.
         </p>
 
         <div className="hero-botoes">
-          <a className="botao botao-primario" href="#projetos">
+          <button
+            type="button"
+            className="botao botao-primario"
+            onClick={() => onComando?.('projetos')}
+          >
             ver projetos
-          </a>
+          </button>
           <a
             className="botao"
             href={perfil.links.github}
@@ -36,10 +42,7 @@ export function Hero() {
           >
             github ↗
           </a>
-          <a
-            className="botao"
-            href={`mailto:${perfil.links.email}`}
-          >
+          <a className="botao" href={`mailto:${perfil.links.email}`}>
             contato ↗
           </a>
         </div>

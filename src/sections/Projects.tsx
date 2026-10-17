@@ -2,7 +2,7 @@ import { projetos } from '../data/portfolio';
 
 export function Projects() {
   return (
-    <section id="projetos" className="secao">
+    <section className="secao">
       <h2 className="secao-titulo">
         <span className="text-gray">##</span> projetos
       </h2>
