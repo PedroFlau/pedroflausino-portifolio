@@ -125,7 +125,6 @@ export function WakaTime() {
     diasTotais,
     linguagens,
     editores,
-    categorias,
     sistemas,
     desde,
     geradoEm,
@@ -176,7 +175,6 @@ export function WakaTime() {
       <div className="waka-tabela">
         <Secao titulo="linguagens" itens={linguagens} limite={8} sufixo="linguagens" />
         <Secao titulo="editores" itens={editores} limite={4} sufixo="outros" />
-        <Secao titulo="categorias" itens={categorias} limite={5} sufixo="outros" />
         <Secao titulo="sistemas" itens={sistemas} limite={3} sufixo="outros" />
       </div>
 

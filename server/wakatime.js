@@ -20,6 +20,21 @@ const CACHE_MS = 10 * 60 * 1000;
 const MIN_SEGUNDOS = 60;
 const MESES = 'jan feb mar apr may jun jul aug sep oct nov dec'.split(' ');
 
+// ------------------------------------------------------------
+//  Ajustes de exibição do comando
+//  Nomes que não devem aparecer (comparação sem diferenciar maiúsculas).
+// ------------------------------------------------------------
+const OCULTAR = {
+  editores: ['Opencode Cli'],
+  linguagens: [],
+};
+
+function ocultar(itens, nomes) {
+  if (!nomes?.length) return itens;
+  const escondidos = new Set(nomes.map((nome) => nome.toLowerCase()));
+  return itens.filter((item) => !escondidos.has(item.nome.toLowerCase()));
+}
+
 /** Usuário: variável de ambiente WAKATIME_USERNAME (opcional) > padrão. */
 function usuario(env) {
   return String(env?.WAKATIME_USERNAME ?? '').trim() || USUARIO_PADRAO;
@@ -74,8 +89,8 @@ function enxugar(data, env) {
     ),
     diasAtivos: data.days_minus_holidays ?? null,
     diasTotais: data.days_including_holidays ?? null,
-    linguagens: lista(data.languages),
-    editores: lista(data.editors),
+    linguagens: ocultar(lista(data.languages), OCULTAR.linguagens),
+    editores: ocultar(lista(data.editors), OCULTAR.editores),
     categorias: lista(data.categories),
     sistemas: lista(data.operating_systems),
   };

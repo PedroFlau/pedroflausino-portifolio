@@ -118,11 +118,6 @@ export const wakatimeStats: StatsWakaTime = {
       "nome": "Neovim",
       "segundos": 16733,
       "porcento": 6.72
-    },
-    {
-      "nome": "Opencode Cli",
-      "segundos": 10662,
-      "porcento": 4.28
     }
   ],
   "categorias": [
