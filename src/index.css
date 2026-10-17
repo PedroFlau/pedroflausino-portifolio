@@ -385,6 +385,223 @@ a {
   border-radius: 4px;
 }
 
+/* ===== Mapa de viagens ===== */
+.mapa-viagens {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mapa-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.mapa-botoes {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.mapa-botoes > button {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--texto-fraco);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mapa-botoes > button:hover {
+  color: var(--texto);
+}
+
+.mapa-botoes > button.ativo {
+  color: var(--accent-contraste);
+  background: var(--accent);
+}
+
+.mapa-contagem {
+  font-size: 0.8rem;
+}
+
+.mapa-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  min-height: 260px;
+  max-height: 60vh;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--bg);
+  touch-action: none;
+}
+
+.mapa-canvas.globo {
+  aspect-ratio: 4 / 3;
+  max-width: 660px;
+  margin: 0 auto;
+  border-color: transparent;
+  background: transparent;
+  cursor: grab;
+}
+
+.mapa-canvas.globo:active {
+  cursor: grabbing;
+}
+
+.mapa-legenda {
+  font-size: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .mapa-canvas {
+    min-height: 200px;
+  }
+
+  .mapa-canvas.globo {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+/* ===== WakaTime ===== */
+.waka {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.waka-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 170px));
+  gap: 8px 20px;
+}
+
+.waka-kv {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.waka-kv dt {
+  color: var(--texto-fraco);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.waka-kv dd {
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+.waka-tabela {
+  display: grid;
+  grid-template-columns: max-content minmax(90px, 1fr) max-content max-content;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 3px;
+}
+
+/* Subgrid: todas as seções compartilham as mesmas colunas (barras alinhadas) */
+.waka-secao,
+.waka-lista,
+.waka-linha {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.waka-secao {
+  row-gap: 3px;
+  margin-bottom: 12px;
+}
+
+.waka-titulo {
+  grid-column: 1 / -1;
+  color: var(--texto-fraco);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.waka-nome {
+  overflow: hidden;
+  font-size: 0.85rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.waka-barra {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 3px;
+  height: 10px;
+}
+
+.waka-seg {
+  border-radius: 2px;
+  background: var(--borda);
+}
+
+.waka-seg.ligado {
+  background: var(--accent);
+}
+
+.waka-tempo,
+.waka-pct {
+  color: var(--texto-fraco);
+  font-size: 0.8rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.waka-linha.resta .waka-nome,
+.waka-linha.resta .waka-tempo,
+.waka-linha.resta .waka-pct {
+  color: var(--texto-fraco);
+  font-style: italic;
+}
+
+.waka-linha.resta .waka-seg.ligado {
+  opacity: 0.55;
+}
+
+.waka-rodape {
+  font-size: 0.8rem;
+}
+
+.waka-vivo {
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .waka-tabela {
+    grid-template-columns: max-content minmax(60px, 1fr) max-content max-content;
+    column-gap: 10px;
+  }
+
+  .waka-nome {
+    font-size: 0.8rem;
+  }
+
+  .waka-tempo,
+  .waka-pct {
+    font-size: 0.75rem;
+  }
+}
+
 /* ===== Sobre ===== */
 .sobre-grid {
   display: grid;
@@ -477,6 +694,12 @@ a {
 .projeto-link {
   color: var(--accent);
   font-size: 0.85rem;
+}
+
+.projeto-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
 }
 
 .projeto-link:hover {

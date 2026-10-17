@@ -25,15 +25,29 @@ export function Projects() {
               </div>
             )}
 
-            {p.link && (
-              <a
-                className="projeto-link"
-                href={p.link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                ver no github ↗
-              </a>
+            {(p.link || p.demo) && (
+              <div className="projeto-links">
+                {p.demo && (
+                  <a
+                    className="projeto-link"
+                    href={p.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ver demo ↗
+                  </a>
+                )}
+                {p.link && (
+                  <a
+                    className="projeto-link"
+                    href={p.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    ver no github ↗
+                  </a>
+                )}
+              </div>
             )}
           </article>
         ))}

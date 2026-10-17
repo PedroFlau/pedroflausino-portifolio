@@ -4,6 +4,8 @@ import { About } from '../sections/About';
 import { Skills } from '../sections/Skills';
 import { Contact } from '../sections/Contact';
 import { Projects } from '../sections/Projects';
+import { MapaViagens } from './MapaViagens';
+import { WakaTime } from './WakaTime';
 import { useTema, type Tema } from '../hooks/useTema';
 import {
   comandos,
@@ -14,7 +16,6 @@ import {
   premios,
   recomendacoes,
   viagens,
-  wakatime,
   type JogoConquistas,
 } from '../data/portfolio';
 
@@ -325,14 +326,7 @@ export function Terminal() {
         }
         return (
           <Card titulo="viagens">
-            <ul className="cmd-lista">
-              {viagens.map((v, i) => (
-                <li key={i}>
-                  <span className="text-accent">📍 {v.lugar}</span>
-                  {v.ano && <span className="text-gray">{v.ano}</span>}
-                </li>
-              ))}
-            </ul>
+            <MapaViagens />
           </Card>
         );
 
@@ -344,27 +338,9 @@ export function Terminal() {
 
       // ---- WakaTime ----
       case 'wakatime':
-        if (!wakatime.url && !wakatime.resumo) {
-          return (
-            <Vazio>
-              WakaTime ainda não configurado. Preencha <code>wakatime</code> em{' '}
-              <code>src/data/portfolio.ts</code>.
-            </Vazio>
-          );
-        }
         return (
           <Card titulo="wakatime">
-            {wakatime.resumo && <p>{wakatime.resumo}</p>}
-            {wakatime.url && (
-              <a
-                className="cmd-link"
-                href={wakatime.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                ver meu perfil no WakaTime ↗
-              </a>
-            )}
+            <WakaTime />
           </Card>
         );
 
