@@ -5,6 +5,7 @@ import { Skills } from '../sections/Skills';
 import { Contact } from '../sections/Contact';
 import { Projects } from '../sections/Projects';
 import { MapaViagens } from './MapaViagens';
+import { Monitoria } from './Monitoria';
 import { WakaTime } from './WakaTime';
 import { useTema, type Tema } from '../hooks/useTema';
 import {
@@ -201,25 +202,11 @@ export function Terminal() {
           );
         }
         return (
-          <Card titulo="monitoria">
-            <p>
-              <strong>{monitoria.disciplina}</strong>
-              {monitoria.professor && (
-                <span className="text-gray"> · {monitoria.professor}</span>
-              )}
-            </p>
-            <ul className="cmd-lista">
-              {monitoria.horarios.map((h, i) => (
-                <li key={i}>
-                  <span className="text-accent">{h.dia}</span>
-                  <span>
-                    {h.hora}
-                    {h.local && <span className="text-gray"> · {h.local}</span>}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Card>
+          <Monitoria
+            disciplina={monitoria.disciplina}
+            professor={monitoria.professor}
+            horarios={monitoria.horarios}
+          />
         );
       }
 
