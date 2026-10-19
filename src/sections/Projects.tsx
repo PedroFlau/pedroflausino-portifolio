@@ -9,9 +9,24 @@ export function Projects() {
 
       <div className="projetos-grid">
         {projetos.map((p) => (
-          <article key={p.nome} className="projeto-card">
+          <article
+            key={p.nome}
+            className={`projeto-card${p.demo ? ' projeto-card--clicavel' : ''}`}
+          >
             <h3 className="projeto-nome">
-              <span className="text-accent">▸</span> {p.nome}
+              <span className="text-accent">▸</span>{' '}
+              {p.demo ? (
+                <a
+                  className="projeto-nome-link"
+                  href={p.demo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {p.nome}
+                </a>
+              ) : (
+                p.nome
+              )}
             </h3>
             <p className="projeto-descricao">{p.descricao}</p>
 
