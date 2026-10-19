@@ -871,7 +871,15 @@ a {
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px solid color-mix(in srgb, var(--monitoria-cor) 22%, transparent);
-  font-size: 0.85rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--texto);
+}
+
+.monitoria-info {
+  margin-top: 4px;
+  font-size: 0.8rem;
   color: var(--texto-fraco);
 }
 

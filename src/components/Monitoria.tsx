@@ -264,11 +264,13 @@ export function Monitoria({ disciplina, professor, horarios }: Props) {
           </div>
         )}
 
-        <p className="monitoria-disciplina">
-          {disciplina}
-          {professor && <span className="text-gray"> · {professor}</span>}
-          {proxima.local && <span className="text-gray"> · {proxima.local}</span>}
-        </p>
+        <p className="monitoria-disciplina">{disciplina}</p>
+
+        {(professor || proxima.local) && (
+          <p className="monitoria-info">
+            {[professor, proxima.local].filter(Boolean).join(' · ')}
+          </p>
+        )}
       </div>
 
       {seguintes.length > 0 && (
