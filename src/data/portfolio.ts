@@ -132,6 +132,15 @@ export const viagens: Viagem[] = [
   { lugar: "Gramado, Brasil", lat: -29.3746, lng: -50.8764 },
 ];
 
+// Países visitados (derivados dos lugares, sem repetir)
+export const paisesVisitados = [
+  ...new Set(
+    viagens
+      .map((v) => v.lugar.split(",").pop()?.trim())
+      .filter((pais): pais is string => Boolean(pais)),
+  ),
+];
+
 // Recomendações (TODO)
 export const recomendacoes: {
   autor: string;

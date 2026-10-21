@@ -389,14 +389,8 @@ export function Terminal() {
 
   return (
     <div className="terminal-full" onClick={() => inputRef.current?.focus()}>
-      {/* Barra superior: bolinhas · título · botão de tema */}
+      {/* Barra superior: título · botão de tema */}
       <header className="terminal-bar">
-        <div className="terminal-bar-dots">
-          <span className="terminal-dot" style={{ background: '#ff5f56' }} />
-          <span className="terminal-dot" style={{ background: '#ffbd2e' }} />
-          <span className="terminal-dot" style={{ background: '#27c93f' }} />
-        </div>
-
         <span className="terminal-bar-titulo">
           FLAUSINO<span className="text-accent">.DEV</span>
         </span>

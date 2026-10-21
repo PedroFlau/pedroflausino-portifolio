@@ -99,7 +99,7 @@ a {
   height: 40px;
   background: transparent;
   border: 1px solid var(--borda);
-  border-radius: 50%;
+  border-radius: 10px;
   color: var(--accent);
   cursor: pointer;
   transition: border-color 0.15s, transform 0.15s, background 0.15s;
@@ -207,7 +207,7 @@ a {
   cursor: text;
 }
 
-/* Barra superior: bolinhas · título · tema */
+/* Barra superior: título · tema */
 .terminal-bar {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -219,24 +219,15 @@ a {
   flex-shrink: 0;
 }
 
-.terminal-bar-dots {
-  display: flex;
-  gap: 8px;
-}
-
-.terminal-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
 .terminal-bar-titulo {
+  grid-column: 2;
   font-weight: 700;
   letter-spacing: 0.5px;
   white-space: nowrap;
 }
 
 .terminal-bar-acoes {
+  grid-column: 3;
   display: flex;
   justify-content: flex-end;
 }
@@ -264,8 +255,7 @@ a {
   align-items: center;
   flex-shrink: 0;
   padding: 12px clamp(16px, 5vw, 64px);
-  background: var(--bg-alt);
-  border-top: 1px solid var(--borda);
+  background: var(--term-bg);
   font-size: 0.85rem;
 }
 
@@ -470,6 +460,317 @@ a {
 
   .mapa-canvas.globo {
     aspect-ratio: 1 / 1;
+  }
+}
+
+/* ===== Passaporte ===== */
+.mapa-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.passaporte-abrir {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  background: var(--tag-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--borda));
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.passaporte-abrir:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.passaporte-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+  background: rgba(2, 6, 12, 0.78);
+  backdrop-filter: blur(4px);
+}
+
+.passaporte-caixa {
+  position: relative;
+  width: min(880px, 100%);
+  margin: auto;
+}
+
+.passaporte-fechar {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--texto);
+  background: var(--bg-alt);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.passaporte-fechar:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* O livro aberto (capa + duas páginas) */
+.passaporte {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 400px;
+  color: #2f3b33;
+  border: 7px solid #17372b;
+  border-radius: 6px 12px 12px 6px;
+  background: linear-gradient(
+    90deg,
+    #efe3c3 0%,
+    #fbf4e0 46%,
+    #e2d3ad 50%,
+    #fbf4e0 54%,
+    #efe3c3 100%
+  );
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px #c9a84c;
+  overflow: hidden;
+  animation: passaporte-virar 0.32s ease-out;
+}
+
+/* Dobra central */
+.passaporte::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 44px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(70, 52, 20, 0.22),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.passaporte-pagina {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px 30px 20px;
+}
+
+.passaporte-pagina-topo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(90, 70, 30, 0.18);
+}
+
+.passaporte-titulo {
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #1d3b2f;
+}
+
+.passaporte-sub {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #7d6a45;
+}
+
+.passaporte-carimbos {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 6px 0;
+}
+
+/* Carimbo de entrada */
+.passaporte-carimbo {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+  padding: 12px 20px;
+  color: var(--tinta, #1f4e8c);
+  border: 2px solid currentColor;
+  border-radius: 8px;
+  opacity: 0.82;
+  transform: rotate(var(--rotacao, 0deg));
+  mix-blend-mode: multiply;
+  text-align: center;
+}
+
+.passaporte-carimbo::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px dashed currentColor;
+  border-radius: 4px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.passaporte-carimbo-pais {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.passaporte-carimbo-info {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.passaporte-numero {
+  align-self: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  color: #8a7750;
+}
+
+/* Controles do carrossel */
+.passaporte-controles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.passaporte-seta {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--texto);
+  background: transparent;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.passaporte-seta:not(:disabled):hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.passaporte-seta:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.passaporte-posicao {
+  min-width: 4.5rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  color: var(--texto-fraco);
+}
+
+.passaporte-pontos {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.passaporte-ponto {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--borda);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.passaporte-ponto.ativo {
+  background: var(--accent);
+  transform: scale(1.25);
+}
+
+@keyframes passaporte-virar {
+  from {
+    opacity: 0;
+    transform: perspective(1200px) rotateY(-5deg) translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1200px) rotateY(0) translateX(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .passaporte-overlay {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .passaporte {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .passaporte::after {
+    display: none;
+  }
+
+  .passaporte-pagina {
+    padding: 20px 20px 16px;
+  }
+
+  .passaporte-pagina + .passaporte-pagina {
+    border-top: 1px dashed rgba(90, 70, 30, 0.22);
+  }
+
+  .passaporte-fechar {
+    top: -10px;
+    right: 0;
+  }
+
+  .passaporte-carimbo-pais {
+    font-size: 0.9rem;
   }
 }
 

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { LAND_DOTS } from '../data/landDots';
-import { viagens } from '../data/portfolio';
+import { paisesVisitados, viagens } from '../data/portfolio';
 import { useTema } from '../hooks/useTema';
+import { Passaporte } from './Passaporte';
 
 type Modo = 'mapa' | 'globo';
 type Ponto = [number, number];
@@ -311,6 +312,7 @@ function pintarGlobo(
 export function MapaViagens() {
   const { tema } = useTema();
   const [modo, setModo] = useState<Modo>('mapa');
+  const [passaporteAberto, setPassaporteAberto] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const giroRef = useRef<Giro>({ lng: 40, lat: 18 });
   const arrastoRef = useRef({ ativo: false, x: 0, y: 0 });
@@ -408,9 +410,18 @@ export function MapaViagens() {
             🌍 globo terrestre
           </button>
         </div>
-        <span className="text-gray mapa-contagem">
-          {viagens.length} lugares no passaporte
-        </span>
+        <div className="mapa-acoes">
+          <span className="text-gray mapa-contagem">
+            {viagens.length} lugares · {paisesVisitados.length} países
+          </span>
+          <button
+            type="button"
+            className="passaporte-abrir"
+            onClick={() => setPassaporteAberto(true)}
+          >
+            🛂 passaporte
+          </button>
+        </div>
       </div>
 
       <canvas
@@ -427,6 +438,10 @@ export function MapaViagens() {
           ? '🌍 arraste o planeta para girar'
           : '🗺 os pontos claros formam os continentes; os marcadores são os lugares que já visitei'}
       </p>
+
+      {passaporteAberto && (
+        <Passaporte onFechar={() => setPassaporteAberto(false)} />
+      )}
     </div>
   );
 }
