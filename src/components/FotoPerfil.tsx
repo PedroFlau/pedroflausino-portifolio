@@ -1,12 +1,20 @@
 import { perfil } from '../data/portfolio';
+import { useTema } from '../hooks/useTema';
 
 export function FotoPerfil() {
+  const { tema } = useTema();
+  const temaImperio = tema === 'galactic_empire';
+
   return (
-    <figure className="foto-card">
+    <figure className={`foto-card${temaImperio ? ' foto-card--sith' : ''}`}>
       <img
         className="foto-perfil"
-        src="/images/minhafoto.jpeg"
-        alt={`Foto de ${perfil.nome}`}
+        src={temaImperio ? '/images/fotoSith.png' : '/images/minhafoto.jpeg'}
+        alt={
+          temaImperio
+            ? `${perfil.nome} caracterizado como um Sith`
+            : `Foto de ${perfil.nome}`
+        }
       />
     </figure>
   );

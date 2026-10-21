@@ -7,7 +7,7 @@ import { Projects } from '../sections/Projects';
 import { MapaViagens } from './MapaViagens';
 import { Monitoria } from './Monitoria';
 import { WakaTime } from './WakaTime';
-import { useTema, type Tema } from '../hooks/useTema';
+import { useTema, ORDEM_TEMAS, type Tema } from '../hooks/useTema';
 import {
   comandos,
   curriculo,
@@ -147,6 +147,26 @@ function IconeSistema() {
   );
 }
 
+function IconeImperio() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="7" />
+      <circle cx="12" cy="12" r="2.6" />
+      <path d="M12 5v4.4M12 14.6V19M5 12h4.4M14.6 12H19M7.05 7.05l3.1 3.1M13.85 13.85l3.1 3.1M7.05 16.95l3.1-3.1M13.85 10.15l3.1-3.1" />
+    </svg>
+  );
+}
+
 export function Terminal() {
   const { tema, definirTema, alternarTema } = useTema();
   const [input, setInput] = useState('');
@@ -154,7 +174,15 @@ export function Terminal() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const proximoTema = tema === 'dark' ? 'claro' : tema === 'light' ? 'system' : 'escuro';
+  const NOME_TEMA: Record<Tema, string> = {
+    dark: 'escuro',
+    light: 'claro',
+    system: 'system',
+    galactic_empire: 'galactic_empire',
+  };
+  const proximoTema =
+    ORDEM_TEMAS[(ORDEM_TEMAS.indexOf(tema) + 1) % ORDEM_TEMAS.length];
+  const rotuloProximo = NOME_TEMA[proximoTema];
 
   // Rola o conteúdo do terminal para o fim a cada comando (sem mexer na página)
   useEffect(() => {
@@ -359,8 +387,9 @@ export function Terminal() {
             </p>
             <p className="text-gray">
               use <span className="text-accent">tema claro</span>,{' '}
-              <span className="text-accent">tema escuro</span> ou{' '}
-              <span className="text-accent">tema system</span>
+              <span className="text-accent">tema escuro</span>,{' '}
+              <span className="text-accent">tema system</span> ou{' '}
+              <span className="text-accent">tema galactic_empire</span>
             </p>
           </Card>
         );
@@ -381,10 +410,10 @@ export function Terminal() {
       return;
     }
 
-    // tema [claro|escuro|system]
+    // tema [claro|escuro|system|galactic_empire]
     let temaAtual = tema;
     if (nome === 'tema') {
-      const alvo = normalizar(args[0] ?? '');
+      const alvo = normalizar(args.join(' '));
       if (alvo === 'claro' || alvo === 'light') {
         definirTema('light');
         temaAtual = 'light';
@@ -394,6 +423,18 @@ export function Terminal() {
       } else if (alvo === 'system' || alvo === 'sistema' || alvo === 'manhwa') {
         definirTema('system');
         temaAtual = 'system';
+      } else if (
+        alvo === 'galactic_empire' ||
+        alvo === 'galactic' ||
+        alvo === 'empire' ||
+        alvo === 'imperio' ||
+        alvo === 'imperial' ||
+        alvo === 'starwars' ||
+        alvo === 'star wars' ||
+        alvo === 'imperio galactico'
+      ) {
+        definirTema('galactic_empire');
+        temaAtual = 'galactic_empire';
       }
     }
 
@@ -412,6 +453,8 @@ export function Terminal() {
 
   return (
     <div className="terminal-full" onClick={() => inputRef.current?.focus()}>
+      <div className="imperial-watermark" aria-hidden="true" />
+
       {/* Barra superior: título · botão de tema */}
       <header className="terminal-bar">
         <span className="terminal-bar-titulo">
@@ -425,13 +468,15 @@ export function Terminal() {
               e.stopPropagation();
               alternarTema();
             }}
-            aria-label={`Ativar tema ${proximoTema}`}
-            title={`Ativar tema ${proximoTema}`}
+            aria-label={`Ativar tema ${rotuloProximo}`}
+            title={`Ativar tema ${rotuloProximo}`}
           >
             {tema === 'dark' ? (
               <IconeSol />
             ) : tema === 'light' ? (
               <IconeSistema />
+            ) : tema === 'system' ? (
+              <IconeImperio />
             ) : (
               <IconeLua />
             )}
@@ -448,8 +493,7 @@ export function Terminal() {
           para ver os comandos disponíveis. Ex.:{' '}
           <span className="text-accent">sobre</span>,{' '}
           <span className="text-accent">projetos</span>,{' '}
-          <span className="text-accent">tema claro</span>,{' '}
-          <span className="text-accent">tema system</span>.
+          <span className="text-accent">tema galactic_empire</span>.
         </p>
 
         {historico.map((item, i) => (

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Rajdhani:wght@500;600;700&family=Saira+Condensed:wght@400;500;600;700&display=swap');
 
 /* ===== Tema escuro (padrão) ===== */
 :root {
@@ -51,6 +51,29 @@
   --term-bg: #01050d;
   --display: 'Rajdhani', var(--mono);
   --system-glow: rgba(56, 225, 255, 0.35);
+}
+
+/* ===== Tema galactic_empire (Star Wars) ===== */
+[data-theme='galactic_empire'] {
+  --bg: #08090b;
+  --bg-alt: #131519;
+  --borda: rgba(100, 105, 108, 0.6);
+  --texto: #f1f2f3;
+  --texto-fraco: #92979c;
+  --accent: #d92c31; /* Imperial Red, levemente clareado para tela */
+  --accent-contraste: #ffffff;
+  --nav-bg: rgba(8, 9, 11, 0.9);
+  --bg-overlay: rgba(8, 9, 11, 0.94);
+  --grid: rgba(255, 255, 255, 0.035);
+  --tag-bg: rgba(217, 44, 49, 0.1);
+  --term-bg: #050506;
+  --display: 'Saira Condensed', var(--mono);
+  --imperial-blue: #394a59;
+  --imperial-grey: #64696c;
+  --imperial-red: #bc1e22;
+  --imperial-glow: rgba(217, 44, 49, 0.35);
+  --neon-red: #ff4a52;
+  --neon-glow: rgba(255, 74, 82, 0.32);
 }
 
 * {
@@ -224,6 +247,11 @@ a {
   flex-direction: column;
   background: var(--term-bg);
   cursor: text;
+}
+
+/* Marca d'água decorativa (usada apenas pelo tema galactic_empire) */
+.imperial-watermark {
+  display: none;
 }
 
 /* Barra superior: título · tema */
@@ -1878,5 +1906,719 @@ a {
 @media (max-width: 640px) {
   [data-theme='system'] .passaporte-pagina + .passaporte-pagina {
     border-top-color: rgba(56, 225, 255, 0.25);
+  }
+}
+
+/* ============================================================
+   TEMA GALACTIC_EMPIRE — Star Wars / Império Galáctico
+   Paleta oficial: Galaxy Black, Durasteel Grey, Unity White,
+   Coruscant Blue e Imperial Red.
+   ============================================================ */
+
+[data-theme='galactic_empire'] body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 50% -20%, rgba(188, 30, 34, 0.1), transparent 55%),
+    linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+    repeating-linear-gradient(0deg, transparent, transparent 119px, rgba(255, 255, 255, 0.02) 120px),
+    repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(255, 255, 255, 0.02) 120px);
+}
+
+[data-theme='galactic_empire'] ::selection {
+  background: rgba(188, 30, 34, 0.45);
+  color: #ffffff;
+}
+
+[data-theme='galactic_empire'] :focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Brilho neon sutil nos textos de destaque */
+[data-theme='galactic_empire'] .text-accent {
+  text-shadow: 0 0 12px var(--neon-glow);
+}
+
+/* Fundo: painéis metálicos */
+[data-theme='galactic_empire'] .terminal-full {
+  background-color: var(--term-bg);
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgba(188, 30, 34, 0.12), transparent 50%),
+    linear-gradient(rgba(5, 5, 6, 0.55), rgba(4, 4, 5, 0.9)),
+    repeating-linear-gradient(0deg, transparent, transparent 119px, rgba(255, 255, 255, 0.025) 120px),
+    repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(255, 255, 255, 0.02) 120px);
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+  background-position: center top, center, 0 0, 0 0;
+  background-size: auto, auto, auto, auto;
+}
+
+/* Brasão imperial no fundo, com brilho neon discreto */
+[data-theme='galactic_empire'] .imperial-watermark {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('./assets/imperial-crest.svg');
+  background-repeat: no-repeat;
+  background-position: right -2vw center;
+  background-size: clamp(260px, 38vw, 560px);
+  opacity: 0.16;
+  filter: drop-shadow(0 0 26px rgba(255, 74, 82, 0.45));
+  pointer-events: none;
+}
+
+/* Mantém a interface acima do brasão */
+[data-theme='galactic_empire'] .terminal-bar,
+[data-theme='galactic_empire'] .terminal-scroll,
+[data-theme='galactic_empire'] .terminal-prompt-bar {
+  position: relative;
+  z-index: 1;
+}
+
+/* Moldura de interface imperial */
+[data-theme='galactic_empire'] .terminal-full::before {
+  content: '';
+  position: fixed;
+  inset: 10px;
+  z-index: 4;
+  border: 1px solid rgba(100, 105, 108, 0.35);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    inset 0 0 90px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+[data-theme='galactic_empire'] .terminal-full::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 25%),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0 1px, transparent 1px 4px);
+  opacity: 0.18;
+}
+
+/* Barra superior */
+[data-theme='galactic_empire'] .terminal-bar {
+  background: linear-gradient(180deg, #1a1c1f, #0d0e10);
+  border-bottom: 1px solid var(--imperial-blue);
+  box-shadow:
+    0 2px 0 var(--accent),
+    0 8px 22px rgba(255, 74, 82, 0.12),
+    0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme='galactic_empire'] .terminal-bar-titulo {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: #ffffff;
+}
+
+[data-theme='galactic_empire'] .terminal-bar-titulo::before {
+  content: '⬢ ';
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--neon-glow);
+}
+
+[data-theme='galactic_empire'] .tema-toggle {
+  border-radius: 0;
+  border-color: var(--borda);
+  color: var(--accent);
+  background: #101114;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='galactic_empire'] .tema-toggle svg {
+  filter: drop-shadow(0 0 6px rgba(255, 74, 82, 0.4));
+}
+
+[data-theme='galactic_empire'] .tema-toggle:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 14px var(--imperial-glow);
+}
+
+/* Barra de digitação */
+[data-theme='galactic_empire'] .terminal-prompt-bar {
+  position: relative;
+  background: linear-gradient(180deg, #0d0e10, #08090b);
+  border-top: 1px solid var(--imperial-blue);
+  box-shadow:
+    0 -2px 0 var(--accent),
+    0 -8px 22px rgba(255, 74, 82, 0.1),
+    0 -10px 30px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme='galactic_empire'] .terminal-prompt-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--accent);
+}
+
+[data-theme='galactic_empire'] .terminal-input {
+  color: #ffffff;
+}
+
+[data-theme='galactic_empire'] .cursor {
+  background-color: var(--accent);
+  box-shadow: 0 0 10px var(--imperial-glow);
+}
+
+[data-theme='galactic_empire'] .terminal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(188, 30, 34, 0.55) transparent;
+}
+
+[data-theme='galactic_empire'] .terminal-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+[data-theme='galactic_empire'] .terminal-scroll::-webkit-scrollbar-track {
+  background: #0a0b0d;
+}
+
+[data-theme='galactic_empire'] .terminal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(188, 30, 34, 0.55);
+}
+
+/* Aviso inicial: comunicado imperial */
+[data-theme='galactic_empire'] .terminal-hint {
+  padding: 10px 14px;
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--accent);
+  background: rgba(188, 30, 34, 0.06);
+  color: var(--texto-fraco);
+  border-radius: 0;
+  box-shadow:
+    inset 0 0 20px rgba(0, 0, 0, 0.35),
+    0 0 18px rgba(255, 74, 82, 0.08);
+}
+
+[data-theme='galactic_empire'] .terminal-hint::before {
+  content: '! ';
+  color: var(--accent);
+  font-weight: 700;
+  text-shadow: 0 0 10px var(--neon-glow);
+}
+
+[data-theme='galactic_empire'] .terminal-saida {
+  border-left-color: var(--borda);
+}
+
+/* Hero */
+[data-theme='galactic_empire'] .hero-comando {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.76rem;
+}
+
+[data-theme='galactic_empire'] .hero-nome {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 2.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.05;
+}
+
+[data-theme='galactic_empire'] .hero-titulo {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.88rem;
+  color: var(--texto-fraco);
+}
+
+[data-theme='galactic_empire'] .hero-descricao {
+  color: #c7c9cb;
+}
+
+/* Foto com moldura militar */
+[data-theme='galactic_empire'] .foto-card {
+  position: relative;
+  padding: 10px;
+  border-radius: 0;
+  border: 1px solid var(--borda);
+  border-top: 2px solid var(--accent);
+  background: linear-gradient(160deg, #17191d, #0b0c0e);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 20px rgba(255, 74, 82, 0.08),
+    0 18px 40px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme='galactic_empire'] .foto-card::before,
+[data-theme='galactic_empire'] .foto-card::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--imperial-grey);
+  pointer-events: none;
+}
+
+[data-theme='galactic_empire'] .foto-card::before {
+  top: -4px;
+  left: -4px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-theme='galactic_empire'] .foto-card::after {
+  right: -4px;
+  bottom: -4px;
+  border-top: none;
+  border-left: none;
+}
+
+[data-theme='galactic_empire'] .foto-perfil {
+  border-radius: 0;
+  filter: grayscale(0.15) contrast(1.05);
+}
+
+/* No tema imperial, o retrato vira um Sith e mantém o recorte quadrado */
+[data-theme='galactic_empire'] .foto-card--sith .foto-perfil {
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center 32%;
+  filter: saturate(1.12) contrast(1.04);
+}
+
+/* Botões */
+[data-theme='galactic_empire'] .botao {
+  font-family: var(--display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  border-radius: 0;
+  border-color: var(--borda);
+  color: var(--texto);
+  background: #121417;
+}
+
+[data-theme='galactic_empire'] .botao:hover {
+  border-color: var(--accent);
+  background: rgba(188, 30, 34, 0.14);
+  color: #ffffff;
+  box-shadow: 0 0 14px var(--imperial-glow);
+}
+
+[data-theme='galactic_empire'] .botao-primario {
+  background: var(--imperial-red);
+  border-color: var(--imperial-red);
+  color: #ffffff;
+}
+
+[data-theme='galactic_empire'] .botao-primario:hover {
+  background: #951417;
+  border-color: #951417;
+  color: #ffffff;
+  box-shadow: 0 0 18px rgba(255, 74, 82, 0.28);
+}
+
+/* Seções */
+[data-theme='galactic_empire'] .secao {
+  border-top-color: var(--borda);
+}
+
+[data-theme='galactic_empire'] .secao-titulo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--display);
+  font-size: 1.55rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #ffffff;
+}
+
+[data-theme='galactic_empire'] .secao-titulo::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  box-shadow: 0 0 12px var(--neon-glow);
+}
+
+[data-theme='galactic_empire'] .secao-titulo::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--neon-red),
+    rgba(255, 74, 82, 0.22) 12%,
+    var(--borda) 30%,
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(255, 74, 82, 0.18);
+}
+
+[data-theme='galactic_empire'] .card-titulo {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #ffffff;
+  border-left: 3px solid var(--accent);
+  padding-left: 9px;
+}
+
+/* Painéis: metal escuro + linha imperial */
+[data-theme='galactic_empire'] .cmd-card,
+[data-theme='galactic_empire'] .sobre-card,
+[data-theme='galactic_empire'] .skills-card,
+[data-theme='galactic_empire'] .projeto-card,
+[data-theme='galactic_empire'] .contato-card,
+[data-theme='galactic_empire'] .monitoria-card {
+  position: relative;
+  border-radius: 0;
+  border: 1px solid var(--borda);
+  border-top: 2px solid var(--accent);
+  background: linear-gradient(160deg, #17191d, #0b0c0e);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='galactic_empire'] .cmd-card::before,
+[data-theme='galactic_empire'] .sobre-card::before,
+[data-theme='galactic_empire'] .skills-card::before,
+[data-theme='galactic_empire'] .projeto-card::before,
+[data-theme='galactic_empire'] .contato-card::before,
+[data-theme='galactic_empire'] .monitoria-card::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 13px;
+  height: 13px;
+  border-top: 1px solid var(--imperial-grey);
+  border-left: 1px solid var(--imperial-grey);
+  pointer-events: none;
+}
+
+[data-theme='galactic_empire'] .cmd-card::after,
+[data-theme='galactic_empire'] .sobre-card::after,
+[data-theme='galactic_empire'] .skills-card::after,
+[data-theme='galactic_empire'] .projeto-card::after,
+[data-theme='galactic_empire'] .contato-card::after,
+[data-theme='galactic_empire'] .monitoria-card::after {
+  content: '';
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 13px;
+  height: 13px;
+  border-right: 1px solid var(--imperial-grey);
+  border-bottom: 1px solid var(--imperial-grey);
+  pointer-events: none;
+}
+
+[data-theme='galactic_empire'] .projeto-card:hover,
+[data-theme='galactic_empire'] .contato-card:hover {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 18px rgba(255, 74, 82, 0.14),
+    0 12px 30px rgba(188, 30, 34, 0.15);
+}
+
+[data-theme='galactic_empire'] .projeto-nome {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+[data-theme='galactic_empire'] .contato-card .text-gray,
+[data-theme='galactic_empire'] .mapa-contagem,
+[data-theme='galactic_empire'] .mapa-legenda {
+  font-family: var(--display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Tags */
+[data-theme='galactic_empire'] .tag {
+  border-radius: 0;
+  border-color: var(--borda);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--display);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+}
+
+[data-theme='galactic_empire'] .tag:hover {
+  border-color: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 74, 82, 0.22);
+}
+
+/* Links e avisos */
+[data-theme='galactic_empire'] .cmd-link {
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--neon-glow);
+}
+
+[data-theme='galactic_empire'] .cmd-aviso code {
+  border-radius: 0;
+  color: #ffffff;
+  background: rgba(188, 30, 34, 0.18);
+}
+
+[data-theme='galactic_empire'] .cmd-erro {
+  color: #ff5a5f;
+  text-shadow: 0 0 10px rgba(255, 90, 95, 0.3);
+}
+
+/* Monitoria */
+[data-theme='galactic_empire'] .monitoria-card {
+  border-left: 4px solid var(--monitoria-cor);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--monitoria-cor) 12%, #17191d),
+    #0b0c0e
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 0 22px color-mix(in srgb, var(--monitoria-cor) 10%, transparent),
+    0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='galactic_empire'] .monitoria-card--agora {
+  --monitoria-cor: #8fae95; /* Valor Green clareado */
+}
+
+[data-theme='galactic_empire'] .monitoria-rotulo,
+[data-theme='galactic_empire'] .monitoria-etiqueta {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+[data-theme='galactic_empire'] .monitoria-quando {
+  font-family: var(--display);
+  font-size: 1.55rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+[data-theme='galactic_empire'] .monitoria-contagem {
+  font-family: var(--display);
+  letter-spacing: 0.08em;
+}
+
+[data-theme='galactic_empire'] .monitoria-progresso {
+  border-radius: 0;
+}
+
+[data-theme='galactic_empire'] .monitoria-progresso > span {
+  box-shadow: 0 0 10px var(--imperial-glow);
+}
+
+[data-theme='galactic_empire'] .monitoria-disciplina {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* WakaTime */
+[data-theme='galactic_empire'] .waka-seg {
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+[data-theme='galactic_empire'] .waka-seg.ligado {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--imperial-glow);
+}
+
+[data-theme='galactic_empire'] .waka-titulo {
+  font-family: var(--display);
+  letter-spacing: 0.18em;
+  color: var(--texto-fraco);
+}
+
+[data-theme='galactic_empire'] .waka-kv dt {
+  font-family: var(--display);
+  letter-spacing: 0.16em;
+}
+
+[data-theme='galactic_empire'] .waka-kv dd {
+  font-family: var(--display);
+  color: #ffffff;
+}
+
+/* Mapa de viagens */
+[data-theme='galactic_empire'] .mapa-botoes {
+  border-radius: 0;
+  border-color: var(--borda);
+  background: #0b0c0e;
+}
+
+[data-theme='galactic_empire'] .mapa-botoes > button {
+  border-radius: 0;
+  font-family: var(--display);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[data-theme='galactic_empire'] .mapa-botoes > button.ativo {
+  color: #ffffff;
+  background: var(--imperial-red);
+  box-shadow: 0 0 14px rgba(255, 74, 82, 0.28);
+}
+
+[data-theme='galactic_empire'] .mapa-canvas {
+  border-radius: 0;
+  border-color: var(--borda);
+  background: #0a0b0d;
+  box-shadow:
+    inset 0 0 30px rgba(0, 0, 0, 0.5),
+    0 0 18px rgba(255, 74, 82, 0.06);
+}
+
+[data-theme='galactic_empire'] .mapa-canvas.globo {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-theme='galactic_empire'] .passaporte-abrir {
+  border-radius: 0;
+  font-family: var(--display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: #121417;
+  border-color: var(--borda);
+}
+
+[data-theme='galactic_empire'] .passaporte-abrir:hover {
+  border-color: var(--accent);
+  color: #ffffff;
+  background: rgba(188, 30, 34, 0.16);
+  box-shadow: 0 0 14px rgba(255, 74, 82, 0.14);
+}
+
+/* Passaporte: dossiê imperial */
+[data-theme='galactic_empire'] .passaporte-overlay {
+  background: rgba(0, 0, 0, 0.86);
+  backdrop-filter: blur(5px);
+}
+
+[data-theme='galactic_empire'] .passaporte {
+  color: #d6d8da;
+  border-color: #3b3f43;
+  background: linear-gradient(
+    90deg,
+    #0c0d10 0%,
+    #16181c 46%,
+    #090a0c 50%,
+    #16181c 54%,
+    #0c0d10 100%
+  );
+  box-shadow:
+    inset 0 0 0 1px var(--imperial-grey),
+    0 0 30px rgba(255, 74, 82, 0.12),
+    0 24px 60px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme='galactic_empire'] .passaporte::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+}
+
+[data-theme='galactic_empire'] .passaporte-pagina-topo {
+  border-bottom-color: var(--borda);
+}
+
+[data-theme='galactic_empire'] .passaporte-titulo {
+  font-family: var(--display);
+  color: #ffffff;
+  letter-spacing: 0.2em;
+}
+
+[data-theme='galactic_empire'] .passaporte-sub,
+[data-theme='galactic_empire'] .passaporte-numero {
+  color: var(--texto-fraco);
+}
+
+[data-theme='galactic_empire'] .passaporte-carimbo {
+  color: var(--accent);
+  border-radius: 0;
+  mix-blend-mode: normal;
+  filter: none;
+  opacity: 0.95;
+  box-shadow: 0 0 12px rgba(255, 74, 82, 0.18);
+}
+
+[data-theme='galactic_empire'] .passaporte-carimbo::before {
+  border-radius: 0;
+  border-style: solid;
+  opacity: 0.55;
+}
+
+[data-theme='galactic_empire'] .passaporte-fechar,
+[data-theme='galactic_empire'] .passaporte-seta {
+  border-radius: 0;
+}
+
+[data-theme='galactic_empire'] .passaporte-fechar {
+  color: #ffffff;
+  background: #121417;
+}
+
+[data-theme='galactic_empire'] .passaporte-seta:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 10px rgba(255, 74, 82, 0.18);
+}
+
+[data-theme='galactic_empire'] .passaporte-ponto {
+  border-radius: 0;
+}
+
+[data-theme='galactic_empire'] .passaporte-ponto.ativo {
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--neon-glow);
+}
+
+/* Footer */
+[data-theme='galactic_empire'] .footer {
+  border-top-color: var(--borda);
+}
+
+/* Ajustes móveis do passaporte */
+@media (max-width: 640px) {
+  [data-theme='galactic_empire'] .passaporte-pagina + .passaporte-pagina {
+    border-top-color: var(--borda);
+  }
+
+  [data-theme='galactic_empire'] .imperial-watermark {
+    background-position: right -55px top 16%;
+    background-size: 210px;
+    opacity: 0.1;
   }
 }

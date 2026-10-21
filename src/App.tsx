@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Terminal } from './components/Terminal';
-import { TemaCtx, temaSalvo, type Tema } from './hooks/useTema';
+import { TemaCtx, ORDEM_TEMAS, temaSalvo, type Tema } from './hooks/useTema';
 import './App.css';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
     localStorage.setItem('tema', tema);
   }, [tema]);
 
-  const ordem: Tema[] = ['dark', 'light', 'system'];
+  const ordem = ORDEM_TEMAS;
 
   return (
     <TemaCtx.Provider
