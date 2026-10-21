@@ -4,7 +4,7 @@ export function Skills() {
   return (
     <section className="secao">
       <h2 className="secao-titulo">
-        <span className="text-gray">##</span> habilidades
+        habilidades
       </h2>
 
       <div className="skills-grid">

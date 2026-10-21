@@ -4,7 +4,7 @@ export function Projects() {
   return (
     <section className="secao">
       <h2 className="secao-titulo">
-        <span className="text-gray">##</span> projetos
+        projetos
       </h2>
 
       <div className="projetos-grid">

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap');
 
 /* ===== Tema escuro (padrão) ===== */
 :root {
@@ -16,6 +16,7 @@
   --grid: #21262d;
   --tag-bg: rgba(227, 179, 65, 0.08);
   --term-bg: #010409;
+  --display: var(--mono);
 }
 
 /* ===== Tema claro ===== */
@@ -32,6 +33,24 @@
   --grid: #eaeef2;
   --tag-bg: rgba(9, 105, 218, 0.08);
   --term-bg: #f6f8fa;
+}
+
+/* ===== Tema system (janelas de status de manhwa) ===== */
+[data-theme='system'] {
+  --bg: #030a17;
+  --bg-alt: #061527;
+  --borda: rgba(56, 225, 255, 0.28);
+  --texto: #d6f4ff;
+  --texto-fraco: #7aa8c4;
+  --accent: #38e1ff;
+  --accent-contraste: #00121d;
+  --nav-bg: rgba(3, 10, 23, 0.85);
+  --bg-overlay: rgba(3, 10, 23, 0.92);
+  --grid: rgba(56, 225, 255, 0.07);
+  --tag-bg: rgba(56, 225, 255, 0.08);
+  --term-bg: #01050d;
+  --display: 'Rajdhani', var(--mono);
+  --system-glow: rgba(56, 225, 255, 0.35);
 }
 
 * {
@@ -1253,5 +1272,611 @@ a {
 
   .monitoria-quando {
     font-size: 1.1rem;
+  }
+}
+
+/* ============================================================
+   TEMA SYSTEM — HUD / janelas de status de manhwa
+   ============================================================ */
+
+[data-theme='system'] body {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 50% -20%, rgba(0, 150, 255, 0.18), transparent 55%),
+    radial-gradient(ellipse at 90% 110%, rgba(0, 255, 230, 0.08), transparent 45%),
+    linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, var(--grid) 40px);
+}
+
+[data-theme='system'] ::selection {
+  background: rgba(56, 225, 255, 0.32);
+  color: #ffffff;
+}
+
+[data-theme='system'] :focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Fundo do terminal: grid holográfico + brilho azul */
+[data-theme='system'] .terminal-full {
+  background-color: var(--term-bg);
+  background-image:
+    radial-gradient(ellipse at 18% -10%, rgba(0, 140, 255, 0.22), transparent 55%),
+    radial-gradient(ellipse at 85% 115%, rgba(0, 255, 230, 0.09), transparent 45%),
+    linear-gradient(rgba(2, 10, 24, 0.72), rgba(1, 5, 14, 0.9)),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(56, 225, 255, 0.05) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(56, 225, 255, 0.035) 40px);
+}
+
+/* Moldura externa do "sistema" */
+[data-theme='system'] .terminal-full::before {
+  content: '';
+  position: fixed;
+  inset: 8px;
+  z-index: 4;
+  border: 1px solid rgba(56, 225, 255, 0.16);
+  box-shadow: inset 0 0 80px rgba(0, 130, 255, 0.07);
+  pointer-events: none;
+}
+
+/* Scanlines */
+[data-theme='system'] .terminal-full::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.16) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.22;
+}
+
+/* Barra superior */
+[data-theme='system'] .terminal-bar {
+  background: linear-gradient(180deg, rgba(7, 26, 48, 0.96), rgba(3, 13, 28, 0.96));
+  border-bottom: 1px solid rgba(56, 225, 255, 0.45);
+  box-shadow:
+    0 1px 0 rgba(56, 225, 255, 0.25),
+    0 8px 30px rgba(0, 120, 255, 0.12);
+}
+
+[data-theme='system'] .terminal-bar-titulo {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  text-shadow: 0 0 14px rgba(56, 225, 255, 0.7);
+}
+
+[data-theme='system'] .terminal-bar-titulo::before {
+  content: '◈ ';
+  color: var(--accent);
+}
+
+[data-theme='system'] .tema-toggle {
+  border-radius: 2px;
+  border-color: rgba(56, 225, 255, 0.45);
+  background: rgba(56, 225, 255, 0.04);
+  box-shadow:
+    0 0 14px rgba(56, 225, 255, 0.18),
+    inset 0 0 12px rgba(56, 225, 255, 0.08);
+}
+
+[data-theme='system'] .tema-toggle:hover {
+  box-shadow:
+    0 0 22px rgba(56, 225, 255, 0.4),
+    inset 0 0 14px rgba(56, 225, 255, 0.12);
+}
+
+/* Barra de digitação */
+[data-theme='system'] .terminal-prompt-bar {
+  position: relative;
+  background: linear-gradient(180deg, rgba(3, 13, 28, 0.92), rgba(1, 7, 16, 0.98));
+  border-top: 1px solid rgba(56, 225, 255, 0.35);
+  box-shadow:
+    0 -1px 0 rgba(56, 225, 255, 0.18),
+    0 -10px 30px rgba(0, 120, 255, 0.08);
+}
+
+[data-theme='system'] .terminal-prompt-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+[data-theme='system'] .terminal-input {
+  text-shadow: 0 0 10px rgba(56, 225, 255, 0.35);
+}
+
+[data-theme='system'] .cursor {
+  box-shadow: 0 0 12px var(--accent);
+}
+
+[data-theme='system'] .terminal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 225, 255, 0.35) transparent;
+}
+
+[data-theme='system'] .terminal-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+[data-theme='system'] .terminal-scroll::-webkit-scrollbar-track {
+  background: rgba(2, 10, 22, 0.6);
+}
+
+[data-theme='system'] .terminal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(56, 225, 255, 0.3);
+}
+
+/* Aviso inicial vira uma notificação de sistema */
+[data-theme='system'] .terminal-hint {
+  padding: 10px 14px;
+  border: 1px solid rgba(56, 225, 255, 0.25);
+  border-left: 3px solid var(--accent);
+  background: rgba(56, 225, 255, 0.04);
+  color: var(--texto-fraco);
+  border-radius: 1px;
+  box-shadow: inset 0 0 20px rgba(0, 120, 255, 0.06);
+}
+
+[data-theme='system'] .terminal-hint::before {
+  content: '! ';
+  color: var(--accent);
+  font-weight: 700;
+}
+
+[data-theme='system'] .terminal-saida {
+  border-left-color: rgba(56, 225, 255, 0.45);
+}
+
+/* Hero */
+[data-theme='system'] .hero-comando {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+}
+
+[data-theme='system'] .hero-nome {
+  font-family: var(--display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.05;
+  text-shadow: 0 0 26px rgba(56, 225, 255, 0.35);
+}
+
+[data-theme='system'] .hero-titulo {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.82rem;
+  color: var(--accent);
+  opacity: 0.85;
+}
+
+[data-theme='system'] .hero-descricao {
+  color: var(--texto);
+}
+
+/* Foto com moldura HUD */
+[data-theme='system'] .foto-card {
+  position: relative;
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid rgba(56, 225, 255, 0.5);
+  background: linear-gradient(160deg, rgba(8, 32, 60, 0.9), rgba(2, 10, 22, 0.95));
+  box-shadow:
+    0 0 28px rgba(0, 150, 255, 0.25),
+    inset 0 0 30px rgba(0, 150, 255, 0.08);
+}
+
+[data-theme='system'] .foto-card::before,
+[data-theme='system'] .foto-card::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--accent);
+  pointer-events: none;
+}
+
+[data-theme='system'] .foto-card::before {
+  top: -5px;
+  left: -5px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-theme='system'] .foto-card::after {
+  right: -5px;
+  bottom: -5px;
+  border-top: none;
+  border-left: none;
+}
+
+[data-theme='system'] .foto-perfil {
+  border-radius: 1px;
+  filter: saturate(1.05) contrast(1.04);
+}
+
+/* Botões */
+[data-theme='system'] .botao {
+  font-family: var(--display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-radius: 2px;
+  border-color: rgba(56, 225, 255, 0.45);
+  background: rgba(56, 225, 255, 0.05);
+  box-shadow: inset 0 0 14px rgba(56, 225, 255, 0.05);
+}
+
+[data-theme='system'] .botao:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow:
+    0 0 18px rgba(56, 225, 255, 0.3),
+    inset 0 0 16px rgba(56, 225, 255, 0.1);
+}
+
+[data-theme='system'] .botao-primario {
+  background: linear-gradient(180deg, rgba(56, 225, 255, 0.95), rgba(0, 170, 220, 0.9));
+  border-color: var(--accent);
+  color: #001018;
+  box-shadow: 0 0 22px rgba(56, 225, 255, 0.35);
+}
+
+[data-theme='system'] .botao-primario:hover {
+  background: rgba(56, 225, 255, 0.12);
+  color: var(--accent);
+}
+
+/* Seções */
+[data-theme='system'] .secao {
+  border-top-color: rgba(56, 225, 255, 0.15);
+}
+
+[data-theme='system'] .secao-titulo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--texto);
+  text-shadow: 0 0 18px rgba(56, 225, 255, 0.25);
+}
+
+[data-theme='system'] .secao-titulo::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(56, 225, 255, 0.5), transparent);
+}
+
+[data-theme='system'] .card-titulo {
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(56, 225, 255, 0.35);
+}
+
+[data-theme='system'] .card-titulo::before {
+  content: '▸ ';
+}
+
+/* Painéis: fundo holográfico + cantos de HUD */
+[data-theme='system'] .cmd-card,
+[data-theme='system'] .sobre-card,
+[data-theme='system'] .skills-card,
+[data-theme='system'] .projeto-card,
+[data-theme='system'] .contato-card,
+[data-theme='system'] .monitoria-card {
+  position: relative;
+  border-radius: 2px;
+  border-color: rgba(56, 225, 255, 0.32);
+  background: linear-gradient(160deg, rgba(8, 30, 58, 0.92), rgba(2, 11, 24, 0.94));
+  box-shadow:
+    inset 0 0 26px rgba(0, 130, 255, 0.06),
+    0 0 18px rgba(0, 120, 255, 0.08);
+}
+
+[data-theme='system'] .cmd-card::before,
+[data-theme='system'] .sobre-card::before,
+[data-theme='system'] .skills-card::before,
+[data-theme='system'] .projeto-card::before,
+[data-theme='system'] .contato-card::before,
+[data-theme='system'] .monitoria-card::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 14px;
+  height: 14px;
+  border-top: 1px solid var(--accent);
+  border-left: 1px solid var(--accent);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+[data-theme='system'] .cmd-card::after,
+[data-theme='system'] .sobre-card::after,
+[data-theme='system'] .skills-card::after,
+[data-theme='system'] .projeto-card::after,
+[data-theme='system'] .contato-card::after,
+[data-theme='system'] .monitoria-card::after {
+  content: '';
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 14px;
+  height: 14px;
+  border-right: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+[data-theme='system'] .projeto-card:hover,
+[data-theme='system'] .contato-card:hover {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 26px rgba(56, 225, 255, 0.22),
+    inset 0 0 30px rgba(0, 150, 255, 0.1);
+}
+
+[data-theme='system'] .projeto-nome {
+  font-family: var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+[data-theme='system'] .contato-card .text-gray,
+[data-theme='system'] .mapa-contagem,
+[data-theme='system'] .mapa-legenda {
+  font-family: var(--display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Tags / atributos */
+[data-theme='system'] .tag {
+  border-radius: 2px;
+  border-color: rgba(56, 225, 255, 0.35);
+  background: rgba(56, 225, 255, 0.07);
+  color: var(--texto);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Links e avisos */
+[data-theme='system'] .cmd-link {
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(56, 225, 255, 0.3);
+}
+
+[data-theme='system'] .cmd-aviso code {
+  border-radius: 1px;
+}
+
+[data-theme='system'] .cmd-erro {
+  color: #ff5d7a;
+  text-shadow: 0 0 10px rgba(255, 93, 122, 0.4);
+}
+
+/* Monitoria */
+[data-theme='system'] .monitoria-card {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--monitoria-cor) 13%, #061626),
+    rgba(2, 10, 22, 0.96)
+  );
+  border-left-color: var(--monitoria-cor);
+}
+
+[data-theme='system'] .monitoria-card--agora {
+  --monitoria-cor: #38ffa8;
+}
+
+[data-theme='system'] .monitoria-rotulo,
+[data-theme='system'] .monitoria-etiqueta {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+[data-theme='system'] .monitoria-quando {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+}
+
+[data-theme='system'] .monitoria-contagem {
+  font-family: var(--display);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 16px rgba(56, 225, 255, 0.4);
+}
+
+[data-theme='system'] .monitoria-progresso {
+  border-radius: 0;
+}
+
+[data-theme='system'] .monitoria-progresso > span {
+  box-shadow: 0 0 12px var(--monitoria-cor);
+}
+
+[data-theme='system'] .monitoria-disciplina {
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* WakaTime */
+[data-theme='system'] .waka-seg {
+  border-radius: 1px;
+  background: rgba(56, 225, 255, 0.1);
+}
+
+[data-theme='system'] .waka-seg.ligado {
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(56, 225, 255, 0.5);
+}
+
+[data-theme='system'] .waka-titulo {
+  font-family: var(--display);
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+[data-theme='system'] .waka-kv dt {
+  font-family: var(--display);
+  letter-spacing: 0.16em;
+}
+
+[data-theme='system'] .waka-kv dd {
+  font-family: var(--display);
+  text-shadow: 0 0 10px rgba(56, 225, 255, 0.3);
+}
+
+/* Mapa de viagens */
+[data-theme='system'] .mapa-botoes {
+  border-radius: 2px;
+  border-color: rgba(56, 225, 255, 0.35);
+  background: rgba(3, 14, 30, 0.8);
+}
+
+[data-theme='system'] .mapa-botoes > button {
+  border-radius: 1px;
+  font-family: var(--display);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+[data-theme='system'] .mapa-botoes > button.ativo {
+  color: #001018;
+  background: var(--accent);
+  box-shadow: 0 0 14px rgba(56, 225, 255, 0.45);
+}
+
+[data-theme='system'] .mapa-canvas {
+  border-radius: 2px;
+  border-color: rgba(56, 225, 255, 0.35);
+  background: rgba(2, 10, 22, 0.85);
+  box-shadow:
+    inset 0 0 30px rgba(0, 120, 255, 0.08),
+    0 0 18px rgba(0, 120, 255, 0.08);
+}
+
+[data-theme='system'] .mapa-canvas.globo {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-theme='system'] .passaporte-abrir {
+  border-radius: 2px;
+  font-family: var(--display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 0 12px rgba(56, 225, 255, 0.12);
+}
+
+/* Passaporte holográfico */
+[data-theme='system'] .passaporte-overlay {
+  background: rgba(0, 6, 16, 0.86);
+  backdrop-filter: blur(6px);
+}
+
+[data-theme='system'] .passaporte {
+  color: #bfeaff;
+  border-color: #0a5c86;
+  background: linear-gradient(
+    90deg,
+    #021226 0%,
+    #052744 46%,
+    #010b18 50%,
+    #052744 54%,
+    #021226 100%
+  );
+  box-shadow:
+    0 0 50px rgba(0, 170, 255, 0.32),
+    inset 0 0 50px rgba(0, 130, 255, 0.12);
+}
+
+[data-theme='system'] .passaporte::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(56, 225, 255, 0.28),
+    transparent
+  );
+}
+
+[data-theme='system'] .passaporte-pagina-topo {
+  border-bottom-color: rgba(56, 225, 255, 0.3);
+}
+
+[data-theme='system'] .passaporte-titulo {
+  font-family: var(--display);
+  color: var(--accent);
+  text-shadow: 0 0 14px rgba(56, 225, 255, 0.6);
+}
+
+[data-theme='system'] .passaporte-sub,
+[data-theme='system'] .passaporte-numero {
+  color: rgba(143, 219, 255, 0.9);
+}
+
+[data-theme='system'] .passaporte-carimbo {
+  border-radius: 2px;
+  mix-blend-mode: screen;
+  opacity: 1;
+  filter: brightness(2) saturate(1.3);
+  text-shadow: 0 0 8px currentColor;
+  box-shadow: 0 0 16px rgba(56, 225, 255, 0.12);
+}
+
+[data-theme='system'] .passaporte-carimbo::before {
+  border-radius: 1px;
+}
+
+[data-theme='system'] .passaporte-fechar,
+[data-theme='system'] .passaporte-seta {
+  border-radius: 2px;
+}
+
+[data-theme='system'] .passaporte-ponto {
+  border-radius: 1px;
+}
+
+[data-theme='system'] .passaporte-ponto.ativo {
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* Footer */
+[data-theme='system'] .footer {
+  border-top-color: rgba(56, 225, 255, 0.2);
+}
+
+/* Ajustes móveis do passaporte */
+@media (max-width: 640px) {
+  [data-theme='system'] .passaporte-pagina + .passaporte-pagina {
+    border-top-color: rgba(56, 225, 255, 0.25);
   }
 }

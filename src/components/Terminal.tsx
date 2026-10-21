@@ -128,6 +128,25 @@ function IconeLua() {
   );
 }
 
+function IconeSistema() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="4" width="18" height="13" rx="1" />
+      <path d="M8 21h8M12 17v4M7 8h4M7 11h7" />
+    </svg>
+  );
+}
+
 export function Terminal() {
   const { tema, definirTema, alternarTema } = useTema();
   const [input, setInput] = useState('');
@@ -135,7 +154,7 @@ export function Terminal() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const claro = tema === 'light';
+  const proximoTema = tema === 'dark' ? 'claro' : tema === 'light' ? 'system' : 'escuro';
 
   // Rola o conteúdo do terminal para o fim a cada comando (sem mexer na página)
   useEffect(() => {
@@ -339,8 +358,9 @@ export function Terminal() {
               tema atual: <span className="text-accent">{temaAtual}</span>
             </p>
             <p className="text-gray">
-              use <span className="text-accent">tema claro</span> ou{' '}
-              <span className="text-accent">tema escuro</span>
+              use <span className="text-accent">tema claro</span>,{' '}
+              <span className="text-accent">tema escuro</span> ou{' '}
+              <span className="text-accent">tema system</span>
             </p>
           </Card>
         );
@@ -361,7 +381,7 @@ export function Terminal() {
       return;
     }
 
-    // tema [claro|escuro]
+    // tema [claro|escuro|system]
     let temaAtual = tema;
     if (nome === 'tema') {
       const alvo = normalizar(args[0] ?? '');
@@ -371,6 +391,9 @@ export function Terminal() {
       } else if (alvo === 'escuro' || alvo === 'dark') {
         definirTema('dark');
         temaAtual = 'dark';
+      } else if (alvo === 'system' || alvo === 'sistema' || alvo === 'manhwa') {
+        definirTema('system');
+        temaAtual = 'system';
       }
     }
 
@@ -402,10 +425,16 @@ export function Terminal() {
               e.stopPropagation();
               alternarTema();
             }}
-            aria-label={claro ? 'Ativar modo escuro' : 'Ativar modo claro'}
-            title={claro ? 'Ativar modo escuro' : 'Ativar modo claro'}
+            aria-label={`Ativar tema ${proximoTema}`}
+            title={`Ativar tema ${proximoTema}`}
           >
-            {claro ? <IconeLua /> : <IconeSol />}
+            {tema === 'dark' ? (
+              <IconeSol />
+            ) : tema === 'light' ? (
+              <IconeSistema />
+            ) : (
+              <IconeLua />
+            )}
           </button>
         </div>
       </header>
@@ -419,7 +448,8 @@ export function Terminal() {
           para ver os comandos disponíveis. Ex.:{' '}
           <span className="text-accent">sobre</span>,{' '}
           <span className="text-accent">projetos</span>,{' '}
-          <span className="text-accent">tema claro</span>.
+          <span className="text-accent">tema claro</span>,{' '}
+          <span className="text-accent">tema system</span>.
         </p>
 
         {historico.map((item, i) => (

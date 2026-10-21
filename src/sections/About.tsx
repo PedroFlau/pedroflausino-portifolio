@@ -4,7 +4,7 @@ export function About() {
   return (
     <section className="secao">
       <h2 className="secao-titulo">
-        <span className="text-gray">##</span> sobre
+        sobre
       </h2>
 
       <div className="sobre-grid">

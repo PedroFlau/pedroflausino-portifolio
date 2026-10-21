@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-export type Tema = 'dark' | 'light';
+export type Tema = 'dark' | 'light' | 'system';
 
 export type TemaContexto = {
   tema: Tema;
@@ -21,5 +21,5 @@ export function useTema(): TemaContexto {
 /** Lê o tema salvo no navegador (padrão: escuro). */
 export function temaSalvo(): Tema {
   const salvo = localStorage.getItem('tema');
-  return salvo === 'light' ? 'light' : 'dark';
+  return salvo === 'light' || salvo === 'system' ? salvo : 'dark';
 }

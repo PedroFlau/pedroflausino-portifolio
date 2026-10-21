@@ -11,12 +11,15 @@ function App() {
     localStorage.setItem('tema', tema);
   }, [tema]);
 
+  const ordem: Tema[] = ['dark', 'light', 'system'];
+
   return (
     <TemaCtx.Provider
       value={{
         tema,
         definirTema: setTema,
-        alternarTema: () => setTema((t) => (t === 'dark' ? 'light' : 'dark')),
+        alternarTema: () =>
+          setTema((t) => ordem[(ordem.indexOf(t) + 1) % ordem.length]),
       }}
     >
       <Terminal />

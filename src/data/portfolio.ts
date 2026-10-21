@@ -186,7 +186,7 @@ export const comandos: { nome: string; aliases: string[]; desc: string }[] = [
   { nome: "steam", aliases: [], desc: "Jogos e conquistas na Steam" },
   { nome: "xbox", aliases: [], desc: "Jogos e conquistas no Xbox" },
   { nome: "wakatime", aliases: [], desc: "Meu tempo de código (WakaTime)" },
-  { nome: "tema", aliases: ["theme"], desc: "Opções de tema (claro/escuro)" },
+  { nome: "tema", aliases: ["theme"], desc: "Opções de tema (claro/escuro/system)" },
   { nome: "limpar", aliases: ["clean", "clear"], desc: "Limpa o terminal" },
   { nome: "ajuda", aliases: ["help"], desc: "Mostra esta lista de comandos" },
 ];

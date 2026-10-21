@@ -12,7 +12,7 @@ export function Contact() {
   return (
     <section className="secao">
       <h2 className="secao-titulo">
-        <span className="text-gray">##</span> contato
+        contato
       </h2>
 
       <p className="contato-intro">

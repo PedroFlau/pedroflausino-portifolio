@@ -15,7 +15,7 @@
         try {
           var tema = localStorage.getItem('tema');
           document.documentElement.dataset.theme =
-            tema === 'light' ? 'light' : 'dark';
+            tema === 'light' || tema === 'system' ? tema : 'dark';
         } catch (e) {
           document.documentElement.dataset.theme = 'dark';
         }
