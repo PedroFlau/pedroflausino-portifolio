@@ -6,6 +6,13 @@
 
 export type FonteWakaTime = 'api' | 'build';
 
+export type RangeWakaTime =
+  | 'last_7_days'
+  | 'last_30_days'
+  | 'last_6_months'
+  | 'last_year'
+  | 'all_time';
+
 export type ItemWakaTime = {
   nome: string;
   segundos: number;
@@ -18,16 +25,26 @@ export type StatsWakaTime = {
   perfil: string;
   /** Data (YYYY-MM-DD) dos dados. */
   geradoEm: string;
+  /** Período dos dados (padrão: all_time). */
+  range?: RangeWakaTime;
+  /** "oauth" quando lido com o token; "publico" quando veio do perfil público. */
+  modo?: 'oauth' | 'publico';
   /** Início do histórico no WakaTime (YYYY-MM-DD). */
   desde: string | null;
   totalSegundos: number;
   mediaDiariaSegundos: number;
   diasAtivos: number | null;
   diasTotais: number | null;
+  /** Tempo de hoje (só com o token). */
+  hojeSegundos?: number | null;
+  /** Dia com mais tempo no período. */
+  melhorDia?: { data: string; segundos: number } | null;
   linguagens: ItemWakaTime[];
   editores: ItemWakaTime[];
   categorias: ItemWakaTime[];
   sistemas: ItemWakaTime[];
+  /** Projetos (só com o token). */
+  projetos?: ItemWakaTime[];
   /** "api" quando veio da rota ao vivo; "build" quando é a foto do build. */
   fonte?: FonteWakaTime;
 };

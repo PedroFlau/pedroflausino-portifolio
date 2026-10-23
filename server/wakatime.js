@@ -3,17 +3,24 @@
 //
 //  A API do WakaTime não manda cabeçalhos CORS, então o navegador não
 //  consegue chamá-la direto: quem chama é o servidor. Esta rotina atende
-//  /api/wakatime em três lugares:
-//    • produção (Vercel)       -> a função api/wakatime.js
-//    • npm run dev / preview   -> o plugin em vite.config.ts
+//  /api/wakatime?range=... em três lugares:
+//    • produção (Vercel)         -> a função api/wakatime.js
+//    • npm run dev / preview     -> o plugin em vite.config.ts
 //    • dados do build (fallback) -> scripts/wakatime.mjs
 //
-//  Privacidade: a API devolve também projetos, máquinas e dependências.
-//  A resposta leva só os campos que o terminal usa (ver enxugar()).
+//  Com o WAKATIME_ACCESS_TOKEN (OAuth) lê a própria conta ("current"), com
+//  projetos, melhor dia e o tempo de hoje. Sem o token, usa o perfil público.
+//
+//  Privacidade: a resposta leva só os campos que o terminal usa
+//  (ver enxugar()); projetos fora de PROJETOS_PUBLICOS (server/config.js)
+//  são somados numa linha "projetos privados".
 // ============================================================
 
-const API = 'https://wakatime.com/api/v1';
+import { projetoPublico } from './config.js';
+import { chamarWakaTime, temToken } from './oauth.js';
+
 const RANGE = 'all_time';
+export const RANGES = ['last_7_days', 'last_30_days', 'last_6_months', 'last_year', 'all_time'];
 const USUARIO_PADRAO = 'PedroFlau';
 const TIMEOUT_MS = 10_000;
 const CACHE_MS = 10 * 60 * 1000;
@@ -59,12 +66,30 @@ function lista(itens) {
     }));
 }
 
+/** Projetos fora da lista pública viram uma linha só. */
+function projetos(itens, env) {
+  const todos = lista(itens);
+  const publicos = todos.filter((p) => projetoPublico(p.nome, env));
+  const privados = todos.filter((p) => !projetoPublico(p.nome, env));
+  if (privados.length === 0) return publicos;
+  return [
+    ...publicos,
+    {
+      nome: `projetos privados (${privados.length})`,
+      segundos: privados.reduce((soma, p) => soma + p.segundos, 0),
+      porcento: privados.reduce((soma, p) => soma + p.porcento, 0),
+    },
+  ].sort((a, b) => b.segundos - a.segundos);
+}
+
 /** Fica só com o que o terminal usa. */
-function enxugar(data, env) {
+function enxugar(data, env, { range, modo, segundosHoje }) {
   return {
     usuario: usuario(env),
     perfil: perfil(env),
     geradoEm: hoje(),
+    range,
+    modo,
     desde: desde(data),
     totalSegundos: Math.round(
       data.total_seconds_including_other_language ?? data.total_seconds ?? 0,
@@ -74,10 +99,18 @@ function enxugar(data, env) {
     ),
     diasAtivos: data.days_minus_holidays ?? null,
     diasTotais: data.days_including_holidays ?? null,
+    hojeSegundos: segundosHoje,
+    melhorDia: data.best_day?.date
+      ? {
+          data: String(data.best_day.date).slice(0, 10),
+          segundos: Math.round(data.best_day.total_seconds ?? 0),
+        }
+      : null,
     linguagens: lista(data.languages),
     editores: lista(data.editors),
     categorias: lista(data.categories),
     sistemas: lista(data.operating_systems),
+    projetos: projetos(data.projects, env),
   };
 }
 
@@ -87,54 +120,84 @@ export function vazio(env) {
     usuario: usuario(env),
     perfil: perfil(env),
     geradoEm: hoje(),
+    range: RANGE,
+    modo: 'publico',
     desde: null,
     totalSegundos: 0,
     mediaDiariaSegundos: 0,
     diasAtivos: null,
     diasTotais: null,
+    hojeSegundos: null,
+    melhorDia: null,
     linguagens: [],
     editores: [],
     categorias: [],
     sistemas: [],
+    projetos: [],
   };
 }
 
 /** O WakaTime avisa que ainda está calculando (HTTP 202 / pending_update). */
 class Calculando extends Error {}
 
+/** Erro com código para a página saber o que mostrar. */
+function erroHttp(status) {
+  const erro = new Error(`WakaTime respondeu ${status}`);
+  erro.status = status;
+  return erro;
+}
+
 // Vale a pena tentar de novo: falha de rede, 5xx ou limite de requisições.
 const TENTATIVAS = 3;
 const ESPERA_MS = 500;
 
-async function buscarUmaVez(env) {
-  const resposta = await fetch(
-    `${API}/users/${encodeURIComponent(usuario(env))}/stats/${RANGE}`,
-    {
-      headers: { Accept: 'application/json' },
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    },
-  );
+/** Tempo de hoje (endpoint privado status_bar/today, escopo read_summaries). */
+async function segundosDeHoje(env) {
+  try {
+    const resposta = await chamarWakaTime('/users/current/status_bar/today', env, {
+      timeout: TIMEOUT_MS,
+    });
+    if (!resposta.ok) return null;
+    const { data } = await resposta.json();
+    const segundos = data?.grand_total?.total_seconds;
+    return typeof segundos === 'number' ? Math.round(segundos) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function buscarUmaVez(env, range) {
+  const comToken = temToken(env);
+  const quem = comToken ? 'current' : encodeURIComponent(usuario(env));
+
+  const [resposta, segundosHoje] = await Promise.all([
+    chamarWakaTime(`/users/${quem}/stats/${range}`, env, {
+      autenticar: comToken,
+      timeout: TIMEOUT_MS,
+    }),
+    comToken ? segundosDeHoje(env) : Promise.resolve(null),
+  ]);
 
   if (resposta.status === 202) throw new Calculando();
-  if (!resposta.ok) {
-    const erro = new Error(`WakaTime respondeu ${resposta.status}`);
-    erro.status = resposta.status;
-    throw erro;
-  }
+  if (!resposta.ok) throw erroHttp(resposta.status);
 
   const { data } = await resposta.json();
   if (data?.status === 'pending_update' || !Array.isArray(data?.languages)) {
     throw new Calculando();
   }
-  return enxugar(data, env);
+  return enxugar(data, env, {
+    range,
+    modo: comToken ? 'oauth' : 'publico',
+    segundosHoje,
+  });
 }
 
-async function buscar(env) {
+async function buscar(env, range) {
   let ultimoErro;
 
   for (let tentativa = 1; tentativa <= TENTATIVAS; tentativa++) {
     try {
-      return await buscarUmaVez(env);
+      return await buscarUmaVez(env, range);
     } catch (erro) {
       ultimoErro = erro;
 
@@ -150,19 +213,24 @@ async function buscar(env) {
   throw ultimoErro;
 }
 
-let cache = { em: 0, dados: null, promessa: null };
+// Um cache por período
+const caches = new Map();
 
 /**
  * Estatísticas prontas para o terminal. Fica 10 min na memória (e no cache
  * da CDN do Vercel): a resposta é a mesma para todos os visitantes.
  */
-export async function obterStats(env = {}) {
+export async function obterStats(env = {}, range = RANGE) {
+  const periodo = RANGES.includes(range) ? range : RANGE;
+  const cache = caches.get(periodo) ?? { em: 0, dados: null, promessa: null };
+  caches.set(periodo, cache);
+
   if (cache.dados && Date.now() - cache.em < CACHE_MS) return cache.dados;
 
   if (!cache.promessa) {
-    cache.promessa = buscar(env)
+    cache.promessa = buscar(env, periodo)
       .then((dados) => {
-        cache = { em: Date.now(), dados, promessa: null };
+        Object.assign(cache, { em: Date.now(), dados, promessa: null });
         return dados;
       })
       .catch((erro) => {
@@ -174,31 +242,41 @@ export async function obterStats(env = {}) {
 }
 
 /** Resposta HTTP pronta: { status, headers, corpo }. */
-export async function responder(env = {}) {
+export async function responder(env = {}, range = RANGE) {
   const cabecalhos = (cacheavel) => ({
     'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': cacheavel
       ? 'public, max-age=0, s-maxage=600, stale-while-revalidate=3600'
       : 'no-store',
   });
+  const falha = (status, erro, mensagem) => ({
+    status,
+    headers: cabecalhos(false),
+    corpo: JSON.stringify({ erro, mensagem }),
+  });
 
   try {
-    const dados = await obterStats(env);
+    const dados = await obterStats(env, range);
     return {
       status: 200,
       headers: cabecalhos(true),
       corpo: JSON.stringify({ ...dados, fonte: 'api' }),
     };
   } catch (erro) {
-    const calculando = erro instanceof Calculando;
     console.error('WakaTime:', erro?.message ?? erro);
-    return {
-      status: calculando ? 202 : 502,
-      headers: cabecalhos(false),
-      corpo: JSON.stringify(
-        calculando ? { data: { status: 'pending_update' } } : { erro: 'wakatime' },
-      ),
-    };
+    if (erro instanceof Calculando) {
+      return falha(202, 'calculando', 'O WakaTime ainda está calculando este período.');
+    }
+    if (erro?.status === 401) {
+      return falha(401, 'token_invalido', 'Token OAuth do WakaTime inválido ou revogado.');
+    }
+    if (erro?.status === 402 || erro?.status === 403) {
+      return falha(403, 'sem_permissao', 'Este período não está disponível na conta do WakaTime.');
+    }
+    if (erro?.status === 404) {
+      return falha(404, 'nao_encontrado', 'Usuário do WakaTime não encontrado.');
+    }
+    return falha(502, 'wakatime', 'Não foi possível falar com o WakaTime agora.');
   }
 }
 
@@ -217,7 +295,8 @@ export async function atender(req, res, env = {}) {
     return;
   }
 
-  const { status, headers, corpo } = await responder(env);
+  const range = new URL(req.url ?? '/', 'http://localhost').searchParams.get('range') ?? RANGE;
+  const { status, headers, corpo } = await responder(env, range);
   res.statusCode = status;
   for (const [nome, valor] of Object.entries(headers)) res.setHeader(nome, valor);
   res.end(req.method === 'HEAD' ? undefined : corpo);

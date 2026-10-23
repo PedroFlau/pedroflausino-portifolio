@@ -934,6 +934,199 @@ a {
   color: var(--accent);
 }
 
+.waka-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: opacity 0.2s;
+}
+
+.waka-corpo.atualizando {
+  opacity: 0.45;
+}
+
+.waka-kv-nota {
+  display: block;
+  color: var(--texto-fraco);
+  font-size: 0.72rem;
+}
+
+/* Seletor de período (estilo flags de terminal) */
+.waka-periodos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.waka-periodo {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--texto-fraco);
+  background: transparent;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.waka-periodo::before {
+  content: '--';
+  opacity: 0.6;
+}
+
+.waka-periodo:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.waka-periodo.ativo {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--tag-bg);
+}
+
+.waka-periodo:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* "Codando agora" — mesmo desenho do cartão da monitoria */
+.waka-agora {
+  --waka-agora-cor: #3fb950;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 18px;
+  border: 1px solid color-mix(in srgb, var(--waka-agora-cor) 45%, var(--borda));
+  border-left: 4px solid var(--waka-agora-cor);
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--waka-agora-cor) 14%, var(--bg-alt)),
+    var(--bg-alt) 72%
+  );
+}
+
+[data-theme='light'] .waka-agora {
+  --waka-agora-cor: #1a7f37;
+}
+
+.waka-agora.parado {
+  --waka-agora-cor: var(--texto-fraco);
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  padding: 10px 16px;
+  background: var(--bg-alt);
+}
+
+.waka-agora-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+
+.waka-agora-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--waka-agora-cor);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.waka-agora-ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--waka-agora-cor);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--waka-agora-cor) 22%, transparent);
+}
+
+.waka-agora.ativo .waka-agora-ponto {
+  animation: monitoria-pulso 1.6s ease-in-out infinite;
+}
+
+.waka-agora-sinal,
+.waka-agora-texto {
+  color: var(--texto-fraco);
+  font-size: 0.78rem;
+}
+
+.waka-agora-destaque {
+  color: var(--texto);
+}
+
+.waka-agora-projeto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  min-width: 0;
+}
+
+.waka-agora-nome {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--accent);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.waka-agora-prompt {
+  color: var(--texto-fraco);
+}
+
+.waka-agora-branch {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 1px 9px;
+  color: var(--texto-fraco);
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+}
+
+.waka-agora-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  list-style: none;
+  color: var(--texto-fraco);
+  font-size: 0.78rem;
+}
+
+.waka-agora-meta > li:not(:last-child)::after {
+  content: '·';
+  margin: 0 8px;
+  opacity: 0.6;
+}
+
+.waka-agora-meta > li:first-child {
+  color: var(--texto);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waka-agora.ativo .waka-agora-ponto {
+    animation: none;
+  }
+
+  .waka-corpo {
+    transition: none;
+  }
+}
+
 @media (max-width: 640px) {
   .waka-tabela {
     grid-template-columns: max-content minmax(60px, 1fr) max-content max-content;
@@ -1781,6 +1974,51 @@ a {
   text-shadow: 0 0 10px rgba(56, 225, 255, 0.3);
 }
 
+[data-theme='system'] .waka-periodo {
+  border-radius: 1px;
+  font-family: var(--display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+[data-theme='system'] .waka-periodo.ativo {
+  box-shadow: 0 0 10px rgba(56, 225, 255, 0.25);
+}
+
+[data-theme='system'] .waka-agora {
+  --waka-agora-cor: #38ffa8;
+  border-radius: 2px;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--waka-agora-cor) 13%, #061626),
+    rgba(2, 10, 22, 0.96)
+  );
+}
+
+[data-theme='system'] .waka-agora.parado {
+  --waka-agora-cor: var(--texto-fraco);
+}
+
+[data-theme='system'] .waka-agora-status {
+  font-family: var(--display);
+  letter-spacing: 0.18em;
+}
+
+[data-theme='system'] .waka-agora.ativo .waka-agora-ponto {
+  box-shadow: 0 0 10px var(--waka-agora-cor);
+}
+
+[data-theme='system'] .waka-agora-nome {
+  font-family: var(--display);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 10px rgba(56, 225, 255, 0.3);
+}
+
+[data-theme='system'] .waka-agora-branch {
+  border-radius: 1px;
+}
+
 /* Mapa de viagens */
 [data-theme='system'] .mapa-botoes {
   border-radius: 2px;
@@ -2463,6 +2701,49 @@ a {
 [data-theme='galactic_empire'] .waka-kv dd {
   font-family: var(--display);
   color: #ffffff;
+}
+
+[data-theme='galactic_empire'] .waka-periodo {
+  border-radius: 0;
+  font-family: var(--display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+[data-theme='galactic_empire'] .waka-periodo.ativo {
+  color: #ffffff;
+  background: rgba(188, 30, 34, 0.18);
+}
+
+[data-theme='galactic_empire'] .waka-agora {
+  --waka-agora-cor: #8fae95; /* Valor Green clareado, igual à monitoria */
+  border-radius: 0;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--waka-agora-cor) 12%, #17191d),
+    #0b0c0e
+  );
+}
+
+[data-theme='galactic_empire'] .waka-agora.parado {
+  --waka-agora-cor: var(--imperial-grey);
+}
+
+[data-theme='galactic_empire'] .waka-agora-status {
+  font-family: var(--display);
+  letter-spacing: 0.18em;
+}
+
+[data-theme='galactic_empire'] .waka-agora-nome {
+  font-family: var(--display);
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+[data-theme='galactic_empire'] .waka-agora-branch {
+  border-radius: 0;
 }
 
 /* Mapa de viagens */
