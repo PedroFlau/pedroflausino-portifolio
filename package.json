@@ -9,7 +9,8 @@
     "prebuild": "node scripts/wakatime.mjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "wakatime:oauth": "node scripts/wakatime-oauth.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
