@@ -6,6 +6,7 @@ import { Contact } from '../sections/Contact';
 import { Projects } from '../sections/Projects';
 import { MapaViagens } from './MapaViagens';
 import { Monitoria } from './Monitoria';
+import { SeletorTemas } from './SeletorTemas';
 import { WakaTime } from './WakaTime';
 import { useTema, ORDEM_TEMAS, type Tema } from '../hooks/useTema';
 import {
@@ -171,6 +172,8 @@ export function Terminal() {
   const { tema, definirTema, alternarTema } = useTema();
   const [input, setInput] = useState('');
   const [historico, setHistorico] = useState<ItemHistorico[]>([]);
+  const [temasAberto, setTemasAberto] = useState(false);
+  const [comandoTemas, setComandoTemas] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -196,14 +199,14 @@ export function Terminal() {
   }, [historico]);
 
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    if (temasAberto) {
+      inputRef.current?.blur();
+    } else {
+      inputRef.current?.focus();
+    }
+  }, [temasAberto]);
 
-  function renderizarSaida(
-    nome: string | null,
-    entrada: string,
-    temaAtual: Tema,
-  ): ReactNode {
+  function renderizarSaida(nome: string | null, entrada: string): ReactNode {
     switch (nome) {
       case null:
         return (
@@ -378,30 +381,48 @@ export function Terminal() {
           </Card>
         );
 
-      // ---- Tema ----
-      case 'tema':
-        return (
-          <Card titulo="tema">
-            <p>
-              tema atual: <span className="text-accent">{temaAtual}</span>
-            </p>
-            <p className="text-gray">
-              use <span className="text-accent">tema claro</span>,{' '}
-              <span className="text-accent">tema escuro</span>,{' '}
-              <span className="text-accent">tema system</span> ou{' '}
-              <span className="text-accent">tema galactic_empire</span>
-            </p>
-          </Card>
-        );
-
       default:
         return null;
     }
   }
 
+  function finalizarTemas(temaEscolhido: Tema | null) {
+    const comando = comandoTemas;
+    setTemasAberto(false);
+    setComandoTemas(null);
+    if (!comando) return;
+
+    if (temaEscolhido) {
+      definirTema(temaEscolhido);
+      setHistorico((h) => [
+        ...h,
+        {
+          comando,
+          saida: (
+            <p className="temas-resultado">
+              <span className="text-accent" aria-hidden="true">
+                ✔
+              </span>{' '}
+              tema <span className="text-accent">{temaEscolhido}</span> aplicado.
+            </p>
+          ),
+        },
+      ]);
+      return;
+    }
+
+    setHistorico((h) => [
+      ...h,
+      {
+        comando,
+        saida: <span className="text-gray">seletor de temas fechado.</span>,
+      },
+    ]);
+  }
+
   function executar(entradaBruta: string) {
     const entrada = entradaBruta.trim();
-    const [token, ...args] = entrada.split(/\s+/);
+    const [token] = entrada.split(/\s+/);
     const nome = token ? resolver(token) : null;
 
     // limpar
@@ -410,37 +431,16 @@ export function Terminal() {
       return;
     }
 
-    // tema [claro|escuro|system|galactic_empire]
-    let temaAtual = tema;
-    if (nome === 'tema') {
-      const alvo = normalizar(args.join(' '));
-      if (alvo === 'claro' || alvo === 'light') {
-        definirTema('light');
-        temaAtual = 'light';
-      } else if (alvo === 'escuro' || alvo === 'dark') {
-        definirTema('dark');
-        temaAtual = 'dark';
-      } else if (alvo === 'system' || alvo === 'sistema' || alvo === 'manhwa') {
-        definirTema('system');
-        temaAtual = 'system';
-      } else if (
-        alvo === 'galactic_empire' ||
-        alvo === 'galactic' ||
-        alvo === 'empire' ||
-        alvo === 'imperio' ||
-        alvo === 'imperial' ||
-        alvo === 'starwars' ||
-        alvo === 'star wars' ||
-        alvo === 'imperio galactico'
-      ) {
-        definirTema('galactic_empire');
-        temaAtual = 'galactic_empire';
-      }
+    // temas: abre o seletor interativo
+    if (nome === 'temas') {
+      setComandoTemas(entrada);
+      setTemasAberto(true);
+      return;
     }
 
     setHistorico((h) => [
       ...h,
-      { comando: entrada, saida: renderizarSaida(nome, entrada, temaAtual) },
+      { comando: entrada, saida: renderizarSaida(nome, entrada) },
     ]);
   }
 
@@ -493,7 +493,7 @@ export function Terminal() {
           para ver os comandos disponíveis. Ex.:{' '}
           <span className="text-accent">sobre</span>,{' '}
           <span className="text-accent">projetos</span>,{' '}
-          <span className="text-accent">tema galactic_empire</span>.
+          <span className="text-accent">temas</span>.
         </p>
 
         {historico.map((item, i) => (
@@ -526,6 +526,14 @@ export function Terminal() {
         />
         <span className="cursor" />
       </div>
+
+      {temasAberto && (
+        <SeletorTemas
+          temaAtual={tema}
+          aoAplicar={finalizarTemas}
+          aoFechar={() => finalizarTemas(null)}
+        />
+      )}
     </div>
   );
 }
