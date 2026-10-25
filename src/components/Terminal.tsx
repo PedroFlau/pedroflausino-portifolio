@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Hero } from '../sections/Hero';
 import { About } from '../sections/About';
 import { Skills } from '../sections/Skills';
+import { Biblioteca } from './Biblioteca';
 import { Contact } from '../sections/Contact';
 import { Projects } from '../sections/Projects';
 import { MapaViagens } from './MapaViagens';
@@ -364,6 +365,14 @@ export function Terminal() {
         return (
           <Card titulo="viagens">
             <MapaViagens />
+          </Card>
+        );
+
+      // ---- Biblioteca ----
+      case 'biblioteca':
+        return (
+          <Card titulo="biblioteca">
+            <Biblioteca />
           </Card>
         );
 

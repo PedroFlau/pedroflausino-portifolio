@@ -183,6 +183,11 @@ export const comandos: { nome: string; aliases: string[]; desc: string }[] = [
   },
   { nome: "premios", aliases: ["awards"], desc: "Prêmios e reconhecimentos" },
   { nome: "viagens", aliases: ["travel"], desc: "Lugares que já visitei" },
+  {
+    nome: "biblioteca",
+    aliases: ["livros", "estante", "books", "library"],
+    desc: "Livros que estou lendo, já li e quero ler",
+  },
   { nome: "steam", aliases: [], desc: "Jogos e conquistas na Steam" },
   { nome: "xbox", aliases: [], desc: "Jogos e conquistas no Xbox" },
   { nome: "wakatime", aliases: [], desc: "Meu tempo de código (WakaTime)" },
