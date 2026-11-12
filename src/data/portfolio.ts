@@ -1,3 +1,16 @@
+import type { IconType } from 'react-icons';
+import { FaJava } from 'react-icons/fa';
+import {
+  SiC,
+  SiCplusplus,
+  SiCss,
+  SiGit,
+  SiGithub,
+  SiHtml5,
+  SiJavascript,
+  SiLinux,
+} from 'react-icons/si';
+
 // ============================================================
 //  CONTEUDO DO PORTFOLIO
 //  Edite tudo por aqui. Os campos marcados com TODO sao
@@ -23,10 +36,66 @@ export const perfil = {
   },
 };
 
-export const habilidades: { grupo: string; itens: string[] }[] = [
-  { grupo: "Linguagens", itens: ["Java", "C", "C++", "JavaScript"] },
-  { grupo: "Front-end", itens: ["HTML", "CSS"] },
-  { grupo: "Ferramentas", itens: ["Linux (CachyOS)", "Git", "GitHub"] },
+export const habilidades: {
+  grupo: string;
+  itens: { nome: string; icone: IconType; link: string }[];
+}[] = [
+  {
+    grupo: "Linguagens",
+    itens: [
+      { nome: "Java", icone: FaJava, link: "https://dev.java/learn/" },
+      {
+        nome: "C",
+        icone: SiC,
+        link: "https://en.cppreference.com/w/c",
+      },
+      {
+        nome: "C++",
+        icone: SiCplusplus,
+        link: "https://en.cppreference.com/w/cpp",
+      },
+      {
+        nome: "JavaScript",
+        icone: SiJavascript,
+        link: "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript",
+      },
+    ],
+  },
+  {
+    grupo: "Front-end",
+    itens: [
+      {
+        nome: "HTML",
+        icone: SiHtml5,
+        link: "https://developer.mozilla.org/pt-BR/docs/Web/HTML",
+      },
+      {
+        nome: "CSS",
+        icone: SiCss,
+        link: "https://developer.mozilla.org/pt-BR/docs/Web/CSS",
+      },
+    ],
+  },
+  {
+    grupo: "Ferramentas",
+    itens: [
+      {
+        nome: "Linux (CachyOS)",
+        icone: SiLinux,
+        link: "https://wiki.cachyos.org/",
+      },
+      {
+        nome: "Git",
+        icone: SiGit,
+        link: "https://git-scm.com/book/pt-br/v2",
+      },
+      {
+        nome: "GitHub",
+        icone: SiGithub,
+        link: "https://docs.github.com/pt",
+      },
+    ],
+  },
 ];
 
 export const projetos: {

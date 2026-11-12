@@ -1,0 +1,334 @@
+/* =========================================================
+   HABILIDADES — toolbar, filtros e visões (globo / lista)
+   As cores --skill-* repetem os hex de SkillsGlobe.css para a
+   bolinha dos chips combinar com os nós do globo.
+   ========================================================= */
+
+.skills-section {
+  /* Tema escuro (GitHub dark) */
+  --skill-a: #e3b341; /* Linguagens */
+  --skill-b: #58a6ff; /* Front-end */
+  --skill-c: #3fb950; /* Ferramentas */
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* O gap do wrapper já espaça o título do resto */
+.skills-section .secao-titulo {
+  margin-bottom: 0;
+}
+
+.skills-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+
+  min-width: 0;
+}
+
+.skills-chips {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+
+  min-width: 0;
+}
+
+/* =========================================================
+   CHIPS DE CATEGORIA
+   ========================================================= */
+
+.skills-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.4rem;
+
+  padding: 0.32rem 0.7rem;
+
+  color: var(--texto-fraco);
+
+  background: var(--bg-alt);
+
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.2;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.skills-chip:hover {
+  color: var(--texto);
+
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--borda));
+}
+
+.skills-chip[aria-pressed='true'] {
+  color: var(--accent-contraste);
+
+  background: var(--accent);
+
+  border-color: var(--accent);
+}
+
+.skills-chip-dot {
+  flex: none;
+
+  width: 0.45rem;
+  height: 0.45rem;
+
+  background: var(--chip-cor, var(--accent));
+
+  border-radius: 50%;
+}
+
+/* A bolinha na cor da categoria nunca some sobre o fundo ativo */
+.skills-chip[aria-pressed='true'] .skills-chip-dot {
+  box-shadow: 0 0 0 1px var(--accent-contraste);
+}
+
+.skills-chip[data-grupo='linguagens'] {
+  --chip-cor: var(--skill-a);
+}
+
+.skills-chip[data-grupo='front-end'] {
+  --chip-cor: var(--skill-b);
+}
+
+.skills-chip[data-grupo='ferramentas'] {
+  --chip-cor: var(--skill-c);
+}
+
+.skills-chip-contagem {
+  font-size: 0.62rem;
+  opacity: 0.7;
+}
+
+.skills-chip[aria-pressed='true'] .skills-chip-contagem {
+  opacity: 0.85;
+}
+
+/* =========================================================
+   ALTERNADOR GLOBO / LISTA
+   ========================================================= */
+
+.skills-view {
+  display: inline-flex;
+  flex: none;
+  gap: 2px;
+
+  padding: 2px;
+
+  background: var(--bg-alt);
+
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+}
+
+.skills-view button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.3rem 0.65rem;
+
+  color: var(--texto-fraco);
+
+  background: transparent;
+
+  border: 0;
+  border-radius: 999px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.skills-view button:hover {
+  color: var(--accent);
+}
+
+.skills-view button[aria-pressed='true'] {
+  color: var(--accent-contraste);
+
+  background: var(--accent);
+}
+
+.skills-view svg {
+  width: 15px;
+  height: 15px;
+}
+
+.skills-chip:focus-visible,
+.skills-view button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   CONTEÚDO (globo + dica)
+   ========================================================= */
+
+.skills-visao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+
+  min-width: 0;
+}
+
+.skills-hint {
+  margin: 0;
+
+  color: var(--texto-fraco);
+
+  font-size: 0.72rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* =========================================================
+   TEMA CLARO — azul
+   ========================================================= */
+
+[data-theme='light'] .skills-section {
+  --skill-a: #0969da;
+  --skill-b: #8250df;
+  --skill-c: #1a7f37;
+}
+
+/* =========================================================
+   TEMA SYSTEM — HUD ciano
+   ========================================================= */
+
+[data-theme='system'] .skills-section {
+  --skill-a: #38e1ff;
+  --skill-b: #9d8cff;
+  --skill-c: #5eead4;
+}
+
+[data-theme='system'] .skills-chip,
+[data-theme='system'] .skills-view {
+  border-radius: 2px;
+
+  font-family: var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+[data-theme='system'] .skills-view button {
+  border-radius: 0;
+}
+
+[data-theme='system'] .skills-chip[aria-pressed='true'],
+[data-theme='system'] .skills-view button[aria-pressed='true'] {
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+[data-theme='system'] .skills-hint {
+  font-family: var(--display);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   TEMA GALACTIC_EMPIRE — imperial, cantos retos
+   ========================================================= */
+
+[data-theme='galactic_empire'] .skills-section {
+  --skill-a: #ff4a52;
+  --skill-b: #b8bcc0;
+  --skill-c: #6f8fa8;
+}
+
+[data-theme='galactic_empire'] .skills-chip,
+[data-theme='galactic_empire'] .skills-view {
+  border-radius: 0;
+
+  font-family: var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+[data-theme='galactic_empire'] .skills-view button {
+  border-radius: 0;
+}
+
+[data-theme='galactic_empire'] .skills-chip[aria-pressed='true'],
+[data-theme='galactic_empire'] .skills-view button[aria-pressed='true'] {
+  color: #ffffff;
+}
+
+[data-theme='galactic_empire'] .skills-hint {
+  font-family: var(--display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   RESPONSIVO — toolbar sem overflow em 320px
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .skills-toolbar {
+    gap: 0.5rem;
+  }
+
+  .skills-chips {
+    gap: 0.4rem;
+  }
+
+  .skills-chip {
+    gap: 0.32rem;
+
+    padding: 0.28rem 0.55rem;
+
+    font-size: 0.66rem;
+  }
+
+  .skills-chip-contagem {
+    font-size: 0.58rem;
+  }
+
+  .skills-view button {
+    padding: 0.26rem 0.5rem;
+  }
+
+  .skills-view svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .skills-hint {
+    font-size: 0.68rem;
+  }
+}
+
+/* =========================================================
+   MOVIMENTO REDUZIDO
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-chip,
+  .skills-chip-dot,
+  .skills-view button {
+    transition: none;
+  }
+}

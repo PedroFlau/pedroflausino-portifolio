@@ -1,0 +1,314 @@
+/* =========================================================
+   GLOBO DE HABILIDADES
+   Malha em <canvas> + nós em DOM (movidos por transform).
+   Cores por tema no próprio container.
+   ========================================================= */
+
+.skills-globe {
+  /* Tema escuro (GitHub dark) — cada tema sobrescreve abaixo */
+  --skills-line: #e3b341;
+  --skill-a: #e3b341; /* Linguagens */
+  --skill-b: #58a6ff; /* Front-end */
+  --skill-c: #3fb950; /* Ferramentas */
+
+  position: relative;
+
+  width: 100%;
+  height: clamp(280px, 50vw, 440px);
+
+  overflow: hidden;
+
+  touch-action: none; /* o dedo gira o globo em vez de rolar a página */
+  cursor: grab;
+  user-select: none;
+}
+
+.skills-globe:active {
+  cursor: grabbing;
+}
+
+.skills-globe-canvas {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+}
+
+.skills-globe-layer {
+  position: absolute;
+  inset: 0;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  pointer-events: none; /* só os nós (com pointer-events definido) recebem clique */
+}
+
+/* =========================================================
+   NÓ DE CADA SKILL
+   ========================================================= */
+
+.skills-globe-item {
+  --skill: var(--skill-a);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  color: var(--skill);
+
+  background: var(--bg-alt);
+
+  border: 1px solid color-mix(in srgb, var(--skill) 40%, var(--borda));
+  border-radius: 50%;
+
+  box-shadow:
+    0 2px 4px rgba(1, 4, 9, 0.35),
+    0 8px 18px -6px rgba(1, 4, 9, 0.6);
+
+  text-decoration: none;
+
+  will-change: transform, opacity;
+
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Cor do nó pela categoria (slug do grupo) */
+.skills-globe-item[data-grupo='linguagens'] {
+  --skill: var(--skill-a);
+}
+
+.skills-globe-item[data-grupo='front-end'] {
+  --skill: var(--skill-b);
+}
+
+.skills-globe-item[data-grupo='ferramentas'] {
+  --skill: var(--skill-c);
+}
+
+.skills-globe-item svg {
+  width: 26px;
+  height: 26px;
+
+  transition: transform 0.2s ease;
+}
+
+.skills-globe-item:hover,
+.skills-globe-item:focus-visible {
+  background: color-mix(in srgb, var(--skill) 10%, var(--bg-alt));
+
+  border-color: var(--skill);
+
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--skill) 28%, transparent),
+    0 0 18px color-mix(in srgb, var(--skill) 40%, transparent),
+    0 10px 24px -6px rgba(1, 4, 9, 0.55);
+
+  outline: none;
+}
+
+.skills-globe-item:hover svg,
+.skills-globe-item:focus-visible svg {
+  transform: scale(1.15);
+}
+
+/* Nome da skill (tooltip no hover/foco) */
+
+.skills-globe-label {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+
+  padding: 0.25rem 0.6rem;
+
+  color: var(--skill);
+
+  background: var(--bg-alt);
+
+  border: 1px solid color-mix(in srgb, var(--skill) 45%, var(--borda));
+  border-radius: 6px;
+
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transform: translate(-50%, -4px);
+
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.skills-globe-item:hover .skills-globe-label,
+.skills-globe-item:focus-visible .skills-globe-label {
+  opacity: 1;
+
+  transform: translate(-50%, 0);
+}
+
+/* =========================================================
+   TEMA CLARO — fundo branco e sombras suaves
+   ========================================================= */
+
+[data-theme='light'] .skills-globe {
+  --skills-line: #0969da;
+  --skill-a: #0969da;
+  --skill-b: #8250df;
+  --skill-c: #1a7f37;
+}
+
+[data-theme='light'] .skills-globe-item {
+  background: #ffffff;
+
+  box-shadow:
+    0 2px 4px rgba(31, 35, 40, 0.06),
+    0 8px 18px -6px rgba(31, 35, 40, 0.18);
+}
+
+[data-theme='light'] .skills-globe-item:hover,
+[data-theme='light'] .skills-globe-item:focus-visible {
+  background: color-mix(in srgb, var(--skill) 8%, #ffffff);
+
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--skill) 22%, transparent),
+    0 0 16px color-mix(in srgb, var(--skill) 26%, transparent),
+    0 10px 24px -8px rgba(31, 35, 40, 0.22);
+}
+
+[data-theme='light'] .skills-globe-label {
+  background: #ffffff;
+}
+
+/* =========================================================
+   TEMA SYSTEM — HUD holográfico ciano
+   ========================================================= */
+
+[data-theme='system'] .skills-globe {
+  --skills-line: #38e1ff;
+  --skill-a: #38e1ff;
+  --skill-b: #9d8cff;
+  --skill-c: #5eead4;
+
+  background: linear-gradient(160deg, rgba(8, 30, 58, 0.92), rgba(2, 11, 24, 0.94));
+
+  border: 1px solid color-mix(in srgb, var(--skills-line) 26%, transparent);
+  border-radius: 2px;
+
+  box-shadow: inset 0 0 44px rgba(56, 225, 255, 0.08);
+}
+
+[data-theme='system'] .skills-globe-item {
+  border-radius: 2px;
+
+  background: color-mix(in srgb, var(--skill) 8%, rgba(2, 11, 24, 0.9));
+
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--skill) 22%, transparent),
+    0 0 14px color-mix(in srgb, var(--skill) 28%, transparent);
+}
+
+[data-theme='system'] .skills-globe-item:hover,
+[data-theme='system'] .skills-globe-item:focus-visible {
+  background: color-mix(in srgb, var(--skill) 18%, rgba(2, 11, 24, 0.9));
+
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--skill) 45%, transparent),
+    0 0 22px color-mix(in srgb, var(--skill) 55%, transparent);
+}
+
+[data-theme='system'] .skills-globe-label {
+  border-radius: 2px;
+
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* =========================================================
+   TEMA GALACTIC_EMPIRE — imperial, cantos retos
+   ========================================================= */
+
+[data-theme='galactic_empire'] .skills-globe {
+  --skills-line: #ff4a52;
+  --skill-a: #ff4a52;
+  --skill-b: #b8bcc0;
+  --skill-c: #6f8fa8;
+
+  background: linear-gradient(160deg, #17191d, #0b0c0e);
+
+  border: 1px solid var(--borda);
+  border-radius: 0;
+}
+
+[data-theme='galactic_empire'] .skills-globe-item {
+  border-radius: 0;
+
+  background: #131519;
+
+  border: 1px solid color-mix(in srgb, var(--skill) 35%, var(--borda));
+  border-top: 2px solid var(--skill);
+
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.9);
+}
+
+[data-theme='galactic_empire'] .skills-globe-item:hover,
+[data-theme='galactic_empire'] .skills-globe-item:focus-visible {
+  background: color-mix(in srgb, var(--skill) 12%, #131519);
+
+  border-color: var(--skill);
+
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--skill) 40%, transparent),
+    0 0 20px rgba(255, 74, 82, 0.35),
+    0 6px 18px -8px rgba(0, 0, 0, 0.9);
+}
+
+[data-theme='galactic_empire'] .skills-globe-label {
+  border-radius: 0;
+
+  font-family: var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* =========================================================
+   RESPONSIVO / MOVIMENTO REDUZIDO
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .skills-globe-item {
+    width: 40px;
+    height: 40px;
+  }
+
+  .skills-globe-item svg {
+    width: 21px;
+    height: 21px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-globe-item,
+  .skills-globe-item svg,
+  .skills-globe-label {
+    transition: none;
+  }
+}
