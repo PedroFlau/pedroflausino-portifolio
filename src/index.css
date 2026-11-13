@@ -3,12 +3,40 @@
 /* ===== Tema escuro (padrão) ===== */
 :root {
   --mono: 'Fira Code', 'Courier New', monospace;
+  color-scheme: dark;
+
+  /* Escala tipográfica — nada abaixo de 12px */
+  --fs-2xs: 0.75rem;
+  --fs-xs: 0.8rem;
+  --fs-sm: 0.85rem;
+  --fs-base: 0.9rem;
+  --fs-md: 0.95rem;
+  --fs-1: 1rem;
+  --fs-lg: 1.1rem;
+  --fs-xl: 1.4rem;
+  --fs-hero: 2.4rem;
+
+  /* Raios */
+  --raio-sm: 6px;
+  --raio-md: 10px;
+  --raio-lg: 14px;
+  --raio-pill: 999px;
+
+  /* Espaçamento (usar só em regras novas ou já alteradas nesta rodada) */
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 24px;
+  --esp-6: 32px;
+  --esp-7: 48px;
 
   --bg: #0d1117;
   --bg-alt: #161b22;
   --borda: #30363d;
   --texto: #c9d1d9;
   --texto-fraco: #8b949e;
+  --ok: #3fb950; /* estado positivo (codando agora, monitoria em sessão) */
   --accent: #e3b341; /* detalhes em amarelo no escuro */
   --accent-contraste: #0d1117;
   --nav-bg: rgba(13, 17, 23, 0.85);
@@ -21,11 +49,13 @@
 
 /* ===== Tema claro ===== */
 [data-theme='light'] {
+  color-scheme: light;
   --bg: #ffffff;
   --bg-alt: #f6f8fa;
   --borda: #d0d7de;
   --texto: #1f2328;
   --texto-fraco: #59636e;
+  --ok: #1a7f37;
   --accent: #0969da; /* detalhes em azul no claro */
   --accent-contraste: #ffffff;
   --nav-bg: rgba(255, 255, 255, 0.85);
@@ -42,6 +72,7 @@
   --borda: rgba(56, 225, 255, 0.28);
   --texto: #d6f4ff;
   --texto-fraco: #7aa8c4;
+  --ok: #38ffa8;
   --accent: #38e1ff;
   --accent-contraste: #00121d;
   --nav-bg: rgba(3, 10, 23, 0.85);
@@ -60,6 +91,7 @@
   --borda: rgba(100, 105, 108, 0.6);
   --texto: #f1f2f3;
   --texto-fraco: #92979c;
+  --ok: var(--neon-red);
   --accent: #d92c31; /* Imperial Red, levemente clareado para tela */
   --accent-contraste: #ffffff;
   --nav-bg: rgba(8, 9, 11, 0.9);
@@ -90,7 +122,7 @@ body {
   background-color: var(--bg);
   color: var(--texto);
   font-family: var(--mono);
-  font-size: 16px;
+  font-size: var(--fs-1);
   line-height: 1.6;
   min-height: 100vh;
   background-image:
@@ -120,13 +152,13 @@ a {
 }
 
 .secao-titulo {
-  font-size: 1.4rem;
+  font-size: var(--fs-xl);
   margin-bottom: 28px;
   color: var(--texto);
 }
 
 .card-titulo {
-  font-size: 0.95rem;
+  font-size: var(--fs-md);
   color: var(--accent);
   margin-bottom: 14px;
   text-transform: lowercase;
@@ -162,12 +194,12 @@ a {
 }
 
 .hero-comando {
-  font-size: 0.9rem;
+  font-size: var(--fs-base);
   margin-bottom: 8px;
 }
 
 .hero-nome {
-  font-size: 2.4rem;
+  font-size: var(--fs-hero);
   line-height: 1.2;
   margin-bottom: 14px;
 }
@@ -191,9 +223,9 @@ a {
 
 .botao {
   border: 1px solid var(--borda);
-  border-radius: 8px;
+  border-radius: var(--raio-md);
   padding: 10px 20px;
-  font-size: 0.9rem;
+  font-size: var(--fs-base);
   transition: all 0.15s;
 }
 
@@ -284,6 +316,8 @@ a {
   flex: 1;
   overflow-y: auto;
   padding: clamp(20px, 4vw, 40px) clamp(16px, 5vw, 64px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--borda) transparent;
 }
 
 .terminal-scroll .hero {
@@ -292,7 +326,7 @@ a {
 
 .terminal-hint {
   color: var(--texto-fraco);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   margin-bottom: 28px;
 }
 
@@ -303,7 +337,7 @@ a {
   flex-shrink: 0;
   padding: 12px clamp(16px, 5vw, 64px);
   background: var(--term-bg);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
 }
 
 .terminal-item {
@@ -314,7 +348,7 @@ a {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
 }
 
 .terminal-input {
@@ -322,7 +356,7 @@ a {
   border: none;
   color: var(--texto);
   font-family: var(--mono);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   outline: none;
   flex: 0 0 auto;
   min-width: 1ch;
@@ -359,7 +393,7 @@ a {
 .cmd-card {
   background: var(--bg-alt);
   border: 1px solid var(--borda);
-  border-radius: 10px;
+  border-radius: var(--raio-md);
   padding: 14px 16px;
   margin-bottom: 12px;
 }
@@ -442,13 +476,13 @@ a {
   gap: 4px;
   padding: 3px;
   border: 1px solid var(--borda);
-  border-radius: 8px;
+  border-radius: var(--raio-sm);
   background: var(--bg);
 }
 
 .mapa-botoes > button {
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: var(--fs-xs);
   color: var(--texto-fraco);
   background: transparent;
   border: none;
@@ -468,7 +502,7 @@ a {
 }
 
 .mapa-contagem {
-  font-size: 0.8rem;
+  font-size: var(--fs-xs);
 }
 
 .mapa-canvas {
@@ -497,7 +531,7 @@ a {
 }
 
 .mapa-legenda {
-  font-size: 0.8rem;
+  font-size: var(--fs-xs);
 }
 
 @media (max-width: 640px) {
@@ -520,7 +554,7 @@ a {
 
 .passaporte-abrir {
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: var(--fs-xs);
   color: var(--accent);
   background: var(--tag-bg);
   border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--borda));
@@ -564,7 +598,7 @@ a {
   width: 34px;
   height: 34px;
   font-family: var(--mono);
-  font-size: 1.2rem;
+  font-size: var(--fs-lg);
   line-height: 1;
   color: var(--texto);
   background: var(--bg-alt);
@@ -638,14 +672,14 @@ a {
 }
 
 .passaporte-titulo {
-  font-size: 0.88rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.18em;
   color: #1d3b2f;
 }
 
 .passaporte-sub {
-  font-size: 0.6rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #7d6a45;
@@ -690,7 +724,7 @@ a {
 }
 
 .passaporte-carimbo-pais {
-  font-size: 1rem;
+  font-size: var(--fs-1);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.08em;
@@ -698,7 +732,7 @@ a {
 }
 
 .passaporte-carimbo-info {
-  font-size: 0.58rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   opacity: 0.8;
@@ -706,7 +740,7 @@ a {
 
 .passaporte-numero {
   align-self: center;
-  font-size: 0.62rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.15em;
   color: #8a7750;
 }
@@ -726,7 +760,7 @@ a {
   width: 38px;
   height: 38px;
   font-family: var(--mono);
-  font-size: 1.3rem;
+  font-size: var(--fs-xl);
   line-height: 1;
   color: var(--texto);
   background: transparent;
@@ -748,7 +782,7 @@ a {
 
 .passaporte-posicao {
   min-width: 4.5rem;
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   letter-spacing: 0.1em;
   text-align: center;
   color: var(--texto-fraco);
@@ -817,7 +851,7 @@ a {
   }
 
   .passaporte-carimbo-pais {
-    font-size: 0.9rem;
+    font-size: var(--fs-base);
   }
 }
 
@@ -842,21 +876,23 @@ a {
 
 .waka-kv dt {
   color: var(--texto-fraco);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .waka-kv dd {
   color: var(--accent);
-  font-size: 1rem;
+  font-size: var(--fs-1);
 }
 
 .waka-tabela {
   display: grid;
-  grid-template-columns: max-content minmax(90px, 1fr) max-content max-content;
+  /* A coluna do nome pode encolher: só as de tempo/% usam max-content */
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) minmax(80px, 1.2fr) max-content max-content;
   align-items: center;
-  column-gap: 16px;
+  column-gap: var(--esp-4);
   row-gap: 3px;
 }
 
@@ -878,15 +914,16 @@ a {
 .waka-titulo {
   grid-column: 1 / -1;
   color: var(--texto-fraco);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .waka-nome {
+  min-width: 0;
   overflow: hidden;
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -910,7 +947,7 @@ a {
 .waka-tempo,
 .waka-pct {
   color: var(--texto-fraco);
-  font-size: 0.8rem;
+  font-size: var(--fs-xs);
   text-align: right;
   white-space: nowrap;
 }
@@ -927,7 +964,7 @@ a {
 }
 
 .waka-rodape {
-  font-size: 0.8rem;
+  font-size: var(--fs-xs);
 }
 
 .waka-vivo {
@@ -948,7 +985,7 @@ a {
 .waka-kv-nota {
   display: block;
   color: var(--texto-fraco);
-  font-size: 0.72rem;
+  font-size: var(--fs-2xs);
 }
 
 /* Seletor de período (estilo flags de terminal) */
@@ -960,11 +997,11 @@ a {
 
 .waka-periodo {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: var(--fs-2xs);
   color: var(--texto-fraco);
   background: transparent;
   border: 1px solid var(--borda);
-  border-radius: 6px;
+  border-radius: var(--raio-sm);
   padding: 3px 10px;
   cursor: pointer;
   transition: border-color 0.15s, color 0.15s, background 0.15s;
@@ -993,7 +1030,7 @@ a {
 
 /* "Codando agora" — mesmo desenho do cartão da monitoria */
 .waka-agora {
-  --waka-agora-cor: #3fb950;
+  --waka-agora-cor: var(--ok);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1006,10 +1043,6 @@ a {
     color-mix(in srgb, var(--waka-agora-cor) 14%, var(--bg-alt)),
     var(--bg-alt) 72%
   );
-}
-
-[data-theme='light'] .waka-agora {
-  --waka-agora-cor: #1a7f37;
 }
 
 .waka-agora.parado {
@@ -1035,7 +1068,7 @@ a {
   align-items: center;
   gap: 8px;
   color: var(--waka-agora-cor);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1056,7 +1089,7 @@ a {
 .waka-agora-sinal,
 .waka-agora-texto {
   color: var(--texto-fraco);
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
 }
 
 .waka-agora-destaque {
@@ -1076,7 +1109,7 @@ a {
   max-width: 100%;
   overflow: hidden;
   color: var(--accent);
-  font-size: 1.1rem;
+  font-size: var(--fs-lg);
   font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1091,11 +1124,11 @@ a {
   overflow: hidden;
   padding: 1px 9px;
   color: var(--texto-fraco);
-  font-size: 0.75rem;
+  font-size: var(--fs-2xs);
   text-overflow: ellipsis;
   white-space: nowrap;
   border: 1px solid var(--borda);
-  border-radius: 999px;
+  border-radius: var(--raio-pill);
 }
 
 .waka-agora-meta {
@@ -1104,7 +1137,7 @@ a {
   gap: 4px 0;
   list-style: none;
   color: var(--texto-fraco);
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
 }
 
 .waka-agora-meta > li:not(:last-child)::after {
@@ -1127,19 +1160,50 @@ a {
   }
 }
 
+/* No celular cada linha vira duas: nome/tempo em cima, barra/% embaixo.
+   O subgrid sai de cena porque a tabela passa a ser um bloco comum. */
 @media (max-width: 640px) {
-  .waka-tabela {
-    grid-template-columns: max-content minmax(60px, 1fr) max-content max-content;
-    column-gap: 10px;
+  .waka-tabela,
+  .waka-secao,
+  .waka-lista {
+    display: block;
+  }
+
+  .waka-linha {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'nome tempo'
+      'barra pct';
+    column-gap: var(--esp-2);
+    row-gap: var(--esp-1);
+    padding: var(--esp-1) 0;
   }
 
   .waka-nome {
-    font-size: 0.8rem;
+    grid-area: nome;
+    font-size: var(--fs-xs);
+  }
+
+  .waka-tempo {
+    grid-area: tempo;
+  }
+
+  .waka-barra {
+    grid-area: barra;
+  }
+
+  .waka-pct {
+    grid-area: pct;
+  }
+
+  .waka-titulo {
+    margin-bottom: var(--esp-1);
   }
 
   .waka-tempo,
   .waka-pct {
-    font-size: 0.75rem;
+    font-size: var(--fs-2xs);
   }
 }
 
@@ -1167,7 +1231,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 0.9rem;
+  font-size: var(--fs-base);
 }
 
 /* ===== Habilidades ===== */
@@ -1191,7 +1255,7 @@ a {
 }
 
 .tag {
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   padding: 4px 10px;
   border: 1px solid var(--borda);
   border-radius: 20px;
@@ -1245,18 +1309,18 @@ a {
 }
 
 .projeto-nome {
-  font-size: 1.05rem;
+  font-size: var(--fs-lg);
 }
 
 .projeto-descricao {
   color: var(--texto-fraco);
-  font-size: 0.9rem;
+  font-size: var(--fs-base);
   flex: 1;
 }
 
 .projeto-link {
   color: var(--accent);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
 }
 
 .projeto-links {
@@ -1280,20 +1344,21 @@ a {
 .contato-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  align-items: stretch;
   gap: 16px;
 }
 
 .contato-card {
   background: var(--bg-alt);
   border: 1px solid var(--borda);
-  border-radius: 10px;
+  border-radius: var(--raio-md);
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   transition: border-color 0.15s;
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .contato-card:hover {
@@ -1306,7 +1371,7 @@ a {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 0.8rem;
+  font-size: var(--fs-xs);
   max-width: 1040px;
   margin: 0 auto;
   padding: 24px;
@@ -1340,11 +1405,7 @@ a {
 
 /* Durante a sessão o cartão fica verde */
 .monitoria-card--agora {
-  --monitoria-cor: #3fb950;
-}
-
-[data-theme='light'] .monitoria-card--agora {
-  --monitoria-cor: #1a7f37;
+  --monitoria-cor: var(--ok);
 }
 
 .monitoria-topo {
@@ -1359,7 +1420,7 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   font-weight: 700;
   letter-spacing: 0.14em;
   color: var(--monitoria-cor);
@@ -1383,11 +1444,11 @@ a {
 }
 
 .monitoria-etiqueta {
-  font-size: 0.68rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.04em;
   white-space: nowrap;
   padding: 2px 9px;
-  border-radius: 999px;
+  border-radius: var(--raio-pill);
   color: var(--monitoria-cor);
   border: 1px solid color-mix(in srgb, var(--monitoria-cor) 40%, transparent);
   background: color-mix(in srgb, var(--monitoria-cor) 12%, transparent);
@@ -1397,7 +1458,7 @@ a {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 1.3rem;
+  font-size: var(--fs-xl);
   font-weight: 700;
   line-height: 1.25;
   color: var(--texto);
@@ -1411,7 +1472,7 @@ a {
 
 .monitoria-contagem {
   margin-top: 4px;
-  font-size: 1.1rem;
+  font-size: var(--fs-lg);
   font-weight: 700;
   color: var(--monitoria-cor);
 }
@@ -1436,7 +1497,7 @@ a {
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px solid color-mix(in srgb, var(--monitoria-cor) 22%, transparent);
-  font-size: 1.15rem;
+  font-size: var(--fs-lg);
   font-weight: 700;
   line-height: 1.3;
   color: var(--texto);
@@ -1444,7 +1505,7 @@ a {
 
 .monitoria-info {
   margin-top: 4px;
-  font-size: 0.8rem;
+  font-size: var(--fs-xs);
   color: var(--texto-fraco);
 }
 
@@ -1461,7 +1522,7 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 0.82rem;
+  font-size: var(--fs-xs);
   color: var(--texto-fraco);
 }
 
@@ -1484,7 +1545,7 @@ a {
   }
 
   .hero-nome {
-    font-size: 1.9rem;
+    font-size: var(--fs-hero);
   }
 
   .sobre-grid {
@@ -1492,7 +1553,40 @@ a {
   }
 
   .monitoria-quando {
-    font-size: 1.1rem;
+    font-size: var(--fs-lg);
+  }
+}
+
+/* Em telas estreitas o nome do hero encolhe de forma fluida para não quebrar */
+@media (max-width: 640px) {
+  .hero-nome {
+    font-size: clamp(1.75rem, 8vw, 2.2rem);
+  }
+
+  /* A foto encolhe em largura e altura para o conteúdo chegar antes dela */
+  .foto-card {
+    max-width: 280px;
+  }
+
+  /* Altura fixa no próprio img, com corte suave mantendo o rosto enquadrado */
+  .foto-perfil {
+    height: 34vh;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  /* Os três botões fecham em duas colunas cheias (2 + 1 ocupando a linha) */
+  .hero-botoes {
+    gap: var(--esp-2);
+  }
+
+  .hero-botoes .botao {
+    flex: 1 1 calc(50% - var(--esp-2));
+    text-align: center;
+  }
+
+  .terminal-hint {
+    margin-bottom: var(--esp-5);
   }
 }
 
@@ -1663,7 +1757,7 @@ a {
 [data-theme='system'] .hero-comando {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
 }
 
 [data-theme='system'] .hero-nome {
@@ -1678,7 +1772,7 @@ a {
 [data-theme='system'] .hero-titulo {
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  font-size: 0.82rem;
+  font-size: var(--fs-xs);
   color: var(--accent);
   opacity: 0.85;
 }
@@ -1770,7 +1864,7 @@ a {
   align-items: center;
   gap: 14px;
   font-family: var(--display);
-  font-size: 1.45rem;
+  font-size: var(--fs-xl);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -1787,7 +1881,7 @@ a {
 
 [data-theme='system'] .card-titulo {
   font-family: var(--display);
-  font-size: 0.95rem;
+  font-size: var(--fs-md);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -1879,7 +1973,7 @@ a {
   border-color: rgba(56, 225, 255, 0.35);
   background: rgba(56, 225, 255, 0.07);
   color: var(--texto);
-  font-size: 0.72rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -1909,10 +2003,6 @@ a {
   border-left-color: var(--monitoria-cor);
 }
 
-[data-theme='system'] .monitoria-card--agora {
-  --monitoria-cor: #38ffa8;
-}
-
 [data-theme='system'] .monitoria-rotulo,
 [data-theme='system'] .monitoria-etiqueta {
   font-family: var(--display);
@@ -1922,7 +2012,7 @@ a {
 
 [data-theme='system'] .monitoria-quando {
   font-family: var(--display);
-  font-size: 1.5rem;
+  font-size: var(--fs-xl);
   letter-spacing: 0.04em;
 }
 
@@ -1986,7 +2076,6 @@ a {
 }
 
 [data-theme='system'] .waka-agora {
-  --waka-agora-cor: #38ffa8;
   border-radius: 2px;
   background: linear-gradient(
     160deg,
@@ -2010,7 +2099,7 @@ a {
 
 [data-theme='system'] .waka-agora-nome {
   font-family: var(--display);
-  font-size: 1.25rem;
+  font-size: var(--fs-xl);
   letter-spacing: 0.04em;
   text-shadow: 0 0 10px rgba(56, 225, 255, 0.3);
 }
@@ -2029,7 +2118,7 @@ a {
 [data-theme='system'] .mapa-botoes > button {
   border-radius: 1px;
   font-family: var(--display);
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -2250,7 +2339,7 @@ a {
 
 [data-theme='galactic_empire'] .terminal-bar-titulo {
   font-family: var(--display);
-  font-size: 0.95rem;
+  font-size: var(--fs-md);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3em;
@@ -2355,13 +2444,13 @@ a {
 [data-theme='galactic_empire'] .hero-comando {
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  font-size: 0.76rem;
+  font-size: var(--fs-xs);
 }
 
 [data-theme='galactic_empire'] .hero-nome {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 2.7rem;
+  font-size: var(--fs-hero);
   text-transform: uppercase;
   letter-spacing: 0.03em;
   line-height: 1.05;
@@ -2371,7 +2460,7 @@ a {
   font-family: var(--display);
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  font-size: 0.88rem;
+  font-size: var(--fs-sm);
   color: var(--texto-fraco);
 }
 
@@ -2472,7 +2561,7 @@ a {
   align-items: center;
   gap: 14px;
   font-family: var(--display);
-  font-size: 1.55rem;
+  font-size: var(--fs-xl);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -2504,7 +2593,7 @@ a {
 
 [data-theme='galactic_empire'] .card-titulo {
   font-family: var(--display);
-  font-size: 0.95rem;
+  font-size: var(--fs-md);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -2593,7 +2682,7 @@ a {
   border-color: var(--borda);
   background: rgba(255, 255, 255, 0.03);
   font-family: var(--display);
-  font-size: 0.72rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   transition:
@@ -2639,10 +2728,6 @@ a {
     0 10px 26px rgba(0, 0, 0, 0.45);
 }
 
-[data-theme='galactic_empire'] .monitoria-card--agora {
-  --monitoria-cor: #8fae95; /* Valor Green clareado */
-}
-
 [data-theme='galactic_empire'] .monitoria-rotulo,
 [data-theme='galactic_empire'] .monitoria-etiqueta {
   font-family: var(--display);
@@ -2652,7 +2737,7 @@ a {
 
 [data-theme='galactic_empire'] .monitoria-quando {
   font-family: var(--display);
-  font-size: 1.55rem;
+  font-size: var(--fs-xl);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -2716,7 +2801,6 @@ a {
 }
 
 [data-theme='galactic_empire'] .waka-agora {
-  --waka-agora-cor: #8fae95; /* Valor Green clareado, igual à monitoria */
   border-radius: 0;
   background: linear-gradient(
     160deg,
@@ -2736,7 +2820,7 @@ a {
 
 [data-theme='galactic_empire'] .waka-agora-nome {
   font-family: var(--display);
-  font-size: 1.3rem;
+  font-size: var(--fs-xl);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #ffffff;
@@ -2756,7 +2840,7 @@ a {
 [data-theme='galactic_empire'] .mapa-botoes > button {
   border-radius: 0;
   font-family: var(--display);
-  font-size: 0.78rem;
+  font-size: var(--fs-xs);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -3059,7 +3143,7 @@ a {
   gap: 0.8rem;
   color: var(--tp-title-color);
   font-family: var(--tp-title-font);
-  font-size: 0.98rem;
+  font-size: var(--fs-1);
   font-weight: 700;
   letter-spacing: var(--tp-title-spacing);
   text-transform: uppercase;
@@ -3068,14 +3152,14 @@ a {
 
 .temas-ornamento {
   color: var(--tp-accent-2);
-  font-size: 0.8rem;
+  font-size: var(--fs-xs);
 }
 
 .temas-header-sub {
   margin-top: 4px;
   color: var(--tp-dim);
   font-family: var(--tp-label-font);
-  font-size: 0.72rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -3086,7 +3170,7 @@ a {
   padding: 4px 0 4px 18px;
   border-left: 1px solid var(--tp-info-border);
   font-family: var(--tp-label-font);
-  font-size: 0.82rem;
+  font-size: var(--fs-xs);
   line-height: 1.75;
 }
 
@@ -3095,7 +3179,7 @@ a {
   position: absolute;
   left: -1px;
   color: var(--tp-accent-2);
-  font-size: 1rem;
+  font-size: var(--fs-1);
   line-height: 1;
 }
 
@@ -3153,7 +3237,7 @@ a {
   gap: 7px;
   padding: 12px 14px 4px;
   font-family: var(--tp-label-font);
-  font-size: 0.86rem;
+  font-size: var(--fs-sm);
   color: var(--tp-dim);
 }
 
@@ -3184,7 +3268,7 @@ a {
   padding: 0 14px;
   color: var(--tp-dim);
   font-family: var(--tp-label-font);
-  font-size: 0.74rem;
+  font-size: var(--fs-2xs);
 }
 
 .temas-instrucao {
@@ -3270,7 +3354,7 @@ a {
 .temas-nome {
   color: inherit;
   font-family: var(--tp-name-font);
-  font-size: 0.86rem;
+  font-size: var(--fs-sm);
   font-weight: var(--tp-name-weight);
   letter-spacing: var(--tp-name-spacing);
   line-height: 1.4;
@@ -3284,7 +3368,7 @@ a {
 .temas-descricao {
   color: var(--tp-dim);
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   line-height: 1.35;
 }
 
@@ -3295,7 +3379,7 @@ a {
   margin-left: auto;
   color: var(--tp-green);
   font-family: var(--tp-label-font);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   white-space: nowrap;
 }
 
@@ -3307,7 +3391,7 @@ a {
   padding: 10px 14px;
   color: var(--tp-dim);
   font-family: var(--tp-label-font);
-  font-size: 0.72rem;
+  font-size: var(--fs-2xs);
 }
 
 .temas-rodape span {
@@ -3323,7 +3407,7 @@ a {
   background: var(--tp-kbd-bg);
   color: var(--tp-kbd-text);
   font-family: inherit;
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   line-height: 1.5;
 }
 
@@ -3334,7 +3418,7 @@ a {
   background: transparent;
   color: var(--tp-dim);
   font-family: var(--tp-label-font);
-  font-size: 0.72rem;
+  font-size: var(--fs-2xs);
   cursor: pointer;
 }
 
@@ -3524,7 +3608,7 @@ a {
 }
 
 [data-theme='system'] .temas-header-titulo {
-  font-size: 1rem;
+  font-size: var(--fs-1);
   letter-spacing: 0.2em;
 }
 
@@ -3534,7 +3618,7 @@ a {
 }
 
 [data-theme='system'] .temas-info {
-  font-size: 0.86rem;
+  font-size: var(--fs-sm);
   line-height: 1.6;
 }
 
@@ -3549,7 +3633,7 @@ a {
 }
 
 [data-theme='system'] .temas-prompt-valor {
-  font-size: 1.05rem;
+  font-size: var(--fs-lg);
 }
 
 [data-theme='system'] .temas-opcao--ativa {
@@ -3666,7 +3750,7 @@ a {
 }
 
 [data-theme='galactic_empire'] .temas-header-titulo {
-  font-size: 1.02rem;
+  font-size: var(--fs-1);
   letter-spacing: 0.28em;
 }
 
@@ -3690,7 +3774,7 @@ a {
 }
 
 [data-theme='galactic_empire'] .temas-prompt-valor {
-  font-size: 1.04rem;
+  font-size: var(--fs-1);
 }
 
 [data-theme='galactic_empire'] .temas-opcao--ativa {
@@ -3752,13 +3836,13 @@ a {
   }
 
   .temas-header-titulo {
-    font-size: 0.8rem;
+    font-size: var(--fs-xs);
     letter-spacing: 0.16em;
   }
 
   [data-theme='system'] .temas-header-titulo,
   [data-theme='galactic_empire'] .temas-header-titulo {
-    font-size: 0.9rem;
+    font-size: var(--fs-base);
   }
 
   .temas-info {
@@ -3770,7 +3854,7 @@ a {
   }
 
   .temas-descricao {
-    font-size: 0.64rem;
+    font-size: var(--fs-2xs);
   }
 
   .temas-rodape {

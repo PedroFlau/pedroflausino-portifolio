@@ -120,11 +120,6 @@ export const projetos: {
     link: "https://github.com/fernandoleitepagani/visualize_it",
     demo: "https://visualizeit-pi.vercel.app/",
   },
-  {
-    nome: "Em breve",
-    descricao: "Espaço reservado para o próximo projeto. Volte em breve! 👀",
-    tecnologias: [],
-  },
 ];
 
 export const formacao = [
@@ -136,8 +131,9 @@ export const formacao = [
 ];
 
 // ------------------------------------------------------------
-//  DADOS EXTRAS (usados pelos comandos do terminal)
-//  Preencha os campos marcados com TODO.
+//  DADOS EXTRAS
+//  Guardados para quando houver conteúdo; não são comandos
+//  do terminal enquanto estiverem vazios.
 // ------------------------------------------------------------
 
 // Monitoria
@@ -243,22 +239,12 @@ export const comandos: { nome: string; aliases: string[]; desc: string }[] = [
     aliases: ["tutoring"],
     desc: "Matéria e horários da monitoria",
   },
-  { nome: "curriculo", aliases: ["resume"], desc: "Meu currículo (PDF)" },
-  { nome: "lattes", aliases: ["academic"], desc: "Meu currículo Lattes" },
-  {
-    nome: "recomendacoes",
-    aliases: ["recommendations"],
-    desc: "Minhas recomendações",
-  },
-  { nome: "premios", aliases: ["awards"], desc: "Prêmios e reconhecimentos" },
   { nome: "viagens", aliases: ["travel"], desc: "Lugares que já visitei" },
   {
     nome: "biblioteca",
     aliases: ["livros", "estante", "books", "library"],
     desc: "Livros que estou lendo, já li e quero ler",
   },
-  { nome: "steam", aliases: [], desc: "Jogos e conquistas na Steam" },
-  { nome: "xbox", aliases: [], desc: "Jogos e conquistas no Xbox" },
   { nome: "wakatime", aliases: [], desc: "Meu tempo de código (WakaTime)" },
   {
     nome: "temas",

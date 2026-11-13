@@ -3,10 +3,15 @@ import { perfil } from '../data/portfolio';
 export function Contact() {
   const { github, linkedin, email } = perfil.links;
 
+  // Rótulos curtos e legíveis; o href continua com a URL completa.
   const canais = [
     { rotulo: 'e-mail', valor: email, href: `mailto:${email}` },
-    { rotulo: 'github', valor: github.replace('https://', ''), href: github },
-    { rotulo: 'linkedin', valor: linkedin.replace('https://', ''), href: linkedin },
+    { rotulo: 'github', valor: 'github.com/PedroFlau', href: github },
+    {
+      rotulo: 'linkedin',
+      valor: 'in/pedro-flausino-mendonca',
+      href: linkedin,
+    },
   ];
 
   return (

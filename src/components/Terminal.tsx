@@ -10,21 +10,11 @@ import { Monitoria } from './Monitoria';
 import { SeletorTemas } from './SeletorTemas';
 import { WakaTime } from './WakaTime';
 import { useTema, ORDEM_TEMAS, type Tema } from '../hooks/useTema';
-import {
-  comandos,
-  curriculo,
-  jogos,
-  lattes,
-  monitoria,
-  premios,
-  recomendacoes,
-  viagens,
-  type JogoConquistas,
-} from '../data/portfolio';
+import { comandos, monitoria, viagens } from '../data/portfolio';
 
 type ItemHistorico = { comando: string; saida: ReactNode };
 
-/** Remove acentos e deixa minúsculo (aceita "curriculo" e "currículo"). */
+/** Remove acentos e deixa minúsculo (aceita "monitória" e "monitoria"). */
 const normalizar = (texto: string) =>
   texto
     .trim()
@@ -42,13 +32,6 @@ function resolver(token: string): string | null {
   return null;
 }
 
-/** Barra de progresso de conquistas estilo terminal. */
-function barra(feitas: number, total: number): string {
-  const pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
-  const cheios = Math.max(0, Math.min(10, Math.round(pct / 10)));
-  return `${'█'.repeat(cheios)}${'░'.repeat(10 - cheios)}  ${feitas}/${total}  (${pct}%)`;
-}
-
 function Card({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
     <div className="cmd-card">
@@ -60,38 +43,6 @@ function Card({ titulo, children }: { titulo: string; children: ReactNode }) {
 
 function Vazio({ children }: { children: ReactNode }) {
   return <p className="cmd-aviso">🚧 {children}</p>;
-}
-
-function ListaJogos({
-  lista,
-  plataforma,
-}: {
-  lista: JogoConquistas[];
-  plataforma: string;
-}) {
-  if (lista.length === 0) {
-    return (
-      <Vazio>
-        Nenhum jogo de {plataforma} cadastrado ainda.
-        <br />
-        Preencha <code>jogos.{plataforma.toLowerCase()}</code> em{' '}
-        <code>src/data/portfolio.ts</code>.
-      </Vazio>
-    );
-  }
-
-  return (
-    <ul className="cmd-lista">
-      {lista.map((jogo) => (
-        <li key={jogo.nome}>
-          <span className="cmd-jogo">{jogo.nome}</span>
-          <span className="cmd-barra">
-            {barra(jogo.conquistas.feitas, jogo.conquistas.total)}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
 }
 
 function IconeSol() {
@@ -245,12 +196,7 @@ export function Terminal() {
       case 'monitoria': {
         const temDados = monitoria.disciplina || monitoria.horarios.length > 0;
         if (!temDados) {
-          return (
-            <Vazio>
-              Monitoria ainda não cadastrada. Preencha <code>monitoria</code> em{' '}
-              <code>src/data/portfolio.ts</code>.
-            </Vazio>
-          );
+          return <Vazio>essa seção ainda está vazia.</Vazio>;
         }
         return (
           <Monitoria
@@ -261,106 +207,10 @@ export function Terminal() {
         );
       }
 
-      // ---- Currículo ----
-      case 'curriculo':
-        return (
-          <Card titulo="currículo">
-            <a
-              className="cmd-link"
-              href={curriculo.arquivo}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              abrir meu currículo (PDF) ↗
-            </a>
-            <p className="cmd-aviso">
-              Obs.: coloque o arquivo do seu currículo em{' '}
-              <code>public/cv.pdf</code>.
-            </p>
-          </Card>
-        );
-
-      // ---- Lattes ----
-      case 'lattes':
-        if (!lattes.url) {
-          return (
-            <Vazio>
-              Lattes ainda não cadastrado. Preencha <code>lattes.url</code> em{' '}
-              <code>src/data/portfolio.ts</code>.
-            </Vazio>
-          );
-        }
-        return (
-          <Card titulo="lattes">
-            {lattes.resumo && <p>{lattes.resumo}</p>}
-            <a
-              className="cmd-link"
-              href={lattes.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              abrir meu Lattes ↗
-            </a>
-          </Card>
-        );
-
-      // ---- Recomendações ----
-      case 'recomendacoes':
-        if (recomendacoes.length === 0) {
-          return (
-            <Vazio>
-              Nenhuma recomendação cadastrada ainda. Preencha{' '}
-              <code>recomendacoes</code> em <code>src/data/portfolio.ts</code>.
-            </Vazio>
-          );
-        }
-        return (
-          <ul className="cmd-lista">
-            {recomendacoes.map((r, i) => (
-              <li key={i} className="cmd-card">
-                <p className="cmd-citacao">"{r.texto}"</p>
-                <span className="text-accent">
-                  {r.autor}
-                  {r.cargo && <span className="text-gray"> — {r.cargo}</span>}
-                </span>
-              </li>
-            ))}
-          </ul>
-        );
-
-      // ---- Prêmios ----
-      case 'premios':
-        if (premios.length === 0) {
-          return (
-            <Vazio>
-              Nenhum prêmio cadastrado ainda. Preencha <code>premios</code> em{' '}
-              <code>src/data/portfolio.ts</code>.
-            </Vazio>
-          );
-        }
-        return (
-          <ul className="cmd-lista">
-            {premios.map((p, i) => (
-              <li key={i} className="cmd-card">
-                <span className="text-accent">
-                  🏆 {p.titulo}
-                  {p.ano && <span className="text-gray"> · {p.ano}</span>}
-                </span>
-                {p.descricao && <span>{p.descricao}</span>}
-              </li>
-            ))}
-          </ul>
-        );
-
       // ---- Viagens ----
       case 'viagens':
         if (viagens.length === 0) {
-          return (
-            <Vazio>
-              Nenhuma viagem cadastrada ainda. Preencha <code>viagens</code> em{' '}
-              <code>src/data/portfolio.ts</code>.
-            </Vazio>
-          );
+          return <Vazio>essa seção ainda está vazia.</Vazio>;
         }
         return (
           <Card titulo="viagens">
@@ -375,12 +225,6 @@ export function Terminal() {
             <Biblioteca />
           </Card>
         );
-
-      // ---- Steam / Xbox ----
-      case 'steam':
-        return <ListaJogos lista={jogos.steam} plataforma="Steam" />;
-      case 'xbox':
-        return <ListaJogos lista={jogos.xbox} plataforma="Xbox" />;
 
       // ---- WakaTime ----
       case 'wakatime':
