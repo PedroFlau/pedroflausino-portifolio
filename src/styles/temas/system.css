@@ -189,47 +189,6 @@
   color: var(--texto);
 }
 
-/* Foto com moldura HUD */
-[data-theme='system'] .foto-card {
-  position: relative;
-  padding: 10px;
-  border-radius: 3px;
-  border: 1px solid rgba(56, 225, 255, 0.5);
-  background: linear-gradient(160deg, rgba(8, 32, 60, 0.9), rgba(2, 10, 22, 0.95));
-  box-shadow:
-    0 0 28px rgba(0, 150, 255, 0.25),
-    inset 0 0 30px rgba(0, 150, 255, 0.08);
-}
-
-[data-theme='system'] .foto-card::before,
-[data-theme='system'] .foto-card::after {
-  content: '';
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border: 1px solid var(--accent);
-  pointer-events: none;
-}
-
-[data-theme='system'] .foto-card::before {
-  top: -5px;
-  left: -5px;
-  border-right: none;
-  border-bottom: none;
-}
-
-[data-theme='system'] .foto-card::after {
-  right: -5px;
-  bottom: -5px;
-  border-top: none;
-  border-left: none;
-}
-
-[data-theme='system'] .foto-perfil {
-  border-radius: 1px;
-  filter: saturate(1.05) contrast(1.04);
-}
-
 /* Botões */
 [data-theme='system'] .botao {
   font-family: var(--display);

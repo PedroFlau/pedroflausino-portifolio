@@ -2,6 +2,7 @@
 
 /* ===== Hero ===== */
 .hero {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 48px;
@@ -63,28 +64,41 @@
   color: var(--accent);
 }
 
-/* ===== Foto de perfil (Hero) ===== */
+/* ===== Crachá 3D (Hero) ===== */
 .hero-foto {
+  position: relative;
+  /* Acompanha a altura da tela para o cartão inteiro caber em telas baixas */
+  height: clamp(400px, calc(100dvh - 150px), 640px);
+}
+
+/* Canvas do crachá: cobre o Hero inteiro (e um pouco acima/abaixo) para o
+   cartão poder ser arrastado para fora da coluna sem ser cortado. Não recebe
+   cliques: os eventos vêm da <section> do Hero. */
+.cracha {
+  position: absolute;
+  /* Topo bem acima do Hero: o ponto fixo da tira fica atrás da topbar
+     (a .terminal-scroll corta o excesso, e overflow para cima não cria rolagem) */
+  inset: -200px 0 -80px 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cracha-fallback {
+  position: absolute;
+  inset: 0;
+}
+
+.cracha-fallback {
   display: flex;
+  align-items: flex-end;
   justify-content: center;
+  padding-bottom: 8px;
 }
 
-.foto-card {
-  width: 100%;
-  max-width: 360px;
-  margin: 0;
-  padding: 8px;
-  background: var(--bg-alt);
-  border: 1px solid var(--borda);
-  border-radius: 20px;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
-}
-
-.foto-perfil {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 14px;
+.cracha-fallback img {
+  height: 78%;
+  width: auto;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45));
 }
 
 /* ===== Terminal em tela cheia (estilo aramuni.dev) ===== */

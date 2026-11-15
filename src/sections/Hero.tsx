@@ -1,10 +1,27 @@
+import { lazy, Suspense, useCallback, useRef, useState } from 'react';
 import { perfil } from '../data/portfolio';
-import { FotoPerfil } from '../components/FotoPerfil';
 
-/** Abertura exibida dentro do terminal (nome, resumo, botões e foto). */
-export function Hero({ onComando }: { onComando?: (comando: string) => void }) {
+// three.js + física ficam num chunk separado, carregado depois da página
+const Cracha = lazy(() => import('../components/cracha/Cracha'));
+
+/** Arte estática exibida enquanto o crachá 3D carrega. */
+function CrachaFallback() {
   return (
-    <section className="hero">
+    <div className="cracha-fallback">
+      <img src="/images/cracha.png" alt={`Crachá de desenvolvedor de ${perfil.nome}`} />
+    </div>
+  );
+}
+
+/** Abertura exibida dentro do terminal (nome, resumo, botões e crachá 3D). */
+export function Hero({ onComando }: { onComando?: (comando: string) => void }) {
+  const heroRef = useRef<HTMLElement>(null);
+  const colunaRef = useRef<HTMLDivElement>(null);
+  const [crachaMontado, setCrachaMontado] = useState(false);
+  const aoMontarCracha = useCallback(() => setCrachaMontado(true), []);
+
+  return (
+    <section className="hero" ref={heroRef}>
       <div className="hero-texto">
         <p className="hero-comando">
           <span className="text-accent">pedro@portfolio</span>
@@ -48,9 +65,15 @@ export function Hero({ onComando }: { onComando?: (comando: string) => void }) {
         </div>
       </div>
 
-      <div className="hero-foto">
-        <FotoPerfil />
+      {/* Coluna vazia: reserva o espaço e serve de referência para o crachá */}
+      <div className="hero-foto" ref={colunaRef}>
+        {!crachaMontado && <CrachaFallback />}
       </div>
+
+      {/* O canvas cobre o Hero inteiro (o cartão pode ser arrastado para fora da coluna) */}
+      <Suspense fallback={null}>
+        <Cracha heroRef={heroRef} colunaRef={colunaRef} onMontado={aoMontarCracha} />
+      </Suspense>
     </section>
   );
 }

@@ -230,57 +230,6 @@
   color: #c7c9cb;
 }
 
-/* Foto com moldura militar */
-[data-theme='galactic_empire'] .foto-card {
-  position: relative;
-  padding: 10px;
-  border-radius: 0;
-  border: 1px solid var(--borda);
-  border-top: 2px solid var(--accent);
-  background: linear-gradient(160deg, #17191d, #0b0c0e);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
-    0 0 20px rgba(255, 74, 82, 0.08),
-    0 18px 40px rgba(0, 0, 0, 0.7);
-}
-
-[data-theme='galactic_empire'] .foto-card::before,
-[data-theme='galactic_empire'] .foto-card::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border: 1px solid var(--imperial-grey);
-  pointer-events: none;
-}
-
-[data-theme='galactic_empire'] .foto-card::before {
-  top: -4px;
-  left: -4px;
-  border-right: none;
-  border-bottom: none;
-}
-
-[data-theme='galactic_empire'] .foto-card::after {
-  right: -4px;
-  bottom: -4px;
-  border-top: none;
-  border-left: none;
-}
-
-[data-theme='galactic_empire'] .foto-perfil {
-  border-radius: 0;
-  filter: grayscale(0.15) contrast(1.05);
-}
-
-/* No tema imperial, o retrato vira um Sith e mantém o recorte quadrado */
-[data-theme='galactic_empire'] .foto-card--sith .foto-perfil {
-  aspect-ratio: 1;
-  object-fit: cover;
-  object-position: center 32%;
-  filter: saturate(1.12) contrast(1.04);
-}
-
 /* Botões */
 [data-theme='galactic_empire'] .botao {
   font-family: var(--display);

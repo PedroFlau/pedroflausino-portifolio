@@ -25,16 +25,9 @@
     font-size: clamp(1.75rem, 8vw, 2.2rem);
   }
 
-  /* A foto encolhe em largura e altura para o conteúdo chegar antes dela */
-  .foto-card {
-    max-width: 280px;
-  }
-
-  /* Altura fixa no próprio img, com corte suave mantendo o rosto enquadrado */
-  .foto-perfil {
-    height: 34vh;
-    object-fit: cover;
-    object-position: center 30%;
+  /* O crachá encolhe para o conteúdo chegar antes dele */
+  .hero-foto {
+    height: clamp(360px, 70dvh, 460px);
   }
 
   /* Os três botões fecham em duas colunas cheias (2 + 1 ocupando a linha) */
