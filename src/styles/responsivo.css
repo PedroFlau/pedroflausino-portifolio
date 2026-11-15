@@ -1,0 +1,53 @@
+/* Ajustes responsivos gerais. */
+
+/* ===== Responsivo ===== */
+@media (max-width: 820px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-nome {
+    font-size: var(--fs-hero);
+  }
+
+  .sobre-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .monitoria-quando {
+    font-size: var(--fs-lg);
+  }
+}
+
+/* Em telas estreitas o nome do hero encolhe de forma fluida para não quebrar */
+@media (max-width: 640px) {
+  .hero-nome {
+    font-size: clamp(1.75rem, 8vw, 2.2rem);
+  }
+
+  /* A foto encolhe em largura e altura para o conteúdo chegar antes dela */
+  .foto-card {
+    max-width: 280px;
+  }
+
+  /* Altura fixa no próprio img, com corte suave mantendo o rosto enquadrado */
+  .foto-perfil {
+    height: 34vh;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  /* Os três botões fecham em duas colunas cheias (2 + 1 ocupando a linha) */
+  .hero-botoes {
+    gap: var(--esp-2);
+  }
+
+  .hero-botoes .botao {
+    flex: 1 1 calc(50% - var(--esp-2));
+    text-align: center;
+  }
+
+  .terminal-hint {
+    margin-bottom: var(--esp-5);
+  }
+}

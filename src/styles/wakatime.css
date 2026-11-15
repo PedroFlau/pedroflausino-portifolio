@@ -1,0 +1,353 @@
+/* WakaTime. */
+
+/* ===== WakaTime ===== */
+.waka {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.waka-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 170px));
+  gap: 8px 20px;
+}
+
+.waka-kv {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.waka-kv dt {
+  color: var(--texto-fraco);
+  font-size: var(--fs-2xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.waka-kv dd {
+  color: var(--accent);
+  font-size: var(--fs-1);
+}
+
+.waka-tabela {
+  display: grid;
+  /* A coluna do nome pode encolher: só as de tempo/% usam max-content */
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) minmax(80px, 1.2fr) max-content max-content;
+  align-items: center;
+  column-gap: var(--esp-4);
+  row-gap: 3px;
+}
+
+/* Subgrid: todas as seções compartilham as mesmas colunas (barras alinhadas) */
+.waka-secao,
+.waka-lista,
+.waka-linha {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.waka-secao {
+  row-gap: 3px;
+  margin-bottom: 12px;
+}
+
+.waka-titulo {
+  grid-column: 1 / -1;
+  color: var(--texto-fraco);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.waka-nome {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--fs-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.waka-barra {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 3px;
+  height: 10px;
+}
+
+.waka-seg {
+  border-radius: 2px;
+  background: var(--borda);
+}
+
+.waka-seg.ligado {
+  background: var(--accent);
+}
+
+.waka-tempo,
+.waka-pct {
+  color: var(--texto-fraco);
+  font-size: var(--fs-xs);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.waka-linha.resta .waka-nome,
+.waka-linha.resta .waka-tempo,
+.waka-linha.resta .waka-pct {
+  color: var(--texto-fraco);
+  font-style: italic;
+}
+
+.waka-linha.resta .waka-seg.ligado {
+  opacity: 0.55;
+}
+
+.waka-rodape {
+  font-size: var(--fs-xs);
+}
+
+.waka-vivo {
+  color: var(--accent);
+}
+
+.waka-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: opacity 0.2s;
+}
+
+.waka-corpo.atualizando {
+  opacity: 0.45;
+}
+
+.waka-kv-nota {
+  display: block;
+  color: var(--texto-fraco);
+  font-size: var(--fs-2xs);
+}
+
+/* Seletor de período (estilo flags de terminal) */
+.waka-periodos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.waka-periodo {
+  font-family: var(--mono);
+  font-size: var(--fs-2xs);
+  color: var(--texto-fraco);
+  background: transparent;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-sm);
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.waka-periodo::before {
+  content: '--';
+  opacity: 0.6;
+}
+
+.waka-periodo:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.waka-periodo.ativo {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--tag-bg);
+}
+
+.waka-periodo:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* "Codando agora" — mesmo desenho do cartão da monitoria */
+.waka-agora {
+  --waka-agora-cor: var(--ok);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 18px;
+  border: 1px solid color-mix(in srgb, var(--waka-agora-cor) 45%, var(--borda));
+  border-left: 4px solid var(--waka-agora-cor);
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--waka-agora-cor) 14%, var(--bg-alt)),
+    var(--bg-alt) 72%
+  );
+}
+
+.waka-agora.parado {
+  --waka-agora-cor: var(--texto-fraco);
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  padding: 10px 16px;
+  background: var(--bg-alt);
+}
+
+.waka-agora-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+
+.waka-agora-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--waka-agora-cor);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.waka-agora-ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--waka-agora-cor);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--waka-agora-cor) 22%, transparent);
+}
+
+.waka-agora.ativo .waka-agora-ponto {
+  animation: monitoria-pulso 1.6s ease-in-out infinite;
+}
+
+.waka-agora-sinal,
+.waka-agora-texto {
+  color: var(--texto-fraco);
+  font-size: var(--fs-xs);
+}
+
+.waka-agora-destaque {
+  color: var(--texto);
+}
+
+.waka-agora-projeto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  min-width: 0;
+}
+
+.waka-agora-nome {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--accent);
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.waka-agora-prompt {
+  color: var(--texto-fraco);
+}
+
+.waka-agora-branch {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 1px 9px;
+  color: var(--texto-fraco);
+  font-size: var(--fs-2xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pill);
+}
+
+.waka-agora-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  list-style: none;
+  color: var(--texto-fraco);
+  font-size: var(--fs-xs);
+}
+
+.waka-agora-meta > li:not(:last-child)::after {
+  content: '·';
+  margin: 0 8px;
+  opacity: 0.6;
+}
+
+.waka-agora-meta > li:first-child {
+  color: var(--texto);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waka-agora.ativo .waka-agora-ponto {
+    animation: none;
+  }
+
+  .waka-corpo {
+    transition: none;
+  }
+}
+
+/* No celular cada linha vira duas: nome/tempo em cima, barra/% embaixo.
+   O subgrid sai de cena porque a tabela passa a ser um bloco comum. */
+@media (max-width: 640px) {
+  .waka-tabela,
+  .waka-secao,
+  .waka-lista {
+    display: block;
+  }
+
+  .waka-linha {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'nome tempo'
+      'barra pct';
+    column-gap: var(--esp-2);
+    row-gap: var(--esp-1);
+    padding: var(--esp-1) 0;
+  }
+
+  .waka-nome {
+    grid-area: nome;
+    font-size: var(--fs-xs);
+  }
+
+  .waka-tempo {
+    grid-area: tempo;
+  }
+
+  .waka-barra {
+    grid-area: barra;
+  }
+
+  .waka-pct {
+    grid-area: pct;
+  }
+
+  .waka-titulo {
+    margin-bottom: var(--esp-1);
+  }
+
+  .waka-tempo,
+  .waka-pct {
+    font-size: var(--fs-2xs);
+  }
+}

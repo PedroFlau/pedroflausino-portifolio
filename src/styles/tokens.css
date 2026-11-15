@@ -1,0 +1,109 @@
+/* Tokens: variáveis globais e as cores de cada um dos 4 temas. */
+
+/* ===== Tema escuro (padrão) ===== */
+:root {
+  --mono: 'Fira Code', 'Courier New', monospace;
+  color-scheme: dark;
+
+  /* Escala tipográfica — nada abaixo de 12px */
+  --fs-2xs: 0.75rem;
+  --fs-xs: 0.8rem;
+  --fs-sm: 0.85rem;
+  --fs-base: 0.9rem;
+  --fs-md: 0.95rem;
+  --fs-1: 1rem;
+  --fs-lg: 1.1rem;
+  --fs-xl: 1.4rem;
+  --fs-hero: 2.4rem;
+
+  /* Raios */
+  --raio-sm: 6px;
+  --raio-md: 10px;
+  --raio-lg: 14px;
+  --raio-pill: 999px;
+
+  /* Espaçamento (usar só em regras novas ou já alteradas nesta rodada) */
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 24px;
+  --esp-6: 32px;
+  --esp-7: 48px;
+
+  --bg: #0d1117;
+  --bg-alt: #161b22;
+  --borda: #30363d;
+  --texto: #c9d1d9;
+  --texto-fraco: #8b949e;
+  --ok: #3fb950; /* estado positivo (codando agora, monitoria em sessão) */
+  --accent: #e3b341; /* detalhes em amarelo no escuro */
+  --accent-contraste: #0d1117;
+  --nav-bg: rgba(13, 17, 23, 0.85);
+  --bg-overlay: rgba(13, 17, 23, 0.94);
+  --grid: #21262d;
+  --tag-bg: rgba(227, 179, 65, 0.08);
+  --term-bg: #010409;
+  --display: var(--mono);
+}
+
+/* ===== Tema claro ===== */
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --bg-alt: #f6f8fa;
+  --borda: #d0d7de;
+  --texto: #1f2328;
+  --texto-fraco: #59636e;
+  --ok: #1a7f37;
+  --accent: #0969da; /* detalhes em azul no claro */
+  --accent-contraste: #ffffff;
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --bg-overlay: rgba(255, 255, 255, 0.94);
+  --grid: #eaeef2;
+  --tag-bg: rgba(9, 105, 218, 0.08);
+  --term-bg: #f6f8fa;
+}
+
+/* ===== Tema system (janelas de status de manhwa) ===== */
+[data-theme='system'] {
+  --bg: #030a17;
+  --bg-alt: #061527;
+  --borda: rgba(56, 225, 255, 0.28);
+  --texto: #d6f4ff;
+  --texto-fraco: #7aa8c4;
+  --ok: #38ffa8;
+  --accent: #38e1ff;
+  --accent-contraste: #00121d;
+  --nav-bg: rgba(3, 10, 23, 0.85);
+  --bg-overlay: rgba(3, 10, 23, 0.92);
+  --grid: rgba(56, 225, 255, 0.07);
+  --tag-bg: rgba(56, 225, 255, 0.08);
+  --term-bg: #01050d;
+  --display: 'Rajdhani', var(--mono);
+  --system-glow: rgba(56, 225, 255, 0.35);
+}
+
+/* ===== Tema galactic_empire (Star Wars) ===== */
+[data-theme='galactic_empire'] {
+  --bg: #08090b;
+  --bg-alt: #131519;
+  --borda: rgba(100, 105, 108, 0.6);
+  --texto: #f1f2f3;
+  --texto-fraco: #92979c;
+  --ok: var(--neon-red);
+  --accent: #d92c31; /* Imperial Red, levemente clareado para tela */
+  --accent-contraste: #ffffff;
+  --nav-bg: rgba(8, 9, 11, 0.9);
+  --bg-overlay: rgba(8, 9, 11, 0.94);
+  --grid: rgba(255, 255, 255, 0.035);
+  --tag-bg: rgba(217, 44, 49, 0.1);
+  --term-bg: #050506;
+  --display: 'Saira Condensed', var(--mono);
+  --imperial-blue: #394a59;
+  --imperial-grey: #64696c;
+  --imperial-red: #bc1e22;
+  --imperial-glow: rgba(217, 44, 49, 0.35);
+  --neon-red: #ff4a52;
+  --neon-glow: rgba(255, 74, 82, 0.32);
+}

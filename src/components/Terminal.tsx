@@ -9,7 +9,8 @@ import { MapaViagens } from './MapaViagens';
 import { Monitoria } from './Monitoria';
 import { SeletorTemas } from './SeletorTemas';
 import { WakaTime } from './WakaTime';
-import { useTema, ORDEM_TEMAS, type Tema } from '../hooks/useTema';
+import { ICONE_TEMA } from './IconesTema';
+import { useTema, NOME_TEMA, proximoTema, type Tema } from '../hooks/useTema';
 import { comandos, monitoria, viagens } from '../data/portfolio';
 
 type ItemHistorico = { comando: string; saida: ReactNode };
@@ -32,6 +33,67 @@ function resolver(token: string): string | null {
   return null;
 }
 
+/** Todos os nomes aceitos (comandos + aliases), já normalizados. */
+const NOMES_ACEITOS = comandos.flatMap((c) =>
+  [c.nome, ...c.aliases].map((n) => ({ nome: normalizar(n), base: c.nome })),
+);
+
+/** Distância de edição (Levenshtein) — usada só para sugerir comandos. */
+function distancia(a: string, b: string): number {
+  const linha = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    let diagonal = linha[0];
+    linha[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const acima = linha[j];
+      linha[j] = Math.min(
+        linha[j] + 1,
+        linha[j - 1] + 1,
+        diagonal + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+      diagonal = acima;
+    }
+  }
+  return linha[b.length];
+}
+
+/** Comando mais parecido com o que foi digitado (ou null se nada chegar perto). */
+function sugerir(token: string): string | null {
+  const alvo = normalizar(token);
+  if (!alvo) return null;
+  let melhor: { base: string; d: number } | null = null;
+  for (const { nome, base } of NOMES_ACEITOS) {
+    const d = nome.startsWith(alvo) ? 0 : distancia(alvo, nome);
+    if (!melhor || d < melhor.d) melhor = { base, d };
+  }
+  return melhor && melhor.d <= 2 ? melhor.base : null;
+}
+
+/** Comandos que começam com o prefixo digitado (para o Tab). */
+function completar(prefixo: string): string[] {
+  const alvo = normalizar(prefixo);
+  if (!alvo) return [];
+  const principais = comandos.map((c) => c.nome).filter((n) => normalizar(n).startsWith(alvo));
+  if (principais.length > 0) return principais;
+  return [...new Set(NOMES_ACEITOS.filter((n) => n.nome.startsWith(alvo)).map((n) => n.base))];
+}
+
+/** Nome de comando clicável: executa o comando como se tivesse sido digitado. */
+function Atalho({ comando, aoExecutar }: { comando: string; aoExecutar: (c: string) => void }) {
+  return (
+    <button
+      type="button"
+      className="cmd-atalho text-accent"
+      onClick={(e) => {
+        e.stopPropagation();
+        aoExecutar(comando);
+      }}
+    >
+      {comando}
+    </button>
+  );
+}
+
 function Card({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
     <div className="cmd-card">
@@ -45,99 +107,21 @@ function Vazio({ children }: { children: ReactNode }) {
   return <p className="cmd-aviso">🚧 {children}</p>;
 }
 
-function IconeSol() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-    </svg>
-  );
-}
-
-function IconeLua() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
-  );
-}
-
-function IconeSistema() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect x="3" y="4" width="18" height="13" rx="1" />
-      <path d="M8 21h8M12 17v4M7 8h4M7 11h7" />
-    </svg>
-  );
-}
-
-function IconeImperio() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      width="20"
-      height="20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="7" />
-      <circle cx="12" cy="12" r="2.6" />
-      <path d="M12 5v4.4M12 14.6V19M5 12h4.4M14.6 12H19M7.05 7.05l3.1 3.1M13.85 13.85l3.1 3.1M7.05 16.95l3.1-3.1M13.85 10.15l3.1-3.1" />
-    </svg>
-  );
-}
-
 export function Terminal() {
   const { tema, definirTema, alternarTema } = useTema();
   const [input, setInput] = useState('');
   const [historico, setHistorico] = useState<ItemHistorico[]>([]);
   const [temasAberto, setTemasAberto] = useState(false);
   const [comandoTemas, setComandoTemas] = useState<string | null>(null);
+  // Comandos já digitados (para navegar com ↑/↓) e a posição atual nessa lista
+  const [digitados, setDigitados] = useState<string[]>([]);
+  const [posicao, setPosicao] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const NOME_TEMA: Record<Tema, string> = {
-    dark: 'escuro',
-    light: 'claro',
-    system: 'system',
-    galactic_empire: 'galactic_empire',
-  };
-  const proximoTema =
-    ORDEM_TEMAS[(ORDEM_TEMAS.indexOf(tema) + 1) % ORDEM_TEMAS.length];
-  const rotuloProximo = NOME_TEMA[proximoTema];
+  const proximo = proximoTema(tema);
+  const rotuloProximo = NOME_TEMA[proximo];
+  const IconeProximo = ICONE_TEMA[proximo];
 
   // Rola o conteúdo do terminal para o fim a cada comando (sem mexer na página)
   useEffect(() => {
@@ -160,21 +144,35 @@ export function Terminal() {
 
   function renderizarSaida(nome: string | null, entrada: string): ReactNode {
     switch (nome) {
-      case null:
+      case null: {
+        const sugestao = sugerir(entrada.split(/\s+/)[0] ?? '');
         return (
           <span className="cmd-erro">
-            comando não encontrado: "{entrada}". Digite "ajuda" para ver os
-            comandos.
+            comando não encontrado: "{entrada}".{' '}
+            {sugestao ? (
+              <>
+                Você quis dizer <Atalho comando={sugestao} aoExecutar={executar} />?
+              </>
+            ) : (
+              <>
+                Digite <Atalho comando="ajuda" aoExecutar={executar} /> para ver
+                os comandos.
+              </>
+            )}
           </span>
         );
+      }
 
       case 'ajuda':
         return (
           <ul className="cmd-lista cmd-lista-ajuda">
             {comandos.map((c) => (
               <li key={c.nome}>
-                <span className="text-accent">
-                  {[c.nome, ...c.aliases].join(', ')}
+                <span>
+                  <Atalho comando={c.nome} aoExecutar={executar} />
+                  {c.aliases.length > 0 && (
+                    <span className="text-accent">, {c.aliases.join(', ')}</span>
+                  )}
                 </span>
                 <span className="text-gray">{c.desc}</span>
               </li>
@@ -275,6 +273,9 @@ export function Terminal() {
 
   function executar(entradaBruta: string) {
     const entrada = entradaBruta.trim();
+    if (entrada === '') return;
+    setDigitados((d) => (d[d.length - 1] === entrada ? d : [...d, entrada]));
+    setPosicao(null);
     const [token] = entrada.split(/\s+/);
     const nome = token ? resolver(token) : null;
 
@@ -298,14 +299,80 @@ export function Terminal() {
   }
 
   function aoTeclar(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key !== 'Enter') return;
-    const valor = input;
-    setInput('');
-    if (valor.trim() !== '') executar(valor);
+    switch (e.key) {
+      case 'Enter': {
+        const valor = input;
+        setInput('');
+        executar(valor);
+        return;
+      }
+
+      // Histórico: ↑ volta para comandos anteriores, ↓ avança
+      case 'ArrowUp': {
+        if (digitados.length === 0) return;
+        e.preventDefault();
+        const nova = posicao === null ? digitados.length - 1 : Math.max(posicao - 1, 0);
+        setPosicao(nova);
+        setInput(digitados[nova]);
+        return;
+      }
+      case 'ArrowDown': {
+        if (posicao === null) return;
+        e.preventDefault();
+        const nova = posicao + 1;
+        if (nova >= digitados.length) {
+          setPosicao(null);
+          setInput('');
+        } else {
+          setPosicao(nova);
+          setInput(digitados[nova]);
+        }
+        return;
+      }
+
+      case 'Escape':
+        setPosicao(null);
+        setInput('');
+        return;
+
+      // Autocompletar: 1 opção completa; várias são listadas
+      case 'Tab': {
+        if (input.trim() === '' || /\s/.test(input.trim())) return;
+        e.preventDefault();
+        const opcoes = completar(input);
+        if (opcoes.length === 1) {
+          setInput(opcoes[0]);
+        } else if (opcoes.length > 1) {
+          setHistorico((h) => [
+            ...h,
+            {
+              comando: input,
+              saida: (
+                <p className="cmd-opcoes">
+                  {opcoes.map((o, i) => (
+                    <span key={o}>
+                      {i > 0 && '  '}
+                      <Atalho comando={o} aoExecutar={executar} />
+                    </span>
+                  ))}
+                </p>
+              ),
+            },
+          ]);
+        }
+        return;
+      }
+    }
+  }
+
+  // Clicar no terminal foca o input, mas não atrapalha quem está selecionando texto
+  function focarInput() {
+    if (window.getSelection()?.toString()) return;
+    inputRef.current?.focus();
   }
 
   return (
-    <div className="terminal-full" onClick={() => inputRef.current?.focus()}>
+    <div className="terminal-full" onClick={focarInput}>
       <div className="imperial-watermark" aria-hidden="true" />
 
       {/* Barra superior: título · botão de tema */}
@@ -324,29 +391,23 @@ export function Terminal() {
             aria-label={`Ativar tema ${rotuloProximo}`}
             title={`Ativar tema ${rotuloProximo}`}
           >
-            {tema === 'dark' ? (
-              <IconeSol />
-            ) : tema === 'light' ? (
-              <IconeSistema />
-            ) : tema === 'system' ? (
-              <IconeImperio />
-            ) : (
-              <IconeLua />
-            )}
+            <IconeProximo />
           </button>
         </div>
       </header>
 
       {/* Conteúdo rolável: abertura (nome + foto) + saída dos comandos */}
-      <div className="terminal-scroll" ref={scrollRef}>
+      <div className="terminal-scroll" ref={scrollRef} role="log" aria-label="Saída do terminal">
         <Hero onComando={executar} />
 
         <p className="terminal-hint">
-          Digite <span className="text-accent">ajuda</span> e pressione Enter
-          para ver os comandos disponíveis. Ex.:{' '}
-          <span className="text-accent">sobre</span>,{' '}
-          <span className="text-accent">projetos</span>,{' '}
-          <span className="text-accent">temas</span>.
+          Digite <Atalho comando="ajuda" aoExecutar={executar} /> e pressione
+          Enter (ou clique) para ver os comandos. Ex.:{' '}
+          <Atalho comando="sobre" aoExecutar={executar} />,{' '}
+          <Atalho comando="projetos" aoExecutar={executar} />,{' '}
+          <Atalho comando="habilidades" aoExecutar={executar} />,{' '}
+          <Atalho comando="temas" aoExecutar={executar} />. Use Tab para
+          completar e ↑/↓ para o histórico.
         </p>
 
         {historico.map((item, i) => (
