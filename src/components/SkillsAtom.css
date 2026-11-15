@@ -1,33 +1,42 @@
 /* =========================================================
-   GLOBO DE HABILIDADES
-   Malha em <canvas> + nós em DOM (movidos por transform).
+   ÁTOMO DE HABILIDADES
+   Órbitas + núcleo em <canvas> e elétrons em DOM (transform).
    Cores por tema no próprio container.
    ========================================================= */
 
-.skills-globe {
+.skills-atom {
   /* Tema escuro (GitHub dark) — cada tema sobrescreve abaixo */
   --skills-line: #e3b341;
   --skill-a: #e3b341; /* Linguagens */
   --skill-b: #58a6ff; /* Front-end */
   --skill-c: #3fb950; /* Ferramentas */
 
+  --atom-proton: #e3b341;
+  --atom-neutron: #58a6ff;
+  --atom-halo: var(--skills-line);
+
+  /* Uma órbita por categoria (cor lida no canvas como --atom-<slug>) */
+  --atom-linguagens: var(--skill-a);
+  --atom-front-end: var(--skill-b);
+  --atom-ferramentas: var(--skill-c);
+
   position: relative;
 
   width: 100%;
-  height: clamp(280px, 50vw, 440px);
+  height: clamp(300px, 55vw, 460px);
 
   overflow: hidden;
 
-  touch-action: none; /* o dedo gira o globo em vez de rolar a página */
+  touch-action: none; /* o dedo gira o átomo em vez de rolar a página */
   cursor: grab;
   user-select: none;
 }
 
-.skills-globe:active {
+.skills-atom:active {
   cursor: grabbing;
 }
 
-.skills-globe-canvas {
+.skills-atom-canvas {
   position: absolute;
   inset: 0;
 
@@ -35,7 +44,7 @@
   height: 100%;
 }
 
-.skills-globe-layer {
+.skills-atom-layer {
   position: absolute;
   inset: 0;
 
@@ -44,14 +53,14 @@
 
   list-style: none;
 
-  pointer-events: none; /* só os nós (com pointer-events definido) recebem clique */
+  pointer-events: none; /* só os elétrons (com pointer-events definido) recebem clique */
 }
 
 /* =========================================================
-   NÓ DE CADA SKILL
+   ELÉTRON DE CADA SKILL
    ========================================================= */
 
-.skills-globe-item {
+.skills-atom-item {
   --skill: var(--skill-a);
 
   position: absolute;
@@ -62,8 +71,8 @@
   align-items: center;
   justify-content: center;
 
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
 
   color: var(--skill);
 
@@ -86,28 +95,28 @@
     background-color 0.2s ease;
 }
 
-/* Cor do nó pela categoria (slug do grupo) */
-.skills-globe-item[data-grupo='linguagens'] {
-  --skill: var(--skill-a);
+/* Cor do elétron pela categoria (slug do grupo) */
+.skills-atom-item[data-grupo='linguagens'] {
+  --skill: var(--atom-linguagens);
 }
 
-.skills-globe-item[data-grupo='front-end'] {
-  --skill: var(--skill-b);
+.skills-atom-item[data-grupo='front-end'] {
+  --skill: var(--atom-front-end);
 }
 
-.skills-globe-item[data-grupo='ferramentas'] {
-  --skill: var(--skill-c);
+.skills-atom-item[data-grupo='ferramentas'] {
+  --skill: var(--atom-ferramentas);
 }
 
-.skills-globe-item svg {
-  width: 26px;
-  height: 26px;
+.skills-atom-item svg {
+  width: 24px;
+  height: 24px;
 
   transition: transform 0.2s ease;
 }
 
-.skills-globe-item:hover,
-.skills-globe-item:focus-visible {
+.skills-atom-item:hover,
+.skills-atom-item:focus-visible {
   background: color-mix(in srgb, var(--skill) 10%, var(--bg-alt));
 
   border-color: var(--skill);
@@ -120,14 +129,14 @@
   outline: none;
 }
 
-.skills-globe-item:hover svg,
-.skills-globe-item:focus-visible svg {
+.skills-atom-item:hover svg,
+.skills-atom-item:focus-visible svg {
   transform: scale(1.15);
 }
 
 /* Nome da skill (tooltip no hover/foco) */
 
-.skills-globe-label {
+.skills-atom-label {
   position: absolute;
   top: calc(100% + 6px);
   left: 50%;
@@ -157,8 +166,8 @@
     transform 0.15s ease;
 }
 
-.skills-globe-item:hover .skills-globe-label,
-.skills-globe-item:focus-visible .skills-globe-label {
+.skills-atom-item:hover .skills-atom-label,
+.skills-atom-item:focus-visible .skills-atom-label {
   opacity: 1;
 
   transform: translate(-50%, 0);
@@ -168,14 +177,17 @@
    TEMA CLARO — fundo branco e sombras suaves
    ========================================================= */
 
-[data-theme='light'] .skills-globe {
+[data-theme='light'] .skills-atom {
   --skills-line: #0969da;
   --skill-a: #0969da;
   --skill-b: #8250df;
   --skill-c: #1a7f37;
+
+  --atom-proton: #0969da;
+  --atom-neutron: #8250df;
 }
 
-[data-theme='light'] .skills-globe-item {
+[data-theme='light'] .skills-atom-item {
   background: #ffffff;
 
   box-shadow:
@@ -183,8 +195,8 @@
     0 8px 18px -6px rgba(31, 35, 40, 0.18);
 }
 
-[data-theme='light'] .skills-globe-item:hover,
-[data-theme='light'] .skills-globe-item:focus-visible {
+[data-theme='light'] .skills-atom-item:hover,
+[data-theme='light'] .skills-atom-item:focus-visible {
   background: color-mix(in srgb, var(--skill) 8%, #ffffff);
 
   box-shadow:
@@ -193,7 +205,7 @@
     0 10px 24px -8px rgba(31, 35, 40, 0.22);
 }
 
-[data-theme='light'] .skills-globe-label {
+[data-theme='light'] .skills-atom-label {
   background: #ffffff;
 }
 
@@ -201,21 +213,24 @@
    TEMA SYSTEM — HUD holográfico ciano
    ========================================================= */
 
-[data-theme='system'] .skills-globe {
+[data-theme='system'] .skills-atom {
   --skills-line: #38e1ff;
   --skill-a: #38e1ff;
   --skill-b: #9d8cff;
   --skill-c: #5eead4;
+
+  --atom-proton: #38e1ff;
+  --atom-neutron: #9d8cff;
 
   background: linear-gradient(160deg, rgba(8, 30, 58, 0.92), rgba(2, 11, 24, 0.94));
 
   border: 1px solid color-mix(in srgb, var(--skills-line) 26%, transparent);
   border-radius: 2px;
 
-  box-shadow: inset 0 0 44px rgba(56, 225, 255, 0.08);
+  box-shadow: inset 0 0 48px rgba(56, 225, 255, 0.1);
 }
 
-[data-theme='system'] .skills-globe-item {
+[data-theme='system'] .skills-atom-item {
   border-radius: 2px;
 
   background: color-mix(in srgb, var(--skill) 8%, rgba(2, 11, 24, 0.9));
@@ -225,8 +240,8 @@
     0 0 14px color-mix(in srgb, var(--skill) 28%, transparent);
 }
 
-[data-theme='system'] .skills-globe-item:hover,
-[data-theme='system'] .skills-globe-item:focus-visible {
+[data-theme='system'] .skills-atom-item:hover,
+[data-theme='system'] .skills-atom-item:focus-visible {
   background: color-mix(in srgb, var(--skill) 18%, rgba(2, 11, 24, 0.9));
 
   box-shadow:
@@ -234,7 +249,7 @@
     0 0 22px color-mix(in srgb, var(--skill) 55%, transparent);
 }
 
-[data-theme='system'] .skills-globe-label {
+[data-theme='system'] .skills-atom-label {
   border-radius: 2px;
 
   font-family: var(--display);
@@ -246,11 +261,14 @@
    TEMA GALACTIC_EMPIRE — imperial, cantos retos
    ========================================================= */
 
-[data-theme='galactic_empire'] .skills-globe {
+[data-theme='galactic_empire'] .skills-atom {
   --skills-line: #ff4a52;
   --skill-a: #ff4a52;
   --skill-b: #b8bcc0;
   --skill-c: #6f8fa8;
+
+  --atom-proton: #ff4a52;
+  --atom-neutron: #b8bcc0;
 
   background: linear-gradient(160deg, #17191d, #0b0c0e);
 
@@ -258,7 +276,7 @@
   border-radius: 0;
 }
 
-[data-theme='galactic_empire'] .skills-globe-item {
+[data-theme='galactic_empire'] .skills-atom-item {
   border-radius: 0;
 
   background: #131519;
@@ -269,8 +287,8 @@
   box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.9);
 }
 
-[data-theme='galactic_empire'] .skills-globe-item:hover,
-[data-theme='galactic_empire'] .skills-globe-item:focus-visible {
+[data-theme='galactic_empire'] .skills-atom-item:hover,
+[data-theme='galactic_empire'] .skills-atom-item:focus-visible {
   background: color-mix(in srgb, var(--skill) 12%, #131519);
 
   border-color: var(--skill);
@@ -281,7 +299,7 @@
     0 6px 18px -8px rgba(0, 0, 0, 0.9);
 }
 
-[data-theme='galactic_empire'] .skills-globe-label {
+[data-theme='galactic_empire'] .skills-atom-label {
   border-radius: 0;
 
   font-family: var(--display);
@@ -294,21 +312,21 @@
    ========================================================= */
 
 @media (max-width: 480px) {
-  .skills-globe-item {
+  .skills-atom-item {
     width: 40px;
     height: 40px;
   }
 
-  .skills-globe-item svg {
+  .skills-atom-item svg {
     width: 21px;
     height: 21px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skills-globe-item,
-  .skills-globe-item svg,
-  .skills-globe-label {
+  .skills-atom-item,
+  .skills-atom-item svg,
+  .skills-atom-label {
     transition: none;
   }
 }

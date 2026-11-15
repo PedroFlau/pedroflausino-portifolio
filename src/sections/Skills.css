@@ -1,7 +1,7 @@
 /* =========================================================
-   HABILIDADES — toolbar, filtros e visões (globo / lista)
-   As cores --skill-* repetem os hex de SkillsGlobe.css para a
-   bolinha dos chips combinar com os nós do globo.
+   HABILIDADES — toolbar, filtros e visões (átomo / lista)
+   As cores --skill-* repetem os hex de SkillsAtom.css para a
+   bolinha dos chips combinar com os elétrons do átomo.
    ========================================================= */
 
 .skills-section {
@@ -123,7 +123,7 @@
 }
 
 /* =========================================================
-   ALTERNADOR GLOBO / LISTA
+   ALTERNADOR ÁTOMO / LISTA
    ========================================================= */
 
 .skills-view {
@@ -182,7 +182,7 @@
 }
 
 /* =========================================================
-   CONTEÚDO (globo + dica)
+   CONTEÚDO (átomo + dica)
    ========================================================= */
 
 .skills-visao {

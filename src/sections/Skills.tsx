@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { SkillsGlobe, type HabilidadeGlobo } from '../components/SkillsGlobe';
+import { useMemo, useState } from 'react';
+import { SkillsAtom, type HabilidadeAtomo } from '../components/SkillsAtom';
 import { habilidades } from '../data/portfolio';
 import { useTema } from '../hooks/useTema';
 import './Skills.css';
 
-type Visao = 'globo' | 'lista';
+type Visao = 'atomo' | 'lista';
 
 const TODAS = 'Todas';
 
-/** `Front-end` → `front-end`; mesmo slug usado em `SkillsGlobe`. */
+/** `Front-end` → `front-end`; mesmo slug usado em `SkillsAtom`. */
 function slug(grupo: string): string {
   return grupo
     .normalize('NFD')
@@ -18,7 +18,7 @@ function slug(grupo: string): string {
     .replace(/\s+/g, '-');
 }
 
-function IconeGlobo() {
+function IconeAtomo() {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -29,9 +29,10 @@ function IconeGlobo() {
       aria-hidden="true"
       focusable="false"
     >
-      <circle cx="12" cy="12" r="9" />
-      <ellipse cx="12" cy="12" rx="4" ry="9" />
-      <path d="M3 12h18M4.5 7.5h15M4.5 16.5h15" />
+      <ellipse cx="12" cy="12" rx="9.5" ry="4" />
+      <ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(60 12 12)" />
+      <ellipse cx="12" cy="12" rx="9.5" ry="4" transform="rotate(120 12 12)" />
+      <circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" />
     </svg>
   );
 }
@@ -58,7 +59,7 @@ function IconeLista() {
 export function Skills() {
   const { tema } = useTema();
   const [filtro, setFiltro] = useState<string>(TODAS);
-  const [visao, setVisao] = useState<Visao>('globo');
+  const [visao, setVisao] = useState<Visao>('atomo');
 
   const total = habilidades.reduce((soma, grupo) => soma + grupo.itens.length, 0);
   const filtros = [
@@ -73,14 +74,19 @@ export function Skills() {
     (grupo) => filtro === TODAS || grupo.grupo === filtro,
   );
 
-  // O globo recebe a lista achatada; a visão lista mantém os cards por grupo.
-  const filtradas: HabilidadeGlobo[] = grupos.flatMap((grupo) =>
-    grupo.itens.map((item) => ({
-      nome: item.nome,
-      grupo: grupo.grupo,
-      icone: item.icone,
-      link: item.link,
-    })),
+  // O átomo recebe TODAS as skills (as 3 órbitas sempre existem). Vem de um
+  // useMemo para o efeito do átomo não reiniciar a cada render.
+  const todas: HabilidadeAtomo[] = useMemo(
+    () =>
+      habilidades.flatMap((grupo) =>
+        grupo.itens.map((item) => ({
+          nome: item.nome,
+          grupo: grupo.grupo,
+          icone: item.icone,
+          link: item.link,
+        })),
+      ),
+    [],
   );
 
   return (
@@ -118,12 +124,12 @@ export function Skills() {
         >
           <button
             type="button"
-            aria-pressed={visao === 'globo'}
-            aria-label="Ver como globo"
-            title="Globo"
-            onClick={() => setVisao('globo')}
+            aria-pressed={visao === 'atomo'}
+            aria-label="Átomo"
+            title="Átomo"
+            onClick={() => setVisao('atomo')}
           >
-            <IconeGlobo />
+            <IconeAtomo />
           </button>
           <button
             type="button"
@@ -137,11 +143,15 @@ export function Skills() {
         </div>
       </div>
 
-      {visao === 'globo' ? (
+      {visao === 'atomo' ? (
         <div className="skills-visao">
-          <SkillsGlobe key={filtro} skills={filtradas} tema={tema} />
+          <SkillsAtom
+            skills={todas}
+            grupoAtivo={filtro === TODAS ? null : filtro}
+            tema={tema}
+          />
           <p className="skills-hint">
-            Arraste para girar · clique num ícone para abrir a documentação
+            Arraste para girar · clique num elétron para abrir a documentação
           </p>
         </div>
       ) : (
