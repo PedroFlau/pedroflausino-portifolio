@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { SkillsAtom, type HabilidadeAtomo } from '../components/SkillsAtom';
 import { habilidades } from '../data/portfolio';
 import { useTema } from '../hooks/useTema';
+import { CabecalhoSecao } from '../components/CabecalhoSecao';
 import './Skills.css';
 
 type Visao = 'atomo' | 'lista';
@@ -91,7 +92,11 @@ export function Skills() {
 
   return (
     <section className="secao skills-section">
-      <h2 className="secao-titulo">habilidades</h2>
+      <CabecalhoSecao
+        titulo="habilidades"
+        subtitulo="Linguagens e ferramentas que uso no dia a dia"
+        meta={`${total} tecnologias`}
+      />
 
       <div className="skills-toolbar">
         <div

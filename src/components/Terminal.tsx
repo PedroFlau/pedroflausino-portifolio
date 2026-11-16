@@ -9,6 +9,7 @@ import { MapaViagens } from './MapaViagens';
 import { Monitoria } from './Monitoria';
 import { SeletorTemas } from './SeletorTemas';
 import { WakaTime } from './WakaTime';
+import { CabecalhoSecao } from './CabecalhoSecao';
 import { ICONE_TEMA } from './IconesTema';
 import { useTema, NOME_TEMA, proximoTema, type Tema } from '../hooks/useTema';
 import { comandos, monitoria, viagens } from '../data/portfolio';
@@ -94,12 +95,23 @@ function Atalho({ comando, aoExecutar }: { comando: string; aoExecutar: (c: stri
   );
 }
 
-function Card({ titulo, children }: { titulo: string; children: ReactNode }) {
+/** Saída com o cabeçalho padrão de seção e o conteúdo dentro de um painel. */
+function Card({
+  titulo,
+  subtitulo,
+  meta,
+  children,
+}: {
+  titulo: string;
+  subtitulo?: ReactNode;
+  meta?: ReactNode;
+  children: ReactNode;
+}) {
   return (
-    <div className="cmd-card">
-      <h3 className="card-titulo">{titulo}</h3>
-      {children}
-    </div>
+    <section className="secao">
+      <CabecalhoSecao titulo={titulo} subtitulo={subtitulo} meta={meta} />
+      <div className="cmd-card">{children}</div>
+    </section>
   );
 }
 
@@ -171,7 +183,7 @@ export function Terminal() {
                 <span>
                   <Atalho comando={c.nome} aoExecutar={executar} />
                   {c.aliases.length > 0 && (
-                    <span className="text-accent">, {c.aliases.join(', ')}</span>
+                    <span className="cmd-aliases">, {c.aliases.join(', ')}</span>
                   )}
                 </span>
                 <span className="text-gray">{c.desc}</span>
@@ -197,11 +209,18 @@ export function Terminal() {
           return <Vazio>essa seção ainda está vazia.</Vazio>;
         }
         return (
-          <Monitoria
-            disciplina={monitoria.disciplina}
-            professor={monitoria.professor}
-            horarios={monitoria.horarios}
-          />
+          <section className="secao">
+            <CabecalhoSecao
+              titulo="monitoria"
+              subtitulo="Horários de atendimento da disciplina que monitoro"
+              meta={`${monitoria.horarios.length} horários por semana`}
+            />
+            <Monitoria
+              disciplina={monitoria.disciplina}
+              professor={monitoria.professor}
+              horarios={monitoria.horarios}
+            />
+          </section>
         );
       }
 
@@ -211,7 +230,7 @@ export function Terminal() {
           return <Vazio>essa seção ainda está vazia.</Vazio>;
         }
         return (
-          <Card titulo="viagens">
+          <Card titulo="viagens" subtitulo="Lugares que já visitei">
             <MapaViagens />
           </Card>
         );
@@ -219,7 +238,7 @@ export function Terminal() {
       // ---- Biblioteca ----
       case 'biblioteca':
         return (
-          <Card titulo="biblioteca">
+          <Card titulo="biblioteca" subtitulo="O que estou lendo, já li e quero ler">
             <Biblioteca />
           </Card>
         );
@@ -227,7 +246,7 @@ export function Terminal() {
       // ---- WakaTime ----
       case 'wakatime':
         return (
-          <Card titulo="wakatime">
+          <Card titulo="wakatime" subtitulo="Meu tempo de código, medido pelo editor">
             <WakaTime />
           </Card>
         );

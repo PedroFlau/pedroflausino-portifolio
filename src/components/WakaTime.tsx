@@ -89,6 +89,13 @@ function haQuanto(ms: number, agora: number): string {
    Barras e tabelas
    ===================================================================== */
 
+/** Encurta nomes longos no meio ("plu-cc-2026…grupo-3"), mantendo início e fim legíveis. */
+function abreviarMeio(nome: string, max = 34): string {
+  if (nome.length <= max) return nome;
+  const lado = Math.floor((max - 1) / 2);
+  return `${nome.slice(0, lado)}…${nome.slice(-lado)}`;
+}
+
 function Barra({ porcento }: { porcento: number }) {
   const cheios = Math.max(0, Math.min(SEGMENTOS, Math.round((porcento / 100) * SEGMENTOS)));
   return (
@@ -104,7 +111,7 @@ function Linha({ item, resto = false }: { item: ItemWakaTime; resto?: boolean })
   return (
     <li className={resto ? 'waka-linha resta' : 'waka-linha'}>
       <span className="waka-nome" title={item.nome}>
-        {item.nome}
+        {abreviarMeio(item.nome)}
       </span>
       <Barra porcento={item.porcento} />
       <span className="waka-tempo">{duracao(item.segundos)}</span>

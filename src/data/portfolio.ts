@@ -98,19 +98,35 @@ export const habilidades: {
   },
 ];
 
-export const projetos: {
+export type Projeto = {
   nome: string;
   descricao: string;
   tecnologias: string[];
   link?: string;
   demo?: string;
-}[] = [
+  /** Nome do repositório, mostrado na prévia estilo "janela de terminal". */
+  repo: string;
+  /** Situação do projeto (vira um selo no card). */
+  status: "no ar" | "em andamento" | "concluído";
+  ano: string;
+  /** Ex.: "solo", "em equipe". */
+  papel: string;
+  /** Screenshot opcional em /public/images/projetos/ (ex.: "/images/projetos/x.png").
+   *  Sem imagem, o card mostra uma prévia gerada. */
+  imagem?: string;
+};
+
+export const projetos: Projeto[] = [
   {
     nome: "Portfólio Terminal",
     descricao:
       "Este site! Um portfólio pessoal com estética de terminal, construído do zero com React, TypeScript e Vite.",
     tecnologias: ["React", "TypeScript", "Vite", "CSS"],
     link: "https://github.com/PedroFlau",
+    repo: "pedroflausino-portifolio",
+    status: "no ar",
+    ano: "2026",
+    papel: "solo",
   },
   {
     nome: "Visualize It",
@@ -119,6 +135,10 @@ export const projetos: {
     tecnologias: ["TypeScript", "JavaScript", "HTML", "CSS"],
     link: "https://github.com/fernandoleitepagani/visualize_it",
     demo: "https://visualizeit-pi.vercel.app/",
+    repo: "visualize_it",
+    status: "no ar",
+    ano: "2026",
+    papel: "em equipe",
   },
 ];
 
@@ -127,6 +147,24 @@ export const formacao = [
     titulo: "Bacharelado em Ciência da Computação",
     local: "Em andamento · 2º semestre (2026.2)",
     periodo: "Início em 2026.1",
+  },
+];
+
+// Trajetória (linha do tempo da seção "sobre"), do mais recente ao mais antigo
+export const trajetoria: { quando: string; titulo: string; detalhe?: string }[] = [
+  {
+    quando: "2026.2",
+    titulo: "Monitor de Algoritmos e Estruturas de Dados I",
+    detalhe: "Atendimento semanal aos alunos da disciplina",
+  },
+  {
+    quando: "2026",
+    titulo: "Visualize It",
+    detalhe: "Projeto em equipe para visualizar conceitos de AEDS II",
+  },
+  {
+    quando: "2026.1",
+    titulo: "Início do bacharelado em Ciência da Computação",
   },
 ];
 

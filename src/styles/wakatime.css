@@ -27,8 +27,9 @@
 }
 
 .waka-kv dd {
-  color: var(--accent);
+  color: var(--texto);
   font-size: var(--fs-1);
+  font-weight: 700;
 }
 
 .waka-tabela {
@@ -87,6 +88,11 @@
 
 .waka-seg.ligado {
   background: var(--accent);
+}
+
+/* Hierarquia: só o 1º item de cada grupo usa o destaque cheio */
+.waka-linha:not(:first-child) .waka-seg.ligado {
+  background: color-mix(in srgb, var(--accent) 55%, var(--borda));
 }
 
 .waka-tempo,

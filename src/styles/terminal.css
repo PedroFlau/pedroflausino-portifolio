@@ -171,7 +171,7 @@
 }
 
 .terminal-item {
-  margin-bottom: 18px;
+  margin-bottom: var(--esp-6);
 }
 
 .terminal-prompt {
@@ -179,6 +179,11 @@
   align-items: center;
   flex-wrap: wrap;
   font-size: var(--fs-sm);
+}
+
+/* Espaço entre "~$" e o comando (o espaço no fim do span some dentro do flex) */
+.terminal-prompt > span:nth-child(3) {
+  margin-left: 1ch;
 }
 
 .terminal-input {
@@ -209,8 +214,8 @@
 
 /* ===== Saída dos comandos ===== */
 .terminal-saida {
-  margin-top: 12px;
-  padding-left: 14px;
+  margin-top: var(--esp-3);
+  padding-left: var(--esp-4);
   border-left: 2px solid var(--borda);
 }
 
@@ -267,6 +272,20 @@
 
 .cmd-atalho:hover {
   text-decoration-style: solid;
+}
+
+/* Na lista da ajuda o formato de tabela já indica que é comando: sem sublinhado,
+   e os aliases ficam discretos para o nome principal se destacar */
+.cmd-lista-ajuda .cmd-atalho {
+  text-decoration: none;
+}
+
+.cmd-lista-ajuda .cmd-atalho:hover {
+  text-decoration: underline;
+}
+
+.cmd-aliases {
+  color: var(--texto-fraco);
 }
 
 .cmd-atalho:focus-visible {

@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
-import { extend, useFrame, useThree, type ThreeElement, type ThreeEvent } from '@react-three/fiber';
-import { RoundedBox } from '@react-three/drei';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import {
   BallCollider,
   CuboidCollider,
@@ -10,75 +9,126 @@ import {
   type RapierRigidBody,
   type RigidBodyProps,
 } from '@react-three/rapier';
-import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 import * as THREE from 'three';
+import {
+  ANCORA_Y,
+  ARGOLA_RAIO,
+  ARGOLA_TUBO,
+  ARGOLA_Y,
+  CARTAO_ALTURA,
+  CARTAO_ESPESSURA,
+  CARTAO_LARGURA,
+  criarGeometriaCartao,
+  criarGeometriaPresilha,
+} from './geometria';
+import {
+  atualizarFita,
+  criarEstadoFita,
+  criarGeometriaFita,
+  FITA_LARGURA,
+  PRESILHA_Y,
+} from './fita';
 
-extend({ MeshLineGeometry, MeshLineMaterial });
-
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    meshLineGeometry: ThreeElement<typeof MeshLineGeometry>;
-    meshLineMaterial: Omit<ThreeElement<typeof MeshLineMaterial>, 'args'>;
-  }
-}
-
-/** Tamanho do cartão em unidades do mundo (proporção da arte 1342×2000). */
-const CARTAO_ALTURA = 2.9;
-const CARTAO_LARGURA = CARTAO_ALTURA * (1342 / 2000);
-const CARTAO_ESPESSURA = 0.03;
-/** Ponto do cartão (acima do centro) onde a tira se prende. */
-const ANCORA_Y = CARTAO_ALTURA / 2 + 0.25;
-/** Comprimento (em unidades do mundo) de cada repetição de "flausino.dev" na tira. */
-const COMPRIMENTO_TILE = 1.1;
-/** Comprimento de cada um dos 3 segmentos da corda (tira mais curta = cartão mais alto). */
+/** Comprimento de cada um dos 3 segmentos da corda (fita mais curta = cartão mais alto). */
 export const SEGMENTO = 0.4;
 /** Queda total do ponto fixo até a base do cartão, em unidades do mundo. */
 export const QUEDA_TOTAL = 3 * SEGMENTO + ANCORA_Y + CARTAO_ALTURA / 2;
 
+/** Toque curto e parado = virar o cartão (em vez de arrastar). */
+const TOQUE_MAX_PX = 6;
+const TOQUE_MAX_MS = 450;
+
+const COR_MOLDURA = '#121019';
+const METAL = { color: '#d9dce2', metalness: 1, roughness: 0.16 } as const;
+const ACABAMENTO = {
+  roughness: 0.42,
+  clearcoat: 0.7,
+  clearcoatRoughness: 0.06,
+  normalScale: new THREE.Vector2(0.06, 0.06),
+} as const;
+const TECIDO = {
+  normalScale: new THREE.Vector2(0.7, 0.7),
+  roughness: 0.68,
+  sheen: 0.45,
+  sheenRoughness: 0.42,
+  sheenColor: new THREE.Color(0.2, 0.2, 0.22),
+} as const;
+
 type Props = {
-  texturaCartao: THREE.Texture;
+  texturaFrente: THREE.Texture;
+  texturaVerso: THREE.Texture;
   texturaTira: THREE.Texture;
+  normalTrama: THREE.Texture;
+  normalPapel: THREE.Texture;
   /** Ref compartilhada para o container saber quando o crachá está sendo arrastado. */
   arrastandoRef: RefObject<boolean>;
   /** prefers-reduced-motion: começa já pendurado (sem balanço de entrada) e mais amortecido. */
   calmo: boolean;
-  /** Ponto fixo da tira (topo da coluna do crachá), em coordenadas do mundo. */
+  /** Ponto fixo da fita (topo da coluna do crachá), em coordenadas do mundo. */
   ancora: [number, number];
 };
 
-export function Lanyard({ texturaCartao, texturaTira, arrastandoRef, calmo, ancora }: Props) {
-  const tira = useRef<THREE.Mesh<MeshLineGeometry, MeshLineMaterial>>(null);
+export function Lanyard({
+  texturaFrente,
+  texturaVerso,
+  texturaTira,
+  normalTrama,
+  normalPapel,
+  arrastandoRef,
+  calmo,
+  ancora,
+}: Props) {
+  const presilha = useRef<THREE.Group>(null);
   const fixo = useRef<RapierRigidBody>(null!);
   const j1 = useRef<RapierRigidBody>(null!);
   const j2 = useRef<RapierRigidBody>(null!);
   const j3 = useRef<RapierRigidBody>(null!);
   const cartao = useRef<RapierRigidBody>(null!);
 
-  // Posições suavizadas dos segmentos do meio (evita tremido na tira)
-  const suavizado = useRef<{ j1: THREE.Vector3 | null; j2: THREE.Vector3 | null }>({
-    j1: null,
-    j2: null,
-  });
+  const geo = useMemo(
+    () => ({
+      ...criarGeometriaCartao(),
+      presilha: criarGeometriaPresilha(FITA_LARGURA),
+      fita: criarGeometriaFita(),
+    }),
+    [],
+  );
+  useEffect(
+    () => () => {
+      geo.corpo.dispose();
+      geo.face.dispose();
+      geo.presilha.dispose();
+      geo.fita.dispose();
+    },
+    [geo],
+  );
 
-  const [aux] = useState(() => ({
+  // Mesma textura da fita com o V invertido: vista por trás, lê na direção certa
+  const tiraVerso = useMemo(() => {
+    const t = texturaTira.clone();
+    t.repeat.y = -1;
+    t.needsUpdate = true;
+    return t;
+  }, [texturaTira]);
+  useEffect(() => () => tiraVerso.dispose(), [tiraVerso]);
+
+  // Estado mutável da simulação visual (fora do React: muda a cada frame)
+  const sim = useRef({
+    fita: criarEstadoFita(),
+    /** Nós da fita, de cima para baixo: fixo, j1 e j2 suavizados, engate. */
+    nos: [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()],
+    suavizado: false,
+    /** Giro (yaw) acumulado do cartão, sem saltos de ±π: dá a torção da fita. */
+    giro: 0,
+    /** Para onde a mola de giro puxa: 0 = frente, ±π = verso. */
+    alvo: 0,
+    toque: null as { x: number; y: number; t: number } | null,
     vec: new THREE.Vector3(),
     dir: new THREE.Vector3(),
-    ang: new THREE.Vector3(),
     quat: new THREE.Quaternion(),
     euler: new THREE.Euler(0, 0, 0, 'YXZ'),
-  }));
-  const [curva] = useState(() => {
-    const c = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(),
-      new THREE.Vector3(),
-      new THREE.Vector3(),
-      new THREE.Vector3(),
-    ]);
-    c.curveType = 'chordal';
-    return c;
   });
 
-  const { width, height } = useThree((s) => s.size);
   // Elemento que recebe os eventos (a <section> do Hero): o cursor vai nele,
   // já que o canvas tem pointer-events: none.
   const lerEstado = useThree((s) => s.get);
@@ -126,7 +176,8 @@ export function Lanyard({ texturaCartao, texturaTira, arrastandoRef, calmo, anco
   }, [emCima, arrastado, lerEstado]);
 
   useFrame((state, delta) => {
-    const { vec, dir, ang, quat, euler } = aux;
+    const s = sim.current;
+    const { vec, dir, quat, euler, nos } = s;
 
     if (arrastado && cartao.current) {
       // Projeta o ponteiro no plano z=0 e leva o cartão até lá
@@ -143,44 +194,39 @@ export function Lanyard({ texturaCartao, texturaTira, arrastandoRef, calmo, anco
 
     if (!fixo.current || !j1.current || !j2.current || !j3.current || !cartao.current) return;
 
-    const s = suavizado.current;
-    const minVel = 0;
-    const maxVel = 50;
-    (['j1', 'j2'] as const).forEach((k) => {
-      const corpo = (k === 'j1' ? j1 : j2).current!;
-      const atual = corpo.translation();
-      if (!s[k]) s[k] = new THREE.Vector3(atual.x, atual.y, atual.z);
-      const alvo = vec.set(atual.x, atual.y, atual.z);
-      const dist = Math.max(0.1, Math.min(1, s[k]!.distanceTo(alvo)));
-      // Limitado a 1: com FPS baixo (celular fraco) o fator passaria de 1 e a tira divergiria
-      s[k]!.lerp(alvo, Math.min(1, delta * (minVel + dist * (maxVel - minVel))));
-    });
-
-    const p3 = j3.current.translation();
+    // Nós do meio suavizados (evita tremido na fita)
     const p0 = fixo.current.translation();
-    curva.points[0].set(p3.x, p3.y, p3.z);
-    curva.points[1].copy(s.j2!);
-    curva.points[2].copy(s.j1!);
-    curva.points[3].set(p0.x, p0.y, p0.z);
-    if (tira.current) {
-      // Pontos espaçados por comprimento de arco: o UV do meshline é por índice de
-      // ponto, então espaçamento uniforme evita letras esticadas/encolhidas.
-      tira.current.geometry.setPoints(curva.getSpacedPoints(48));
-      // Repetição proporcional ao comprimento: o texto mantém o tamanho ao esticar.
-      tira.current.material.repeat.x = curva.getLength() / COMPRIMENTO_TILE;
-    }
+    const p3 = j3.current.translation();
+    nos[0].set(p0.x, p0.y, p0.z);
+    nos[3].set(p3.x, p3.y, p3.z);
+    [j1, j2].forEach((corpo, i) => {
+      const atual = corpo.current.translation();
+      const alvo = vec.set(atual.x, atual.y, atual.z);
+      const no = nos[i + 1];
+      if (!s.suavizado) no.copy(alvo);
+      const dist = Math.max(0.1, Math.min(1, no.distanceTo(alvo)));
+      // Limitado a 1: com FPS baixo (celular fraco) o fator passaria de 1 e a fita divergiria
+      no.lerp(alvo, Math.min(1, delta * dist * 50));
+    });
+    s.suavizado = true;
 
-    // Faz o cartão voltar a ficar de frente: mola no ângulo de giro (yaw) com
-    // amortecimento na velocidade — sem o amortecimento ele fica oscilando de lado.
-    // Proporcional ao tempo do frame, para não depender do FPS.
+    // Giro acumulado do cartão em torno do próprio eixo vertical
+    const r = cartao.current.rotation();
+    euler.setFromQuaternion(quat.set(r.x, r.y, r.z, r.w));
+    // Mantém o acumulado sempre equivalente ao giro real (módulo 2π): assim a mola
+    // para com o cartão exatamente de frente, sem herdar erro do balanço de entrada.
+    const dif = euler.y - s.giro;
+    s.giro += dif - Math.PI * 2 * Math.round(dif / (Math.PI * 2));
+
+    atualizarFita(geo.fita, s.fita, nos, state.camera.position, s.giro, presilha.current);
+
+    // Mola no giro, com amortecimento, puxando para a face escolhida (frente ou
+    // verso). Proporcional ao tempo do frame, para não depender do FPS.
     if (!arrastado) {
       const av = cartao.current.angvel();
-      const r = cartao.current.rotation();
-      ang.set(av.x, av.y, av.z);
-      euler.setFromQuaternion(quat.set(r.x, r.y, r.z, r.w));
       const f = Math.min(1, delta * 60);
-      const vy = ang.y * (1 - 0.12 * f) - euler.y * 0.35 * f;
-      cartao.current.setAngvel({ x: ang.x, y: vy, z: ang.z }, true);
+      const vy = av.y * (1 - 0.12 * f) - (s.giro - s.alvo) * 0.35 * f;
+      cartao.current.setAngvel({ x: av.x, y: vy, z: av.z }, true);
     }
   });
 
@@ -190,12 +236,25 @@ export function Lanyard({ texturaCartao, texturaTira, arrastandoRef, calmo, anco
     // Evita selecionar o texto do Hero que está por baixo do cartão
     e.nativeEvent.preventDefault();
     (e.target as Element).setPointerCapture(e.pointerId);
+    sim.current.toque = { x: e.nativeEvent.clientX, y: e.nativeEvent.clientY, t: performance.now() };
     const t = cartao.current.translation();
     setArrastado(new THREE.Vector3().copy(e.point).sub(new THREE.Vector3(t.x, t.y, t.z)));
   };
 
   const aoSoltar = (e: ThreeEvent<PointerEvent>) => {
     (e.target as Element).releasePointerCapture(e.pointerId);
+    const s = sim.current;
+    const toque = s.toque;
+    s.toque = null;
+    if (
+      toque &&
+      e.type === 'pointerup' &&
+      performance.now() - toque.t < TOQUE_MAX_MS &&
+      Math.hypot(e.nativeEvent.clientX - toque.x, e.nativeEvent.clientY - toque.y) < TOQUE_MAX_PX
+    ) {
+      // Vira e, no toque seguinte, desvira pelo mesmo caminho (a fita destorce)
+      s.alvo = s.alvo === 0 ? Math.PI : 0;
+    }
     setArrastado(false);
   };
 
@@ -206,6 +265,8 @@ export function Lanyard({ texturaCartao, texturaTira, arrastandoRef, calmo, anco
   const posCartao: [number, number, number] = calmo
     ? [0, -3 * SEGMENTO - ANCORA_Y, 0]
     : [3 * SEGMENTO * 0.9 + 0.5, 0, 0];
+
+  const zFace = CARTAO_ESPESSURA / 2 + 0.0005;
 
   return (
     <>
@@ -228,7 +289,7 @@ export function Lanyard({ texturaCartao, texturaTira, arrastandoRef, calmo, anco
           linearDamping={calmo ? 6 : 2}
           type={arrastado ? 'kinematicPosition' : 'dynamic'}
         >
-          <CuboidCollider args={[CARTAO_LARGURA / 2, CARTAO_ALTURA / 2, CARTAO_ESPESSURA]} />
+          <CuboidCollider args={[CARTAO_LARGURA / 2, CARTAO_ALTURA / 2, CARTAO_ESPESSURA / 2]} />
           <group
             onPointerOver={() => setEmCima(true)}
             onPointerOut={() => setEmCima(false)}
@@ -236,58 +297,53 @@ export function Lanyard({ texturaCartao, texturaTira, arrastandoRef, calmo, anco
             onPointerUp={aoSoltar}
             onPointerCancel={aoSoltar}
           >
-            {/* Corpo do cartão (borda e verso) */}
-            <RoundedBox
-              args={[CARTAO_LARGURA, CARTAO_ALTURA, CARTAO_ESPESSURA]}
-              radius={0.012}
-              smoothness={2}
-            >
+            {/* Corpo: borda arredondada com bisel e furo do slot */}
+            <mesh geometry={geo.corpo}>
               <meshPhysicalMaterial
-                color="#0c0c10"
-                roughness={0.5}
-                clearcoat={1}
-                clearcoatRoughness={0.25}
-              />
-            </RoundedBox>
-
-            {/* Arte da frente */}
-            <mesh position={[0, 0, CARTAO_ESPESSURA / 2 + 0.001]}>
-              <planeGeometry args={[CARTAO_LARGURA, CARTAO_ALTURA]} />
-              <meshPhysicalMaterial
-                map={texturaCartao}
-                transparent
-                alphaTest={0.5}
+                color={COR_MOLDURA}
                 roughness={0.35}
                 clearcoat={1}
-                clearcoatRoughness={0.15}
-                metalness={0.05}
+                clearcoatRoughness={0.08}
               />
             </mesh>
-
-            {/* Argola metálica que entra no furo do cartão */}
-            <mesh position={[0, CARTAO_ALTURA / 2 - 0.02, 0]} rotation={[0, Math.PI / 2, 0]}>
-              <torusGeometry args={[0.11, 0.022, 12, 32]} />
-              <meshStandardMaterial color="#c9ced6" metalness={1} roughness={0.25} />
+            {/* Frente */}
+            <mesh geometry={geo.face} position={[0, 0, zFace]}>
+              <meshPhysicalMaterial map={texturaFrente} normalMap={normalPapel} {...ACABAMENTO} />
             </mesh>
-            {/* Presilha que prende a tira */}
-            <mesh position={[0, ANCORA_Y - 0.06, 0]}>
-              <boxGeometry args={[0.2, 0.14, 0.06]} />
-              <meshStandardMaterial color="#9aa0a8" metalness={1} roughness={0.3} />
+            {/* Verso */}
+            <mesh geometry={geo.face} position={[0, 0, -zFace]} rotation={[0, Math.PI, 0]}>
+              <meshPhysicalMaterial map={texturaVerso} normalMap={normalPapel} {...ACABAMENTO} />
+            </mesh>
+            {/* Argola metálica atravessando o furo */}
+            <mesh position={[0, ARGOLA_Y, 0]} rotation={[0, Math.PI / 2 - 0.7, 0]}>
+              <torusGeometry args={[ARGOLA_RAIO, ARGOLA_TUBO, 18, 72]} />
+              <meshStandardMaterial {...METAL} />
             </mesh>
           </group>
         </RigidBody>
       </group>
 
-      <mesh ref={tira} frustumCulled={false}>
-        <meshLineGeometry />
-        {/* Cor padrão do meshline já é branca (a textura dá a cor). depthTest ligado
-            para a tira ficar atrás do cartão quando ele gira na frente dela. */}
-        <meshLineMaterial
-          resolution={new THREE.Vector2(width, height)}
-          useMap={1}
-          map={texturaTira}
-          repeat={new THREE.Vector2(3, -1)}
-          lineWidth={1.5}
+      {/* Presilha: segue a ponta da fita (posicionada em atualizarFita) */}
+      <group ref={presilha}>
+        <mesh geometry={geo.presilha} position={[0, PRESILHA_Y, 0]}>
+          <meshStandardMaterial {...METAL} />
+        </mesh>
+        <mesh>
+          <torusGeometry args={[0.045, 0.013, 14, 40]} />
+          <meshStandardMaterial {...METAL} />
+        </mesh>
+      </group>
+
+      {/* Fita: frente e verso em malhas separadas, para o texto do verso não sair espelhado */}
+      <mesh geometry={geo.fita} frustumCulled={false}>
+        <meshPhysicalMaterial map={texturaTira} normalMap={normalTrama} {...TECIDO} />
+      </mesh>
+      <mesh geometry={geo.fita} frustumCulled={false}>
+        <meshPhysicalMaterial
+          map={tiraVerso}
+          normalMap={normalTrama}
+          {...TECIDO}
+          side={THREE.BackSide}
         />
       </mesh>
     </>

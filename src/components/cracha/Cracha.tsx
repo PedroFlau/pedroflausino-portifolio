@@ -1,15 +1,31 @@
-import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefObject } from 'react';
 import { Canvas, events, useThree, type EventManager, type RootState } from '@react-three/fiber';
 import { Environment, Lightformer, useTexture } from '@react-three/drei';
 import { Physics } from '@react-three/rapier';
-import { SRGBColorSpace, type Texture } from 'three';
+import { type Texture } from 'three';
 import { useTema } from '../../hooks/useTema';
 import { perfil } from '../../data/portfolio';
 import { Lanyard, QUEDA_TOTAL } from './Lanyard';
-import { criarTexturaTira, desenharCrachaSith } from './texturas';
+import {
+  criarNormalPapel,
+  criarNormalTrama,
+  criarTexturaTira,
+  desenharCrachaTema,
+  desenharVersoCracha,
+  prepararArteFrente,
+  type EstiloCracha,
+} from './texturas';
 
 const ARTE_CRACHA = '/images/cracha.png';
-const FOTO_SITH = '/images/fotoSith.png';
+/** Mesmas fotos com o fundo removido (imagem com transparência, mesmas dimensões). */
+const RECORTE_TEMA: Record<EstiloCracha, string> = {
+  sith: '/images/fotoSith-recorte.webp',
+  escuro: '/images/minhafoto-recorte.webp',
+};
+const FOTO_TEMA: Record<EstiloCracha, string> = {
+  sith: '/images/fotoSith.png',
+  escuro: '/images/minhafoto.jpeg',
+};
 const FOV = 25;
 /** Folga (px) entre a base do cartão e o fim da coluna .hero-foto. */
 const FOLGA_BASE_PX = 16;
@@ -124,63 +140,125 @@ function useMovimentoReduzido() {
   return reduzido;
 }
 
-/** Monta a textura Sith quando o tema imperial está ativo (carrega a foto sob demanda). */
-function useTexturaSith(ativo: boolean): Texture | null {
-  const [textura, setTextura] = useState<Texture | null>(null);
+/** Avisa quando o tema (data-theme no <html>) muda. */
+function observarTema(aoMudar: () => void) {
+  const obs = new MutationObserver(aoMudar);
+  obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  return () => obs.disconnect();
+}
+
+/** Cor de detalhe (--accent) do tema ativo. */
+function lerDestaque(): string {
+  return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#e3b341';
+}
+
+/**
+ * Frente desenhada em canvas para os temas que não usam a arte pronta
+ * (carrega a foto do tema sob demanda). Devolve null enquanto carrega ou
+ * quando o tema usa a arte original.
+ */
+function useTexturaTema(estilo: EstiloCracha | null, destaque: string): Texture | null {
+  const [feita, setFeita] = useState<{ chave: string; textura: Texture } | null>(null);
+  const chave = `${estilo}|${destaque}`;
 
   useEffect(() => {
-    if (!ativo || textura) return;
+    if (!estilo) return;
     let cancelado = false;
-    const img = new Image();
-    img.onload = () => {
-      if (!cancelado) setTextura(desenharCrachaSith(img));
-    };
-    img.src = FOTO_SITH;
+    const carregar = (src: string) =>
+      new Promise<HTMLImageElement | null>((resolver) => {
+        const img = new Image();
+        img.onload = () => resolver(img);
+        img.onerror = () => resolver(null);
+        img.src = src;
+      });
+    // O recorte é opcional: sem o arquivo, a foto fica inteira dentro da janela
+    Promise.all([carregar(FOTO_TEMA[estilo]), carregar(RECORTE_TEMA[estilo])]).then(
+      ([foto, recorte]) => {
+        if (cancelado || !foto) return;
+        setFeita({ chave, textura: desenharCrachaTema(foto, estilo, destaque, recorte) });
+      },
+    );
     return () => {
       cancelado = true;
     };
-  }, [ativo, textura]);
+  }, [estilo, destaque, chave]);
 
-  useEffect(() => () => textura?.dispose(), [textura]);
+  useEffect(() => () => feita?.textura.dispose(), [feita]);
 
-  return ativo ? textura : null;
+  return estilo && feita?.chave === chave ? feita.textura : null;
 }
 
 type CenaProps = {
-  sith: boolean;
+  /** Tema com frente desenhada em canvas; null = arte original. */
+  estilo: EstiloCracha | null;
   arrastandoRef: RefObject<boolean>;
   calmo: boolean;
   ancora: [number, number];
 };
 
-function Cena({ sith, arrastandoRef, calmo, ancora }: CenaProps) {
-  const arte = useTexture(ARTE_CRACHA, (t) => {
-    t.colorSpace = SRGBColorSpace;
-    t.anisotropy = 8;
-  });
-  const texturaSith = useTexturaSith(sith);
+function Cena({ estilo, arrastandoRef, calmo, ancora }: CenaProps) {
+  const destaque = useSyncExternalStore(observarTema, lerDestaque);
 
+  const arte = useTexture(ARTE_CRACHA);
+  const texturaTema = useTexturaTema(estilo, destaque);
   const anisotropia = useThree((s) => s.gl.capabilities.getMaxAnisotropy());
-  const texturaTira = useMemo(() => {
-    const t = criarTexturaTira(sith ? '#e6e1d3' : '#f2f2f2');
+
+  const frente = useMemo(() => {
+    const t = prepararArteFrente(arte.image as HTMLImageElement);
     t.anisotropy = anisotropia;
     return t;
-  }, [sith, anisotropia]);
+  }, [arte, anisotropia]);
+  useEffect(() => () => frente.dispose(), [frente]);
+
+  const verso = useMemo(() => {
+    const t = desenharVersoCracha(estilo ?? 'padrao', {
+      nome: perfil.nome,
+      github: perfil.links.github.replace(/^https?:\/\//, ''),
+      email: perfil.links.email,
+      cidade: perfil.cidade,
+    }, destaque);
+    t.anisotropy = anisotropia;
+    return t;
+  }, [estilo, destaque, anisotropia]);
+  useEffect(() => () => verso.dispose(), [verso]);
+
+  const texturaTira = useMemo(() => {
+    const t = criarTexturaTira(
+      estilo === 'sith' ? '#e6e1d3' : '#f2f2f2',
+      estilo === 'escuro' ? destaque : undefined,
+    );
+    t.anisotropy = anisotropia;
+    return t;
+  }, [estilo, destaque, anisotropia]);
   useEffect(() => () => texturaTira.dispose(), [texturaTira]);
+
+  const normais = useMemo(() => ({ trama: criarNormalTrama(), papel: criarNormalPapel() }), []);
+  useEffect(
+    () => () => {
+      normais.trama.dispose();
+      normais.papel.dispose();
+    },
+    [normais],
+  );
 
   return (
     <>
-      <ambientLight intensity={Math.PI} />
+      <ambientLight intensity={0.9} />
+      <directionalLight position={[-2.5, 4, 6]} intensity={1.4} />
+      <directionalLight position={[3, -1, 4]} intensity={0.3} />
       <Physics interpolate gravity={[0, -40, 0]} timeStep={1 / 60}>
         <Lanyard
-          texturaCartao={texturaSith ?? arte}
+          texturaFrente={texturaTema ?? frente}
+          texturaVerso={verso}
           texturaTira={texturaTira}
+          normalTrama={normais.trama}
+          normalPapel={normais.papel}
           arrastandoRef={arrastandoRef}
           calmo={calmo}
           ancora={ancora}
         />
       </Physics>
-      <Environment blur={0.75}>
+      <Environment blur={0.75} environmentIntensity={0.4}>
         <Lightformer intensity={2} color="white" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
         <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
         <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
@@ -200,12 +278,13 @@ type CrachaProps = {
 };
 
 /**
- * Crachá 3D pendurado numa tira, com física (arrastável). O canvas cobre o Hero
+ * Crachá 3D pendurado numa fita, com física (arrastável; um toque vira o cartão). O canvas cobre o Hero
  * inteiro, para o cartão poder ser arrastado para fora da coluna sem ser cortado.
  */
 export default function Cracha({ heroRef, colunaRef, onMontado }: CrachaProps) {
   const { tema } = useTema();
   const sith = tema === 'galactic_empire';
+  const estilo: EstiloCracha | null = sith ? 'sith' : tema === 'dark' ? 'escuro' : null;
   const calmo = useMovimentoReduzido();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -244,8 +323,8 @@ export default function Cracha({ heroRef, colunaRef, onMontado }: CrachaProps) {
       role="img"
       aria-label={
         sith
-          ? `Crachá de ${perfil.nome} na versão Sith, pendurado numa tira escrita flausino.dev`
-          : `Crachá de desenvolvedor de ${perfil.nome}, pendurado numa tira escrita flausino.dev`
+          ? `Crachá de ${perfil.nome} na versão Sith, pendurado numa fita escrita flausino.dev. Um toque vira o cartão e mostra o verso com os contatos`
+          : `Crachá de desenvolvedor de ${perfil.nome}, pendurado numa fita escrita flausino.dev. Um toque vira o cartão e mostra o verso com os contatos`
       }
     >
       {layout && (
@@ -259,7 +338,7 @@ export default function Cracha({ heroRef, colunaRef, onMontado }: CrachaProps) {
         >
           <AjusteCamera z={layout.z} />
           <Suspense fallback={null}>
-            <Cena sith={sith} arrastandoRef={arrastandoRef} calmo={calmo} ancora={layout.ancora} />
+            <Cena estilo={estilo} arrastandoRef={arrastandoRef} calmo={calmo} ancora={layout.ancora} />
           </Suspense>
         </Canvas>
       )}

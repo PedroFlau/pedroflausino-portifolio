@@ -379,7 +379,7 @@
   letter-spacing: 0.06em;
 }
 
-[data-theme='galactic_empire'] .contato-card .text-gray,
+[data-theme='galactic_empire'] .contato-rotulo,
 [data-theme='galactic_empire'] .mapa-contagem,
 [data-theme='galactic_empire'] .mapa-legenda {
   font-family: var(--display);
@@ -692,4 +692,9 @@
     background-size: 210px;
     opacity: 0.1;
   }
+}
+
+/* O tema já decora o título da seção; o "#" do cabeçalho padrão sai */
+[data-theme='galactic_empire'] .secao-hash {
+  display: none;
 }

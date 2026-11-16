@@ -326,7 +326,7 @@
   text-transform: uppercase;
 }
 
-[data-theme='system'] .contato-card .text-gray,
+[data-theme='system'] .contato-rotulo,
 [data-theme='system'] .mapa-contagem,
 [data-theme='system'] .mapa-legenda {
   font-family: var(--display);
@@ -596,4 +596,9 @@
   [data-theme='system'] .passaporte-pagina + .passaporte-pagina {
     border-top-color: rgba(56, 225, 255, 0.25);
   }
+}
+
+/* O tema já decora o título da seção; o "#" do cabeçalho padrão sai */
+[data-theme='system'] .secao-hash {
+  display: none;
 }
