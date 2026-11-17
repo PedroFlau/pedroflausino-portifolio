@@ -194,10 +194,7 @@ export function Monitoria({ disciplina, professor, horarios }: Props) {
 
   if (!proxima) {
     return (
-      <p className="cmd-aviso">
-        Nenhum horário de monitoria cadastrado. Preencha <code>monitoria.horarios</code> em{' '}
-        <code>src/data/portfolio.ts</code>.
-      </p>
+      <p className="cmd-aviso">Sem horários de monitoria publicados no momento.</p>
     );
   }
 
@@ -234,7 +231,8 @@ export function Monitoria({ disciplina, professor, horarios }: Props) {
   );
 
   return (
-    <div className="monitoria">
+    // aria-live="off": a contagem muda a cada segundo e não deve ser lida em voz alta
+    <div className="monitoria" aria-live="off">
       <div className={`monitoria-card${emSessao ? ' monitoria-card--agora' : ''}`}>
         <div className="monitoria-topo">
           <span className="monitoria-rotulo">

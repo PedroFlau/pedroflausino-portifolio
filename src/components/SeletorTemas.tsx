@@ -121,12 +121,12 @@ export function SeletorTemas({ temaAtual, aoAplicar, aoFechar }: Props) {
             <span className="temas-ornamento" aria-hidden="true">
               ✦
             </span>
-            <span>Theme Setup</span>
+            <span>Seletor de temas</span>
             <span className="temas-ornamento" aria-hidden="true">
               ✦
             </span>
           </div>
-          <p className="temas-header-sub">seletor de temas do portfólio</p>
+          <p className="temas-header-sub">aparência do terminal</p>
         </header>
 
         <div className="temas-info">
@@ -136,7 +136,7 @@ export function SeletorTemas({ temaAtual, aoAplicar, aoFechar }: Props) {
           <p className="temas-info-linha">
             <span aria-hidden="true">❯</span> {TEMAS.length} estilos carregados
           </p>
-          <p className="temas-info-linha">
+          <p className="temas-info-linha temas-dica-teclado">
             <span aria-hidden="true">❯</span> use as setas e Enter para selecionar
           </p>
           <p className="temas-info-ok">
@@ -146,14 +146,15 @@ export function SeletorTemas({ temaAtual, aoAplicar, aoFechar }: Props) {
 
         <div className="temas-seletor">
           <div className="temas-prompt">
-            <span className="temas-prompt-label">Select theme:</span>
+            <span className="temas-prompt-label">Tema:</span>
             <span className="temas-prompt-valor">{TEMAS[indice].id}</span>
             <span className="temas-prompt-cursor" aria-hidden="true" />
           </div>
           <p className="temas-contagem">
             {indice + 1}/{TEMAS.length}
           </p>
-          <p className="temas-instrucao">Use ↑ ↓ e Enter para selecionar</p>
+          <p className="temas-instrucao temas-dica-teclado">Use ↑ ↓ e Enter para selecionar</p>
+          <p className="temas-instrucao temas-dica-toque">Toque num tema para aplicar</p>
 
           <ul
             className="temas-lista"

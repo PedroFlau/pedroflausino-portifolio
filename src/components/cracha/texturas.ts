@@ -8,7 +8,7 @@ import {
   SRGBColorSpace,
 } from 'three';
 
-/** Dimensões da arte do crachá (mesma proporção de /images/cracha.png). */
+/** Dimensões da arte do crachá (mesma proporção de /images/cracha.webp). */
 export const CRACHA_LARGURA = 1342;
 export const CRACHA_ALTURA = 2000;
 

@@ -7,6 +7,7 @@ import {
 import type { Livro } from '../data/biblioteca';
 import { useTema } from '../hooks/useTema';
 import crestImperial from '../assets/imperial-crest.svg';
+import { CapaLivro } from './CapaLivro';
 import { CarrosselLivro } from './CarrosselLivro';
 
 type Props = {
@@ -86,35 +87,44 @@ export function BibliotecaHolograma({ livros }: Props) {
                   </span>
                 </header>
 
-                <ul
-                  ref={listaRef}
-                  className="holo-lista"
-                  role="listbox"
-                  aria-label="Livros da biblioteca"
-                  aria-activedescendant={`holo-livro-${livros[indiceAtivo]?.id ?? ''}`}
-                  tabIndex={0}
-                  onKeyDown={aoTeclarLista}
-                >
-                  {livros.map((item, indice) => (
-                    <li key={item.id}>
-                      <button
-                        id={`holo-livro-${item.id}`}
-                        type="button"
-                        className="holo-livro"
-                        role="option"
-                        aria-selected={indice === indiceAtivo}
-                        tabIndex={-1}
-                        onClick={() => {
-                          setIndiceAtivo(indice);
-                          setSelecionado(indice);
-                        }}
-                        onMouseEnter={() => setIndiceAtivo(indice)}
-                      >
-                        <span>{item.titulo}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                <div className="holo-acervo">
+                  <ul
+                    ref={listaRef}
+                    className="holo-lista"
+                    role="listbox"
+                    aria-label="Livros da biblioteca"
+                    aria-activedescendant={`holo-livro-${livros[indiceAtivo]?.id ?? ''}`}
+                    tabIndex={0}
+                    onKeyDown={aoTeclarLista}
+                  >
+                    {livros.map((item, indice) => (
+                      <li key={item.id} role="presentation">
+                        <button
+                          id={`holo-livro-${item.id}`}
+                          type="button"
+                          className="holo-livro"
+                          role="option"
+                          aria-selected={indice === indiceAtivo}
+                          tabIndex={-1}
+                          onClick={() => {
+                            setIndiceAtivo(indice);
+                            setSelecionado(indice);
+                          }}
+                          onMouseEnter={() => setIndiceAtivo(indice)}
+                        >
+                          <span>{item.titulo}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Capa do livro em foco, "projetada" ao lado da lista */}
+                  {livros[indiceAtivo] && (
+                    <div className="holo-projecao" aria-hidden="true">
+                      <CapaLivro key={livros[indiceAtivo].id} livro={livros[indiceAtivo]} variante="holo" />
+                    </div>
+                  )}
+                </div>
 
                 <p className="holo-dica">
                   ↑ ↓ navegar · Enter abrir

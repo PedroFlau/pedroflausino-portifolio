@@ -16,14 +16,14 @@ import {
   type EstiloCracha,
 } from './texturas';
 
-const ARTE_CRACHA = '/images/cracha.png';
+const ARTE_CRACHA = '/images/cracha.webp';
 /** Mesmas fotos com o fundo removido (imagem com transparência, mesmas dimensões). */
 const RECORTE_TEMA: Record<EstiloCracha, string> = {
   sith: '/images/fotoSith-recorte.webp',
   escuro: '/images/minhafoto-recorte.webp',
 };
 const FOTO_TEMA: Record<EstiloCracha, string> = {
-  sith: '/images/fotoSith.png',
+  sith: '/images/fotoSith.webp',
   escuro: '/images/minhafoto.jpeg',
 };
 const FOV = 25;

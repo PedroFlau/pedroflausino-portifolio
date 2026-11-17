@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Hero } from '../sections/Hero';
 import { About } from '../sections/About';
 import { Skills } from '../sections/Skills';
@@ -12,9 +12,39 @@ import { WakaTime } from './WakaTime';
 import { CabecalhoSecao } from './CabecalhoSecao';
 import { ICONE_TEMA } from './IconesTema';
 import { useTema, NOME_TEMA, proximoTema, type Tema } from '../hooks/useTema';
-import { comandos, monitoria, viagens } from '../data/portfolio';
+import { comandos, curriculo, monitoria, viagens } from '../data/portfolio';
+import { useCurriculo } from '../hooks/useCurriculo';
 
-type ItemHistorico = { comando: string; saida: ReactNode };
+type ItemHistorico = {
+  id: number;
+  comando: string;
+  /** Comando base resolvido (null = não encontrado / saída avulsa). */
+  nome: string | null;
+  saida: ReactNode;
+};
+
+/** Comandos que abrem uma seção: ganham #hash na URL e não se repetem na tela. */
+const SECOES = [
+  'sobre',
+  'projetos',
+  'habilidades',
+  'contato',
+  'cv',
+  'monitoria',
+  'viagens',
+  'biblioteca',
+  'wakatime',
+] as const;
+
+const ehSecao = (nome: string | null): boolean =>
+  nome !== null && (SECOES as readonly string[]).includes(nome);
+
+/** Mouse/trackpad: focar o input ao clicar não abre teclado virtual. */
+const ponteiroFino = () =>
+  typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+const movimentoReduzido = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /** Remove acentos e deixa minúsculo (aceita "monitória" e "monitoria"). */
 const normalizar = (texto: string) =>
@@ -28,7 +58,7 @@ const normalizar = (texto: string) =>
 function resolver(token: string): string | null {
   const alvo = normalizar(token);
   for (const c of comandos) {
-    const nomes = [c.nome, ...c.aliases].map(normalizar);
+    const nomes = [c.nome, ...c.aliases, ...(c.aliasesOcultos ?? [])].map(normalizar);
     if (nomes.includes(alvo)) return normalizar(c.nome);
   }
   return null;
@@ -36,7 +66,10 @@ function resolver(token: string): string | null {
 
 /** Todos os nomes aceitos (comandos + aliases), já normalizados. */
 const NOMES_ACEITOS = comandos.flatMap((c) =>
-  [c.nome, ...c.aliases].map((n) => ({ nome: normalizar(n), base: c.nome })),
+  [c.nome, ...c.aliases, ...(c.aliasesOcultos ?? [])].map((n) => ({
+    nome: normalizar(n),
+    base: c.nome,
+  })),
 );
 
 /** Distância de edição (Levenshtein) — usada só para sugerir comandos. */
@@ -115,12 +148,10 @@ function Card({
   );
 }
 
-function Vazio({ children }: { children: ReactNode }) {
-  return <p className="cmd-aviso">🚧 {children}</p>;
-}
 
 export function Terminal() {
   const { tema, definirTema, alternarTema } = useTema();
+  const temCurriculo = useCurriculo();
   const [input, setInput] = useState('');
   const [historico, setHistorico] = useState<ItemHistorico[]>([]);
   const [temasAberto, setTemasAberto] = useState(false);
@@ -128,31 +159,78 @@ export function Terminal() {
   // Comandos já digitados (para navegar com ↑/↓) e a posição atual nessa lista
   const [digitados, setDigitados] = useState<string[]>([]);
   const [posicao, setPosicao] = useState<number | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  // Saída para onde rolar (o contador força a rolagem mesmo repetindo o alvo)
+  const [alvo, setAlvo] = useState<{ id: number; vez: number } | null>(null);
+  const proximoId = useRef(0);
+  // Seções já na tela (nome → id da saída), atualizado na hora (sem esperar o render)
+  const secoesAbertas = useRef(new Map<string, number>());
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const proximo = proximoTema(tema);
-  const rotuloProximo = NOME_TEMA[proximo];
-  const IconeProximo = ICONE_TEMA[proximo];
+  const rotuloAtual = NOME_TEMA[tema];
+  const rotuloProximo = NOME_TEMA[proximoTema(tema)];
+  const IconeAtual = ICONE_TEMA[tema];
 
-  // Rola o conteúdo do terminal para o fim a cada comando (sem mexer na página)
+  /** Comandos que não têm o que mostrar ficam fora da lista e do resolver. */
+  const disponivel = useCallback(
+    (nome: string | null) => {
+      if (nome === 'cv') return temCurriculo;
+      if (nome === 'monitoria') return Boolean(monitoria.disciplina || monitoria.horarios.length);
+      if (nome === 'viagens') return viagens.length > 0;
+      return true;
+    },
+    [temCurriculo],
+  );
+
+  // Rola até o INÍCIO da saída do comando (o cabeçalho da seção fica visível)
   useEffect(() => {
-    if (historico.length === 0) return;
-    const el = scrollRef.current;
-    if (!el) return;
+    if (!alvo) return;
     const id = requestAnimationFrame(() => {
-      el.scrollTop = el.scrollHeight;
+      document.getElementById(`saida-${alvo.id}`)?.scrollIntoView({
+        block: 'start',
+        behavior: movimentoReduzido() ? 'auto' : 'smooth',
+      });
     });
     return () => cancelAnimationFrame(id);
-  }, [historico]);
+  }, [alvo]);
 
+  // No celular, focar sozinho abriria o teclado e esconderia metade da tela
   useEffect(() => {
     if (temasAberto) {
       inputRef.current?.blur();
-    } else {
+    } else if (ponteiroFino()) {
       inputRef.current?.focus();
     }
   }, [temasAberto]);
+
+  // #projetos na URL abre a seção (ao carregar e ao trocar o hash)
+  const executarRef = useRef<(c: string) => void>(() => {});
+  useEffect(() => {
+    executarRef.current = executar;
+  });
+  const hashCvPendente = useRef(false);
+  useEffect(() => {
+    const abrirDoHash = () => {
+      const nome = resolver(decodeURIComponent(window.location.hash.slice(1)));
+      if (!nome || !ehSecao(nome)) return;
+      // O cv depende da verificação do arquivo: tenta de novo quando ela terminar
+      if (nome === 'cv' && !temCurriculo) {
+        hashCvPendente.current = true;
+        return;
+      }
+      executarRef.current(nome);
+    };
+    abrirDoHash();
+    window.addEventListener('hashchange', abrirDoHash);
+    return () => window.removeEventListener('hashchange', abrirDoHash);
+    // Só no carregamento; o cv é tratado no efeito abaixo
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (temCurriculo && hashCvPendente.current) {
+      hashCvPendente.current = false;
+      executarRef.current('cv');
+    }
+  }, [temCurriculo]);
 
   function renderizarSaida(nome: string | null, entrada: string): ReactNode {
     switch (nome) {
@@ -178,7 +256,7 @@ export function Terminal() {
       case 'ajuda':
         return (
           <ul className="cmd-lista cmd-lista-ajuda">
-            {comandos.map((c) => (
+            {comandos.filter((c) => disponivel(c.nome)).map((c) => (
               <li key={c.nome}>
                 <span>
                   <Atalho comando={c.nome} aoExecutar={executar} />
@@ -202,12 +280,26 @@ export function Terminal() {
       case 'projetos':
         return <Projects />;
 
+      // ---- Currículo ----
+      case 'cv':
+        return (
+          <section className="secao">
+            <CabecalhoSecao titulo="cv" subtitulo="Currículo em PDF, atualizado com este site" />
+            <p className="cv-linha">
+              <span className="text-accent">$</span> wget {window.location.host}{curriculo.arquivo}
+            </p>
+            <a
+              className="botao botao-primario cv-baixar"
+              href={curriculo.arquivo}
+              download={curriculo.nomeDownload}
+            >
+              baixar cv.pdf
+            </a>
+          </section>
+        );
+
       // ---- Monitoria ----
-      case 'monitoria': {
-        const temDados = monitoria.disciplina || monitoria.horarios.length > 0;
-        if (!temDados) {
-          return <Vazio>essa seção ainda está vazia.</Vazio>;
-        }
+      case 'monitoria':
         return (
           <section className="secao">
             <CabecalhoSecao
@@ -222,13 +314,9 @@ export function Terminal() {
             />
           </section>
         );
-      }
 
       // ---- Viagens ----
       case 'viagens':
-        if (viagens.length === 0) {
-          return <Vazio>essa seção ainda está vazia.</Vazio>;
-        }
         return (
           <Card titulo="viagens" subtitulo="Lugares que já visitei">
             <MapaViagens />
@@ -264,30 +352,34 @@ export function Terminal() {
 
     if (temaEscolhido) {
       definirTema(temaEscolhido);
-      setHistorico((h) => [
-        ...h,
-        {
-          comando,
-          saida: (
+      adicionar(comando, null, (
             <p className="temas-resultado">
               <span className="text-accent" aria-hidden="true">
                 ✔
               </span>{' '}
-              tema <span className="text-accent">{temaEscolhido}</span> aplicado.
+              tema <span className="text-accent">{NOME_TEMA[temaEscolhido]}</span> aplicado.
             </p>
-          ),
-        },
-      ]);
+      ));
       return;
     }
 
-    setHistorico((h) => [
-      ...h,
-      {
-        comando,
-        saida: <span className="text-gray">seletor de temas fechado.</span>,
-      },
-    ]);
+    adicionar(comando, null, <span className="text-gray">seletor de temas fechado.</span>);
+  }
+
+  /** Acrescenta uma saída ao histórico e rola até o começo dela. */
+  function adicionar(comando: string, nome: string | null, saida: ReactNode) {
+    const id = proximoId.current++;
+    if (nome && ehSecao(nome)) secoesAbertas.current.set(nome, id);
+    setHistorico((h) => [...h, { id, comando, nome, saida }]);
+    setAlvo((a) => ({ id, vez: (a?.vez ?? 0) + 1 }));
+  }
+
+  /** Grava a seção na URL (#projetos) para dar para mandar o link direto. */
+  function marcarUrl(nome: string | null) {
+    const hash = nome ? `#${nome}` : '';
+    if (window.location.hash !== hash) {
+      history.replaceState(null, '', `${window.location.pathname}${window.location.search}${hash}`);
+    }
   }
 
   function executar(entradaBruta: string) {
@@ -296,11 +388,14 @@ export function Terminal() {
     setDigitados((d) => (d[d.length - 1] === entrada ? d : [...d, entrada]));
     setPosicao(null);
     const [token] = entrada.split(/\s+/);
-    const nome = token ? resolver(token) : null;
+    const resolvido = token ? resolver(token) : null;
+    const nome = disponivel(resolvido) ? resolvido : null;
 
     // limpar
     if (nome === 'limpar') {
+      secoesAbertas.current.clear();
       setHistorico([]);
+      marcarUrl(null);
       return;
     }
 
@@ -311,10 +406,17 @@ export function Terminal() {
       return;
     }
 
-    setHistorico((h) => [
-      ...h,
-      { comando: entrada, saida: renderizarSaida(nome, entrada) },
-    ]);
+    if (ehSecao(nome)) {
+      marcarUrl(nome);
+      // Seção já aberta: volta até ela em vez de repetir tudo
+      const existente = nome ? secoesAbertas.current.get(nome) : undefined;
+      if (existente !== undefined) {
+        setAlvo((a) => ({ id: existente, vez: (a?.vez ?? 0) + 1 }));
+        return;
+      }
+    }
+
+    adicionar(entrada, nome, renderizarSaida(nome, entrada));
   }
 
   function aoTeclar(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -362,11 +464,7 @@ export function Terminal() {
         if (opcoes.length === 1) {
           setInput(opcoes[0]);
         } else if (opcoes.length > 1) {
-          setHistorico((h) => [
-            ...h,
-            {
-              comando: input,
-              saida: (
+          adicionar(input, null, (
                 <p className="cmd-opcoes">
                   {opcoes.map((o, i) => (
                     <span key={o}>
@@ -375,9 +473,7 @@ export function Terminal() {
                     </span>
                   ))}
                 </p>
-              ),
-            },
-          ]);
+          ));
         }
         return;
       }
@@ -386,7 +482,7 @@ export function Terminal() {
 
   // Clicar no terminal foca o input, mas não atrapalha quem está selecionando texto
   function focarInput() {
-    if (window.getSelection()?.toString()) return;
+    if (!ponteiroFino() || window.getSelection()?.toString()) return;
     inputRef.current?.focus();
   }
 
@@ -402,22 +498,23 @@ export function Terminal() {
 
         <div className="terminal-bar-acoes">
           <button
+            type="button"
             className="tema-toggle"
             onClick={(e) => {
               e.stopPropagation();
               alternarTema();
             }}
-            aria-label={`Ativar tema ${rotuloProximo}`}
-            title={`Ativar tema ${rotuloProximo}`}
+            aria-label={`Tema atual: ${rotuloAtual}. Trocar para ${rotuloProximo}`}
+            title={`Tema ${rotuloAtual} · clique para ${rotuloProximo}`}
           >
-            <IconeProximo />
+            <IconeAtual />
           </button>
         </div>
       </header>
 
-      {/* Conteúdo rolável: abertura (nome + foto) + saída dos comandos */}
-      <div className="terminal-scroll" ref={scrollRef} role="log" aria-label="Saída do terminal">
-        <Hero onComando={executar} />
+      {/* Conteúdo rolável: abertura (nome + crachá) + saída dos comandos */}
+      <main className="terminal-scroll">
+        <Hero onComando={executar} temCurriculo={temCurriculo} />
 
         <p className="terminal-hint">
           Digite <Atalho comando="ajuda" aoExecutar={executar} /> e pressione
@@ -429,17 +526,19 @@ export function Terminal() {
           completar e ↑/↓ para o histórico.
         </p>
 
-        {historico.map((item, i) => (
-          <div key={i} className="terminal-item">
-            <div className="terminal-prompt">
-              <span className="text-accent">visitante@portfolio</span>
-              <span className="text-gray">:~$ </span>
-              <span>{item.comando}</span>
+        <div role="log" aria-label="Saída do terminal" aria-relevant="additions">
+          {historico.map((item) => (
+            <div key={item.id} id={`saida-${item.id}`} className="terminal-item">
+              <div className="terminal-prompt">
+                <span className="text-accent">visitante@portfolio</span>
+                <span className="text-gray">:~$ </span>
+                <span>{item.comando}</span>
+              </div>
+              {item.saida && <div className="terminal-saida">{item.saida}</div>}
             </div>
-            {item.saida && <div className="terminal-saida">{item.saida}</div>}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </main>
 
       {/* Barra de digitação fixa embaixo */}
       <div className="terminal-prompt-bar">
@@ -454,10 +553,13 @@ export function Terminal() {
           onKeyDown={aoTeclar}
           spellCheck={false}
           autoComplete="off"
+          autoCapitalize="off"
+          autoCorrect="off"
+          enterKeyHint="go"
           aria-label="Digite um comando"
           style={{ width: `${Math.max(input.length, 1)}ch` }}
         />
-        <span className="cursor" />
+        <span className="cursor" aria-hidden="true" />
       </div>
 
       {temasAberto && (

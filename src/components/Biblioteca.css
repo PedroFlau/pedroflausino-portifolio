@@ -36,7 +36,7 @@
   background: transparent;
   color: var(--bib-dim);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.05em;
   line-height: 1.3;
   text-transform: uppercase;
@@ -59,7 +59,7 @@
 }
 
 .biblioteca-filtro-contagem {
-  font-size: 0.58rem;
+  font-size: var(--fs-2xs);
   opacity: 0.65;
 }
 
@@ -118,7 +118,7 @@
   border-color: var(--bib-line);
   background: transparent;
   color: var(--bib-dim);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   font-weight: 400;
 }
 
@@ -322,7 +322,7 @@
   background: rgba(0, 0, 0, 0.65);
   color: #ffffff;
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   opacity: 0;
@@ -662,7 +662,7 @@
   background: rgba(0, 0, 0, 0.7);
   color: #ffffff;
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -684,7 +684,7 @@
   border: 1px solid var(--bib-line);
   color: var(--bib-dim);
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.08em;
   line-height: 1.3;
   text-transform: uppercase;
@@ -749,7 +749,7 @@
   border: 1px solid color-mix(in srgb, var(--bib-accent) 45%, transparent);
   color: var(--bib-accent);
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.08em;
   line-height: 1.3;
   text-transform: uppercase;
@@ -815,7 +815,7 @@
 .carrossel-estrelas-valor {
   color: var(--bib-dim);
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0;
 }
 
@@ -830,7 +830,7 @@
   margin: 0 0 10px;
   color: var(--bib-accent);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--fs-2xs);
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -859,7 +859,7 @@
   margin-bottom: 2px;
   color: var(--bib-dim);
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -882,7 +882,7 @@
   border: 1px solid var(--bib-line);
   color: var(--bib-dim);
   font-family: var(--mono);
-  font-size: 0.6rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.04em;
 }
 
@@ -902,7 +902,7 @@
   margin-bottom: 6px;
   color: var(--bib-dim);
   font-family: var(--mono);
-  font-size: 0.64rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -942,7 +942,7 @@
 .carrossel-citacao cite {
   color: var(--bib-dim);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--fs-2xs);
   font-style: normal;
 }
 
@@ -987,7 +987,7 @@
   min-width: 54px;
   color: var(--bib-dim);
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--fs-2xs);
   text-align: center;
 }
 
@@ -1141,7 +1141,7 @@
   display: block;
   color: var(--holo-accent);
   font-family: var(--display);
-  font-size: 0.68rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.18em;
   line-height: 1.2;
   text-transform: uppercase;
@@ -1164,7 +1164,7 @@
   flex: 0 0 auto;
   color: var(--holo-dim);
   font-family: var(--display);
-  font-size: 0.68rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -1261,7 +1261,7 @@
     color-mix(in srgb, var(--holo-accent) 18%, transparent);
   color: var(--holo-dim);
   font-family: var(--mono);
-  font-size: 0.64rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -1277,7 +1277,7 @@
   background: transparent;
   color: var(--holo-dim);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
@@ -1616,7 +1616,7 @@
   }
 
   .holo-contagem {
-    font-size: 0.6rem;
+    font-size: var(--fs-2xs);
   }
 
   .holo-lista {
@@ -1703,7 +1703,7 @@
   }
 
   .holo-etiqueta {
-    font-size: 0.6rem;
+    font-size: var(--fs-2xs);
   }
 }
 
@@ -1719,5 +1719,506 @@
 
   .holo-feixe {
     opacity: 0.55;
+  }
+}
+
+/* ============================================================
+   CAPAS POR MODELO + LOMBADAS RICAS + SÉRIES
+   (sobrescreve o desenho antigo, que era igual para todos)
+   ============================================================ */
+
+.capa-livro {
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --condensada: 'Oswald', 'Arial Narrow', sans-serif;
+  container-type: inline-size;
+  padding: 0;
+  background: linear-gradient(160deg, var(--capa-cor), var(--capa-cor-2));
+}
+
+.capa-livro::before,
+.capa-livro::after {
+  content: none;
+}
+
+.capa-livro-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.capa-livro-texto {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 3cqw;
+  margin-top: auto;
+  padding: 9cqw;
+}
+
+.capa-livro .capa-livro-titulo {
+  margin: 0;
+  font-size: 13cqw;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.capa-livro .capa-livro-autor {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: max(12px, 6.4cqw);
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: none;
+  opacity: 0.85;
+}
+
+/* Tarô: serifa centralizada, numeral no topo, título abaixo do emblema */
+.capa-livro--taro .capa-livro-texto {
+  align-items: center;
+  padding: 0 12cqw 13cqw;
+  text-align: center;
+}
+
+.capa-livro--taro .capa-livro-titulo {
+  font-family: var(--serif);
+  font-size: 13.5cqw;
+  font-weight: 600;
+  font-variant: small-caps;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.capa-livro-volume {
+  position: absolute;
+  top: 9cqw;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  color: var(--capa-destaque);
+  font-family: var(--serif);
+  font-size: 9cqw;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Insígnia: faixa de série no topo, título condensado enorme */
+.capa-livro-faixa {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  padding: 3.5cqw 7cqw;
+  background: var(--capa-destaque);
+  color: #111;
+  font-family: var(--condensada);
+  font-size: max(12px, 6.5cqw);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.capa-livro--insignia .capa-livro-titulo {
+  font-family: var(--condensada);
+  font-size: 17cqw;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+/* Sombra: letra gigante só em contorno e título numa faixa clara */
+.capa-livro--sombra {
+  background: color-mix(in srgb, var(--capa-cor) 55%, #000);
+}
+
+.capa-livro-letra {
+  position: absolute;
+  top: -2cqw;
+  right: 6cqw;
+  z-index: 1;
+  color: transparent;
+  font-family: var(--condensada);
+  font-size: 110cqw;
+  font-weight: 700;
+  line-height: 1;
+  -webkit-text-stroke: 1px var(--capa-destaque);
+  opacity: 0.55;
+}
+
+.capa-livro--sombra .capa-livro-texto {
+  margin-bottom: 14cqw;
+  padding: 0;
+}
+
+.capa-livro--sombra .capa-livro-titulo {
+  padding: 3cqw 9cqw;
+  background: var(--capa-texto);
+  color: color-mix(in srgb, var(--capa-cor) 70%, #000);
+  font-family: var(--condensada);
+  font-size: 14cqw;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.capa-livro--sombra .capa-livro-autor {
+  padding: 0 9cqw;
+}
+
+/* Selo: título em coluna vertical à direita, carimbo vermelho */
+.capa-livro--selo .capa-livro-texto {
+  position: absolute;
+  top: 9cqw;
+  right: 6cqw;
+  bottom: 9cqw;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+  writing-mode: vertical-rl;
+}
+
+.capa-livro--selo .capa-livro-titulo {
+  font-family: var(--serif);
+  font-size: 14cqw;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.capa-livro-carimbo {
+  position: absolute;
+  bottom: 10cqw;
+  left: 10cqw;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 24cqw;
+  aspect-ratio: 1;
+  border-radius: 1.5cqw;
+  background: var(--capa-destaque);
+  color: #f6e9dc;
+  font-size: 15cqw;
+  line-height: 1;
+  transform: rotate(-5deg);
+  box-shadow: inset 0 0 0 1.2cqw color-mix(in srgb, #f6e9dc 35%, transparent);
+}
+
+/* Horizonte: título espaçado no céu, autor sobre a duna escura */
+.capa-livro--horizonte .capa-livro-texto {
+  position: absolute;
+  inset: 0;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding: 14cqw 8cqw 9cqw;
+  text-align: center;
+}
+
+.capa-livro--horizonte .capa-livro-titulo {
+  font-family: var(--serif);
+  font-size: 13cqw;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ===== Lombadas ===== */
+.livro-lombada {
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 12px 0 10px;
+}
+
+.livro-lombada::before,
+.livro-lombada::after {
+  display: none;
+}
+
+.livro-lombada-titulo {
+  flex: 1;
+  max-height: none;
+  min-height: 0;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  white-space: normal;
+  text-overflow: clip;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.livro-estante--taro .livro-lombada-titulo,
+.livro-estante--selo .livro-lombada-titulo,
+.livro-estante--horizonte .livro-lombada-titulo {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.livro-estante--insignia .livro-lombada-titulo,
+.livro-estante--sombra .livro-lombada-titulo {
+  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lombada-volume {
+  color: var(--capa-destaque);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.lombada-marca {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+}
+
+/* Detalhes por modelo: filetes dourados no tarô, bloco no topo da insígnia */
+.livro-estante--taro .livro-lombada {
+  box-shadow:
+    inset 0 7px 0 -5px var(--capa-destaque),
+    inset 0 -7px 0 -5px var(--capa-destaque),
+    inset -2px 0 4px rgba(0, 0, 0, 0.3),
+    0 6px 12px rgba(0, 0, 0, 0.32);
+}
+
+.livro-estante--insignia .lombada-volume {
+  align-self: stretch;
+  margin-top: -12px;
+  padding: 4px 0;
+  background: var(--capa-destaque);
+  color: #111;
+  text-align: center;
+}
+
+.livro-estante--sombra .livro-lombada {
+  background: linear-gradient(
+    90deg,
+    #050506,
+    color-mix(in srgb, var(--cor-lombada) 55%, #000) 60%,
+    color-mix(in srgb, var(--cor-lombada) 80%, #000)
+  );
+}
+
+/* Status: fita (lendo) e cinta (quero ler) */
+.lombada-fita {
+  position: absolute;
+  top: -16px;
+  right: 22%;
+  z-index: 0;
+  width: 8px;
+  height: 30px;
+  background: var(--bib-accent);
+  clip-path: polygon(0 0, 50% 18%, 100% 0, 100% 100%, 0 100%);
+  pointer-events: none;
+}
+
+.lombada-cinta {
+  position: absolute;
+  right: 0;
+  bottom: 18%;
+  left: 0;
+  height: 16%;
+  background: color-mix(in srgb, #efe6d2 92%, transparent);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* ===== Séries e legenda ===== */
+.estante-livros {
+  gap: 14px;
+}
+
+.estante-grupo {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.estante-serie {
+  position: absolute;
+  top: calc(100% + 18px);
+  right: 0;
+  left: 0;
+  color: var(--bib-dim);
+  font-family: var(--mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.04em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.estante-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 8px;
+  color: var(--bib-dim);
+  font-size: var(--fs-2xs);
+}
+
+.estante-legenda > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legenda-fita {
+  width: 7px;
+  height: 14px;
+  background: var(--bib-accent);
+  clip-path: polygon(0 0, 50% 18%, 100% 0, 100% 100%, 0 100%);
+}
+
+.legenda-cinta {
+  width: 14px;
+  height: 7px;
+  background: #efe6d2;
+  border: 1px solid var(--bib-line);
+}
+
+@media (max-width: 760px), (hover: none) {
+  .livro-estante {
+    height: calc(var(--altura) * 0.82);
+  }
+
+  .livro-lombada-titulo {
+    font-size: 0.75rem;
+  }
+}
+
+/* Prateleira e rótulos de série dentro do bloco dos livros: tudo rola junto */
+.estante-palco {
+  padding-bottom: 8px;
+}
+
+.estante-livros {
+  padding-bottom: 46px;
+}
+
+.estante-livros > .estante-prateleira {
+  right: 0;
+  bottom: 32px;
+  left: 0;
+  height: 14px;
+}
+
+@media (max-width: 760px), (hover: none) {
+  /* O palco rola; o bloco dos livros tem a largura do conteúdo, então a
+     prateleira e os rótulos acompanham os livros */
+  .estante-palco {
+    overflow-x: auto;
+    padding: 24px 0 4px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 82%, transparent);
+    mask-image: linear-gradient(90deg, #000 82%, transparent);
+  }
+
+  .estante-palco::-webkit-scrollbar {
+    display: none;
+  }
+
+  .estante-livros {
+    width: max-content;
+    min-width: 100%;
+    overflow: visible;
+    padding: 0 40px 46px 4px;
+    gap: 12px;
+  }
+
+  .estante-grupo {
+    scroll-snap-align: start;
+  }
+
+  .estante-livros > .estante-prateleira {
+    bottom: 32px;
+    height: 12px;
+  }
+}
+
+/* ===== Holograma: capa projetada ===== */
+.holo-acervo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(130px, 22%, 170px);
+  align-items: start;
+  gap: 22px;
+}
+
+.holo-projecao {
+  position: relative;
+  display: block;
+  aspect-ratio: 2 / 3;
+  isolation: isolate;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--holo-accent) 55%, transparent),
+    0 0 26px var(--holo-glow);
+}
+
+.holo-projecao {
+  margin-top: 6px;
+  animation: holo-entrar 0.35s ease-out;
+}
+
+/* A arte vira monocromática e recebe a cor do holograma por cima */
+.capa-livro.capa-livro--holo {
+  border: 0;
+  filter: grayscale(1) contrast(1.15) brightness(1.05);
+  opacity: 0.88;
+}
+
+.holo-projecao::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 3px,
+      color-mix(in srgb, var(--holo-accent) 22%, transparent) 3px 4px
+    ),
+    var(--holo-accent);
+  mix-blend-mode: color;
+  pointer-events: none;
+}
+
+@keyframes holo-entrar {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (max-width: 640px) {
+  .holo-acervo {
+    grid-template-columns: 1fr;
+  }
+
+  .holo-projecao {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo-projecao {
+    animation: none;
   }
 }

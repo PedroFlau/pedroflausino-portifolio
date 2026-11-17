@@ -23,9 +23,17 @@
   outline-offset: 2px;
 }
 
-/* Brilho neon sutil nos textos de destaque */
+/* Brilho neon sutil nos textos de destaque. Texto pequeno usa o vermelho
+   neon (≈5,7:1 sobre o fundo); o vermelho imperial fica em bordas e fundos,
+   onde 3,3:1 basta. */
 [data-theme='galactic_empire'] .text-accent {
+  color: var(--neon-red);
   text-shadow: 0 0 12px var(--neon-glow);
+}
+
+[data-theme='galactic_empire'] .cmd-atalho,
+[data-theme='galactic_empire'] .timeline-quando {
+  color: var(--neon-red);
 }
 
 /* Fundo: painéis metálicos */

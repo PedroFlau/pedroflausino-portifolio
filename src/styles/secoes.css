@@ -408,8 +408,25 @@
 .contato-link {
   color: var(--texto);
   font-size: var(--fs-sm);
-  overflow-wrap: anywhere;
+  /* Quebra só se não couber de jeito nenhum (o e-mail não parte em "gmail / .com") */
+  overflow-wrap: break-word;
   transition: color 0.15s;
+}
+
+/* Celular: o botão "copiar" desce para a linha de baixo e o e-mail cabe inteiro */
+@media (max-width: 480px) {
+  .contato-card {
+    flex-wrap: wrap;
+  }
+
+  /* O texto ocupa a linha toda ao lado do ícone; o "copiar" vai para baixo */
+  .contato-textos {
+    flex-basis: calc(100% - 40px - var(--esp-3));
+  }
+
+  .contato-copiar {
+    margin-left: calc(40px + var(--esp-3));
+  }
 }
 
 /* O card inteiro é o link */
@@ -470,15 +487,10 @@
   display: flex;
   flex-direction: column;
   padding: 18px 20px 20px;
-  border: 1px solid color-mix(in srgb, var(--monitoria-cor) 45%, var(--borda));
-  border-left: 4px solid var(--monitoria-cor);
-  border-radius: 12px;
-  background:
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--monitoria-cor) 16%, var(--bg-alt)),
-      var(--bg-alt) 72%
-    );
+  /* Contorno inteiro na cor do status; o rótulo "● PRÓXIMA/AGORA" carrega o resto */
+  border: 1px solid color-mix(in srgb, var(--monitoria-cor) 70%, var(--borda));
+  border-radius: var(--raio-md);
+  background: color-mix(in srgb, var(--monitoria-cor) 7%, var(--bg-alt));
   transition: border-color 0.4s, background 0.4s;
 }
 

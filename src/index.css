@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Rajdhani:wght@500;600;700&family=Saira+Condensed:wght@400;500;600;700&display=swap');
+/* Fontes: Fira Code vem de <link> no index.html; as fontes de exibição dos
+   temas system e galactic_empire são carregadas só quando o tema é ativado
+   (src/hooks/fontesTema.ts). */
 
 /* Os arquivos são importados na ordem da cascata: não reordene. */
 @import './styles/tokens.css';

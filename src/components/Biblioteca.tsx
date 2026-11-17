@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   livros,
   type FiltroBiblioteca,
 } from '../data/biblioteca';
 import { useTema } from '../hooks/useTema';
+import { carregarFontesBiblioteca } from '../hooks/fontesBiblioteca';
 import { BibliotecaEstante } from './BibliotecaEstante';
 import { BibliotecaHolograma } from './BibliotecaHolograma';
 import { FiltroStatus } from './FiltroStatus';
@@ -12,6 +13,7 @@ import './Biblioteca.css';
 export function Biblioteca() {
   const { tema } = useTema();
   const [filtro, setFiltro] = useState<FiltroBiblioteca>('todos');
+  useEffect(carregarFontesBiblioteca, []);
   const holograma = tema === 'system' || tema === 'galactic_empire';
   const filtrados =
     filtro === 'todos'

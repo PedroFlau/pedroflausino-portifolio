@@ -9,6 +9,9 @@ import {
   SiHtml5,
   SiJavascript,
   SiLinux,
+  SiReact,
+  SiTypescript,
+  SiVite,
 } from 'react-icons/si';
 
 // ============================================================
@@ -21,12 +24,15 @@ export const perfil = {
   nome: "Pedro Flausino Mendonça",
   primeiroNome: "Pedro",
   titulo: "Estudante de Ciência da Computação",
+  curso: "Ciência da Computação",
+  universidade: "PUC Minas",
   subtitulo: "2º semestre",
   idade: 19,
   cidade: "Belo Horizonte, MG",
   bio: [
-    "Oi! Sou o Pedro Flausino Mendonça, tenho 19 anos e sou estudante de Ciência da Computação (2º semestre). Estou começando minha jornada na programação e construindo minha base em lógica, algoritmos e desenvolvimento de software.",
-    "Gosto de aprender na prática: montar projetos, quebrar a cabeça com um bug e ver as coisas funcionando. Estou em busca da minha primeira oportunidade na área para evoluir junto com um time.",
+    "Sou o Pedro, tenho 19 anos e curso Ciência da Computação na PUC Minas, em Belo Horizonte. Entrei em 2026.1 e estou no 2º semestre.",
+    "Desde 2026.2 sou monitor de Algoritmos e Estruturas de Dados I: atendo os alunos da disciplina em quatro horários por semana.",
+    "Fora da monitoria, participo do Visualize It, um site feito em equipe para visualizar os algoritmos de AEDS II, e construí sozinho este portfólio com React, TypeScript e Vite. Procuro meu primeiro estágio.",
   ],
   links: {
     github: "https://github.com/PedroFlau",
@@ -74,6 +80,21 @@ export const habilidades: {
         icone: SiCss,
         link: "https://developer.mozilla.org/pt-BR/docs/Web/CSS",
       },
+      {
+        nome: "TypeScript",
+        icone: SiTypescript,
+        link: "https://www.typescriptlang.org/docs/",
+      },
+      {
+        nome: "React",
+        icone: SiReact,
+        link: "https://react.dev/learn",
+      },
+      {
+        nome: "Vite",
+        icone: SiVite,
+        link: "https://vite.dev/guide/",
+      },
     ],
   },
   {
@@ -111,7 +132,7 @@ export type Projeto = {
   ano: string;
   /** Ex.: "solo", "em equipe". */
   papel: string;
-  /** Screenshot opcional em /public/images/projetos/ (ex.: "/images/projetos/x.png").
+  /** Screenshot opcional em /public/images/projects/ (ex.: "/images/projects/x.webp").
    *  Sem imagem, o card mostra uma prévia gerada. */
   imagem?: string;
 };
@@ -122,7 +143,7 @@ export const projetos: Projeto[] = [
     descricao:
       "Este site! Um portfólio pessoal com estética de terminal, construído do zero com React, TypeScript e Vite.",
     tecnologias: ["React", "TypeScript", "Vite", "CSS"],
-    link: "https://github.com/PedroFlau",
+    link: "https://github.com/PedroFlau/pedroflausino-portifolio",
     repo: "pedroflausino-portifolio",
     status: "no ar",
     ano: "2026",
@@ -145,7 +166,7 @@ export const projetos: Projeto[] = [
 export const formacao = [
   {
     titulo: "Bacharelado em Ciência da Computação",
-    local: "Em andamento · 2º semestre (2026.2)",
+    local: "PUC Minas · 2º semestre (2026.2)",
     periodo: "Início em 2026.1",
   },
 ];
@@ -190,8 +211,9 @@ export const monitoria: {
   ],
 };
 
-// Currículo: já aponta para /cv.pdf (troque o arquivo em public/cv.pdf)
-export const curriculo = { arquivo: "/cv.pdf" };
+// Currículo: coloque o PDF em public/cv.pdf. Enquanto o arquivo estiver vazio,
+// o comando "cv" e o botão do hero ficam escondidos (veja useCurriculo).
+export const curriculo = { arquivo: "/cv.pdf", nomeDownload: "Pedro-Flausino-CV.pdf" };
 
 // Lattes (TODO: cole o link do seu currículo Lattes)
 export const lattes: { url: string; resumo: string } = {
@@ -262,16 +284,24 @@ export const premios: { titulo: string; ano?: string; descricao?: string }[] = [
 //  LISTA DE COMANDOS DO TERMINAL
 //  nome   = comando principal
 //  aliases = variações aceitas (pt/en)
+//  aliasesOcultos = aceitas, mas fora da lista do "ajuda" (ex.: erros comuns)
 // ------------------------------------------------------------
-export const comandos: { nome: string; aliases: string[]; desc: string }[] = [
+export const comandos: {
+  nome: string;
+  aliases: string[];
+  aliasesOcultos?: string[];
+  desc: string;
+}[] = [
   { nome: "sobre", aliases: ["about"], desc: "Quem sou eu" },
   {
     nome: "habilidades",
-    aliases: ["skills", "skils"],
+    aliases: ["skills"],
+    aliasesOcultos: ["skils"],
     desc: "Minhas linguagens e ferramentas",
   },
   { nome: "contato", aliases: ["contact"], desc: "Como falar comigo" },
   { nome: "projetos", aliases: ["projects"], desc: "Meus projetos" },
+  { nome: "cv", aliases: ["curriculo", "resume"], desc: "Baixar meu currículo em PDF" },
   {
     nome: "monitoria",
     aliases: ["tutoring"],

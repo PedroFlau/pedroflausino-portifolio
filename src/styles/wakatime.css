@@ -186,14 +186,9 @@
   flex-direction: column;
   gap: 8px;
   padding: 14px 18px;
-  border: 1px solid color-mix(in srgb, var(--waka-agora-cor) 45%, var(--borda));
-  border-left: 4px solid var(--waka-agora-cor);
-  border-radius: 12px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--waka-agora-cor) 14%, var(--bg-alt)),
-    var(--bg-alt) 72%
-  );
+  border: 1px solid color-mix(in srgb, var(--waka-agora-cor) 70%, var(--borda));
+  border-radius: var(--raio-md);
+  background: color-mix(in srgb, var(--waka-agora-cor) 7%, var(--bg-alt));
 }
 
 .waka-agora.parado {

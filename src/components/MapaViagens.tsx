@@ -30,6 +30,19 @@ const TERRA: Ponto[] = LAND_DOTS.split(' ').map((par) => {
 /** Nome curto das cidades (sem o país). */
 const CIDADES = viagens.map((v) => ({ ...v, curto: v.lugar.split(',')[0] }));
 
+/** Abaixo desta largura os nomes não cabem no mapa: viram a lista sob ele. */
+const LARGURA_MIN_ROTULOS = 480;
+
+/** Cidades agrupadas por país, na ordem em que aparecem nos dados. */
+const POR_PAIS = viagens.reduce<{ pais: string; cidades: string[] }[]>((grupos, v) => {
+  const [cidade, ...resto] = v.lugar.split(',');
+  const pais = resto.join(',').trim() || cidade.trim();
+  const grupo = grupos.find((g) => g.pais === pais);
+  if (grupo) grupo.cidades.push(cidade.trim());
+  else grupos.push({ pais, cidades: [cidade.trim()] });
+  return grupos;
+}, []);
+
 /** Posições onde o rótulo pode ficar, em ordem de preferência. */
 const POSICOES: [number, number, Alinhamento][] = [
   [9, -10, 'left'],
@@ -98,6 +111,7 @@ function desenharMarcadores(
   ctx.fillStyle = accent;
   alvos.forEach((a, i) => {
     const texto = rotulos[i];
+    if (!texto) return;
     const largura = ctx.measureText(texto).width + 6;
     const altura = 13;
 
@@ -190,7 +204,8 @@ function pintarMapa(
     ctx,
     CIDADES.map((c) => ({ x: px(c.lng), y: py(c.lat), opacidade: 1 })),
     accent,
-    CIDADES.map((c) => c.curto),
+    // Tela estreita: só os pontos (os nomes ficam na lista abaixo do mapa)
+    CIDADES.map((c) => (w < LARGURA_MIN_ROTULOS ? '' : c.curto)),
   );
 }
 
@@ -304,7 +319,7 @@ function pintarGlobo(
     const [x, y, z] = projetarGlobo(c.lng, c.lat, giro, cx, cy, raio);
     if (z <= 0.02) return;
     visiveis.push({ x, y, opacidade: Math.min(1, 0.35 + z) });
-    rotulos.push(c.curto);
+    rotulos.push(w < LARGURA_MIN_ROTULOS ? '' : c.curto);
   });
   desenharMarcadores(ctx, visiveis, accent, rotulos);
 }
@@ -432,6 +447,14 @@ export function MapaViagens() {
         onPointerUp={aoSoltar}
         onPointerCancel={aoSoltar}
       />
+
+      <ul className="mapa-lista" aria-label="Lugares visitados por país">
+        {POR_PAIS.map((g) => (
+          <li key={g.pais}>
+            <span className="mapa-lista-pais">{g.pais}</span> {g.cidades.join(' · ')}
+          </li>
+        ))}
+      </ul>
 
       <p className="cmd-aviso mapa-legenda">
         {modo === 'globo'

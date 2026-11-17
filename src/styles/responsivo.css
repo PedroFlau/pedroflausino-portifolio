@@ -25,9 +25,11 @@
     font-size: clamp(1.75rem, 8vw, 2.2rem);
   }
 
-  /* O crachá encolhe para o conteúdo chegar antes dele */
+  /* O crachá encolhe para o conteúdo chegar antes dele e termina inteiro
+     acima da barra fixa do prompt */
   .hero-foto {
-    height: clamp(360px, 70dvh, 460px);
+    height: clamp(340px, 56dvh, 440px);
+    margin-bottom: var(--esp-5);
   }
 
   /* Os três botões fecham em duas colunas cheias (2 + 1 ocupando a linha) */

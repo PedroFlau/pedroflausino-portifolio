@@ -1,6 +1,6 @@
 import { ExtrudeGeometry, Path, Shape, ShapeGeometry } from 'three';
 
-/** Dimensões da arte do crachá em pixels (/images/cracha.png). */
+/** Dimensões da arte do crachá em pixels (/images/cracha.webp). */
 export const ARTE_LARGURA_PX = 1342;
 export const ARTE_ALTURA_PX = 2000;
 

@@ -6,9 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Portfólio de Pedro Flausino Mendonça — estudante de Ciência da Computação."
+      content="Pedro Flausino Mendonça, estudante de Ciência da Computação na PUC Minas e monitor de AEDS I. Projetos, contato e currículo num portfólio em forma de terminal."
     />
     <title>Pedro Flausino Mendonça · Portfólio</title>
+    <meta name="theme-color" content="#010409" />
+    <!-- Prévia de link (LinkedIn, WhatsApp...). Quando o site tiver domínio
+         fixo, troque /og.png pela URL completa (https://seu-dominio/og.png). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content="Pedro Flausino Mendonça · Portfólio" />
+    <meta
+      property="og:description"
+      content="Estudante de Ciência da Computação na PUC Minas e monitor de AEDS I. Procurando o primeiro estágio."
+    />
+    <meta property="og:image" content="/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap"
+    />
     <script>
       // Aplica o tema salvo antes da página renderizar (evita "piscada").
       // Lista de temas igual a ORDEM_TEMAS em src/hooks/useTema.tsx.
@@ -19,6 +39,18 @@
             tema === 'light' || tema === 'system' || tema === 'galactic_empire'
               ? tema
               : 'dark';
+          // Fonte de exibição do tema (mesmas URLs de src/hooks/fontesTema.ts)
+          var fonte = {
+            system: 'Rajdhani:wght@500;600;700',
+            galactic_empire: 'Saira+Condensed:wght@400;500;600;700',
+          }[tema];
+          if (fonte) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://fonts.googleapis.com/css2?family=' + fonte + '&display=swap';
+            link.dataset.fonteTema = tema;
+            document.head.appendChild(link);
+          }
         } catch (e) {
           document.documentElement.dataset.theme = 'dark';
         }

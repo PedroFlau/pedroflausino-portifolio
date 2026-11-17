@@ -2,7 +2,7 @@ import type { ComponentType } from 'react';
 import type { Tema } from '../hooks/useTema';
 
 // Ícones do botão de tema da barra superior. O botão mostra o ícone do
-// PRÓXIMO tema (o que será ativado ao clicar).
+// tema ATUAL (o rótulo acessível diz qual será ativado ao clicar).
 
 function IconeSol() {
   return (

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import type { Livro } from '../data/biblioteca';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { agruparPorSerie, type Livro } from '../data/biblioteca';
 import { LivroDetalhe } from './LivroDetalhe';
 import { LivroEstante } from './LivroEstante';
 
@@ -8,6 +8,11 @@ type Props = {
 };
 
 export function BibliotecaEstante({ livros }: Props) {
+  // Séries juntas, em ordem de volume; o índice é o da ordem na estante
+  const grupos = useMemo(() => agruparPorSerie(livros), [livros]);
+  const ordenados = useMemo(() => grupos.flatMap((g) => g.livros), [grupos]);
+  const temLendo = livros.some((l) => l.status === 'lendo');
+  const temQueroLer = livros.some((l) => l.status === 'quero ler');
   const [selecionado, setSelecionado] = useState<number | null>(null);
   const [aberto, setAberto] = useState<number | null>(null);
   const gatilhoRef = useRef<HTMLButtonElement | null>(null);
@@ -41,6 +46,8 @@ export function BibliotecaEstante({ livros }: Props) {
 
   function fechar() {
     setAberto(null);
+    // O livro volta para a estante
+    setSelecionado(null);
     requestAnimationFrame(() => gatilhoRef.current?.focus());
   }
 
@@ -58,21 +65,51 @@ export function BibliotecaEstante({ livros }: Props) {
             selecionado !== null ? ' estante-livros--foco' : ''
           }`}
         >
-          {livros.map((livro, indice) => (
-            <LivroEstante
-              key={livro.id}
-              livro={livro}
-              indice={indice}
-              selecionado={selecionado === indice}
-              onAbrir={abrir}
-            />
+          {grupos.map((grupo) => (
+            <div
+              key={grupo.serie ?? grupo.livros[0].id}
+              className={`estante-grupo${grupo.serie ? ' estante-grupo--serie' : ''}`}
+            >
+              {grupo.livros.map((livro) => {
+                const indice = ordenados.indexOf(livro);
+                return (
+                  <LivroEstante
+                    key={livro.id}
+                    livro={livro}
+                    indice={indice}
+                    selecionado={selecionado === indice}
+                    onAbrir={abrir}
+                  />
+                );
+              })}
+              {grupo.serie && grupo.livros.length > 1 && (
+                <span className="estante-serie" aria-hidden="true">
+                  {grupo.serie}
+                </span>
+              )}
+            </div>
           ))}
+          <div className="estante-prateleira" aria-hidden="true" />
         </div>
-        <div className="estante-prateleira" aria-hidden="true" />
       </div>
 
+      {(temLendo || temQueroLer) && (
+        <p className="estante-legenda">
+          {temLendo && (
+            <span>
+              <span className="legenda-fita" aria-hidden="true" /> fita: lendo agora
+            </span>
+          )}
+          {temQueroLer && (
+            <span>
+              <span className="legenda-cinta" aria-hidden="true" /> cinta: quero ler
+            </span>
+          )}
+        </p>
+      )}
+
       {aberto !== null && (
-        <LivroDetalhe livro={livros[aberto]} onFechar={fechar} />
+        <LivroDetalhe livro={ordenados[aberto]} onFechar={fechar} />
       )}
     </>
   );

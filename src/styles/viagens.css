@@ -78,6 +78,31 @@
   font-size: var(--fs-xs);
 }
 
+/* Lista de lugares: só em telas estreitas, onde os nomes não cabem no mapa */
+.mapa-lista {
+  display: none;
+  list-style: none;
+  margin: var(--esp-3) 0 0;
+  padding: 0;
+  font-size: var(--fs-xs);
+  color: var(--texto);
+}
+
+.mapa-lista li + li {
+  margin-top: var(--esp-1);
+}
+
+.mapa-lista-pais {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .mapa-lista {
+    display: block;
+  }
+}
+
 @media (max-width: 640px) {
   .mapa-canvas {
     min-height: 200px;

@@ -508,9 +508,7 @@
   --tp-info-border: #d0d7de;
 }
 
-[data-theme='light'] .temas-header {
-  border-top: 3px solid var(--tp-accent);
-}
+/* Tema claro: a barra de título usa a mesma linha de acento de 2px do padrão */
 
 /* Tema system: HUD holográfico em ciano */
 [data-theme='system'] .temas-overlay {
@@ -890,5 +888,20 @@
   .temas-overlay,
   .temas-painel {
     animation: none;
+  }
+}
+
+/* Dicas de uso: setas para quem tem teclado/mouse, toque para o resto */
+.temas-dica-toque {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .temas-dica-teclado {
+    display: none;
+  }
+
+  .temas-dica-toque {
+    display: block;
   }
 }
